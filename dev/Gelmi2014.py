@@ -44,7 +44,7 @@ def example_1():
     solver = IDESolver(
         y_initial = 0,
         x = np.linspace(0, 1, 100),
-        c = lambda y, x: y - (.5 * x) + (1 / (1 + x)) - np.log(1 + x),
+        c = lambda x, y: y - (.5 * x) + (1 / (1 + x)) - np.log(1 + x),
         d = lambda x: 1 / (np.log(2)) ** 2,
         k = lambda x, s: x / (1 + s),
         lower_bound = lambda x: 0,
@@ -61,7 +61,7 @@ def example_2():
     solver = IDESolver(
         y_initial = 1,
         x = np.linspace(0, 1, 100),
-        c = lambda y, x: y - np.cos(2 * np.pi * x) - (2 * np.pi * np.sin(2 * np.pi * x)) - (.5 * np.sin(4 * np.pi * x)),
+        c = lambda x, y: y - np.cos(2 * np.pi * x) - (2 * np.pi * np.sin(2 * np.pi * x)) - (.5 * np.sin(4 * np.pi * x)),
         d = lambda x: 1,
         k = lambda x, s: np.sin(2 * np.pi * ((2 * x) + s)),
         lower_bound = lambda x: 0,
@@ -78,7 +78,7 @@ def example_3():
     solver = IDESolver(
         y_initial = 1,
         x = np.linspace(0, 1, 100),
-        c = lambda y, x: 1 - (29 / 60) * x,
+        c = lambda x, y: 1 - (29 / 60) * x,
         d = lambda x: 1,
         k = lambda x, s: x * s,
         lower_bound = lambda x: 0,
@@ -95,6 +95,8 @@ if __name__ == '__main__':
     solver, exact = example_1()
     # solver, exact = example_2()
     # solver, exact = example_3()
+
+    print(solver.wall_time_elapsed)
 
     make_comparison_plot(solver, exact)
     make_error_plot(solver, exact)
