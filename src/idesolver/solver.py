@@ -16,7 +16,7 @@ class IDESolver:
                  f = None,
                  lower_bound = None,
                  upper_bound = None,
-                 global_error = 1e-8,
+                 global_error = 1e-9,
                  smoothing_factor = .5):
         self.y_initial = y_initial
         self.x = np.array(x)
@@ -56,22 +56,47 @@ class IDESolver:
 
     def compare(self, y1, y2):
         diff = y1 - y2
-        return np.sum(diff * diff)
+        # return np.sum(diff * diff)
+        return np.sqrt(np.sum(diff * diff))
 
     def solve_rhs_with_known_y(self, y):
-        interp_y = inter.interp1d(self.x, y, fill_value = 'extrapolate')
+        interp_y = inter.interp1d(self.x, y, kind = 'cubic', fill_value = 'extrapolate', assume_sorted = True)
 
-        def s(x):
-            return np.linspace(self.lower_bound(x), self.upper_bound(x), 100)
+        # def s(x):
+        #     return np.linspace(self.lower_bound(x), self.upper_bound(x), 100)
+
+        def integral(x):
+            r, abserr = integ.quadrature(
+                func = lambda s: self.k(x, s) * self.F(interp_y(s)),
+                a = self.lower_bound(x),
+                b = self.upper_bound(x),
+                # limit = 2 * len(self.x),
+                # points = self.x,
+                # epsabs = self.global_error,
+                # epsrel = 0,
+                maxiter = 5 * len(self.x),
+                tol = self.global_error,
+                rtol = 0,
+            )
+
+            print(x, r, abserr)
+
+            return r
 
         return integ.odeint(
-            lambda _, x: self.c(interp_y(x), x) + (self.d(x) * integ.simps(
-                y = self.k(x, s(x)) * self.F(interp_y(s(x))),
-                x = s(x),
-            )),
+            lambda y, x: self.c(interp_y(x), x) + (self.d(x) * integral(x)),
             self.y_initial,
             self.x,
         )[:, 0]
+
+        # return integ.odeint(
+        #     lambda _, x: self.c(interp_y(x), x) + (self.d(x) * integ.simps(
+        #         y = self.k(x, s(x)) * self.F(interp_y(s(x))),
+        #         x = s(x),
+        #     )),
+        #     self.y_initial,
+        #     self.x,
+        # )[:, 0]
 
     def next_curr(self, curr, guess):
         return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
@@ -85,6 +110,7 @@ class IDESolver:
 
         while self.compare(curr, guess) > self.global_error:
             self.iterations += 1
+            # print('ITERATION', self.iterations, self.compare(curr, guess))
             curr = self.next_curr(curr, guess)
             guess = self.solve_rhs_with_known_y(curr)
 

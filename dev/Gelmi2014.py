@@ -54,10 +54,7 @@ def example_1():
     solver.solve()
     exact = np.log(1 + solver.x)
 
-    print(solver.iterations)
-
-    make_comparison_plot(solver, exact)
-    make_error_plot(solver, exact)
+    return solver, exact
 
 
 def example_2():
@@ -74,10 +71,7 @@ def example_2():
     solver.solve()
     exact = np.cos(2 * np.pi * solver.x)
 
-    print(solver.iterations)
-
-    make_comparison_plot(solver, exact)
-    make_error_plot(solver, exact)
+    return solver, exact
 
 
 def example_3():
@@ -94,11 +88,13 @@ def example_3():
     solver.solve()
     exact = 1 + solver.x + solver.x ** 2
 
-    print(solver.iterations)
-
-    make_comparison_plot(solver, exact)
-    make_error_plot(solver, exact)
+    return solver, exact
 
 
 if __name__ == '__main__':
-    example_2()
+    solver, exact = example_1()
+    # solver, exact = example_2()
+    # solver, exact = example_3()
+
+    make_comparison_plot(solver, exact)
+    make_error_plot(solver, exact)
