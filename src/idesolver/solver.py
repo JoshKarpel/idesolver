@@ -82,7 +82,7 @@ class IDESolver:
 
     def global_error(self, y1, y2):
         diff = y1 - y2
-        return np.sqrt(np.sum(np.abs(diff * diff)))
+        return np.sqrt(np.real(np.sum(np.abs(diff * diff))))
 
     def solve_rhs_with_known_y(self, y):
         interp_y = inter.interp1d(self.x, y, kind = 'cubic', fill_value = 'extrapolate', assume_sorted = True)
@@ -92,9 +92,8 @@ class IDESolver:
                 lambda s: self.k(x, s) * self.F(interp_y(s)),
                 self.lower_bound(x),
                 self.upper_bound(x),
-                maxiter = 5 * len(self.x),
-                tol = self.global_error_tolerance,
-                rtol = 0,
+                tol = 0,
+                rtol = self.global_error_tolerance,
             )
 
             return r
@@ -136,8 +135,8 @@ class IDESolver:
 
             new_error = self.global_error(new_curr, new_guess)
             if new_error > curr_error:
-                warnings.warn(f'Error increased on iteration {self.iteration}, terminating', ConvergenceWarning)
-                break
+                warnings.warn(f'Error increased on iteration {self.iteration}', ConvergenceWarning)
+                # break
 
             curr = new_curr
             guess = new_guess
