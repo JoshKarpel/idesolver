@@ -1,14 +1,18 @@
+import os
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 from idesolver import IDESolver
 
+OUT_DIR = os.path.join(os.getcwd(), 'out')
 
-def make_comparison_plot(solver, exact):
+
+def make_comparison_plot(name, solver, exact):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    lines = [solver.initial_guess(), solver.y, exact]
+    lines = [solver.initial_y(), solver.y, exact]
     labels = ['initial guess', 'solution', 'exact']
     styles = ['-', '-', '--']
 
@@ -16,11 +20,12 @@ def make_comparison_plot(solver, exact):
         ax.plot(solver.x, y, label = label, linestyle = style)
 
     ax.legend(loc = 'best')
+    ax.grid(True)
 
-    plt.show()
+    plt.savefig(os.path.join(OUT_DIR, f'ex{name}_comparison'))
 
 
-def make_error_plot(solver, exact):
+def make_error_plot(name, solver, exact):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
@@ -30,7 +35,7 @@ def make_error_plot(solver, exact):
     ax.set_yscale('log')
     ax.grid(True)
 
-    plt.show()
+    plt.savefig(os.path.join(OUT_DIR, f'ex{name}_error'))
 
 
 def example_1():
@@ -85,11 +90,14 @@ def example_3():
 
 
 if __name__ == '__main__':
+    try:
+        os.mkdir(OUT_DIR)
+    except FileExistsError:
+        pass
+
     solver, exact = example_1()
     # solver, exact = example_2()
     # solver, exact = example_3()
 
-    print(solver.wall_time_elapsed)
-
-    make_comparison_plot(solver, exact)
-    make_error_plot(solver, exact)
+    make_comparison_plot('1', solver, exact)
+    make_error_plot('1', solver, exact)

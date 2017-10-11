@@ -1,9 +1,12 @@
 import warnings
-import datetime
+import logging
 
 import numpy as np
 import scipy.integrate as integ
 import scipy.interpolate as inter
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class ConvergenceWarning(Warning):
@@ -24,6 +27,9 @@ def complex_quadrature(integrand, a, b, **kwargs):
 
 
 class IDESolver:
+    ode_solver = integ.ode
+    dtype = np.float64
+
     def __init__(self,
                  y_initial,
                  x,
@@ -34,12 +40,14 @@ class IDESolver:
                  lower_bound = None,
                  upper_bound = None,
                  global_error_tolerance = 1e-9,
+                 interpolation_kind = 'cubic',
+                 max_iterations = None,
                  smoothing_factor = .5):
         self.y_initial = y_initial
         self.x = np.array(x)
 
         if c is None:
-            c = lambda *_: 0
+            c = lambda x, y: 0
         if d is None:
             d = lambda x: 0
         if k is None:
@@ -60,18 +68,22 @@ class IDESolver:
 
         self.global_error_tolerance = global_error_tolerance
 
+        self.interpolation_kind = interpolation_kind
+
         self.smoothing_factor = smoothing_factor
+
+        self.max_iterations = max_iterations
 
         self.iteration = 0
         self.y = None
         self.wall_time_elapsed = None
 
-    def initial_guess(self):
-        solver = integ.complex_ode(self.c)
+    def initial_y(self):
+        solver = self.ode_solver(self.c)
         solver.set_integrator('lsoda', atol = self.global_error_tolerance, rtol = 0)
         solver.set_initial_value(self.y_initial, self.x[0])
 
-        soln = np.empty_like(self.x, dtype = np.complex128)
+        soln = np.empty_like(self.x, dtype = self.dtype)
         soln[0] = self.y_initial
 
         for idx, x in enumerate(self.x[1:]):
@@ -82,13 +94,16 @@ class IDESolver:
 
     def global_error(self, y1, y2):
         diff = y1 - y2
-        return np.sqrt(np.real(np.sum(np.abs(diff * diff))))
+        return np.sqrt(np.sum(diff * diff))
+
+    def interpolate_y(self, y):
+        return inter.interp1d(self.x, y, kind = self.interpolation_kind, fill_value = 'extrapolate', assume_sorted = True)
 
     def solve_rhs_with_known_y(self, y):
-        interp_y = inter.interp1d(self.x, y, kind = 'cubic', fill_value = 'extrapolate', assume_sorted = True)
+        interp_y = self.interpolate_y(y)
 
         def integral(x):
-            r, re_err, im_err = complex_quadrature(
+            r, err = integ.quadrature(
                 lambda s: self.k(x, s) * self.F(interp_y(s)),
                 self.lower_bound(x),
                 self.upper_bound(x),
@@ -101,11 +116,11 @@ class IDESolver:
         def rhs(x, y):
             return self.c(x, interp_y(x)) + (self.d(x) * integral(x))
 
-        solver = integ.complex_ode(rhs)
+        solver = self.ode_solver(rhs)
         solver.set_integrator('lsoda', atol = self.global_error_tolerance, rtol = 0)
         solver.set_initial_value(self.y_initial, self.x[0])
 
-        soln = np.empty_like(self.x, dtype = np.complex128)
+        soln = np.empty_like(self.x, dtype = self.dtype)
         soln[0] = self.y_initial
 
         for idx, x in enumerate(self.x[1:]):
@@ -118,30 +133,35 @@ class IDESolver:
         return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
 
     def solve(self):
-        self.wall_time_elapsed = None
-        t = datetime.datetime.now()
+        self.iteration = 0
+        y_curr = self.initial_y()
+        y_guess = self.solve_rhs_with_known_y(y_curr)
 
-        self.iteration = 1
-        curr = self.initial_guess()
-        guess = self.solve_rhs_with_known_y(curr)
+        curr_error = self.global_error(y_curr, y_guess)
 
-        curr_error = self.global_error(curr, guess)
-
-        while curr_error > self.global_error_tolerance:
-            self.iteration += 1
-            print('ITERATION', self.iteration, self.global_error(curr, guess))
-            new_curr = self.next_curr(curr, guess)
+        while curr_error > self.global_error_tolerance and (self.max_iterations is None or self.iteration < self.max_iterations):
+            new_curr = self.next_curr(y_curr, y_guess)
             new_guess = self.solve_rhs_with_known_y(new_curr)
 
             new_error = self.global_error(new_curr, new_guess)
             if new_error > curr_error:
                 warnings.warn(f'Error increased on iteration {self.iteration}', ConvergenceWarning)
-                # break
 
-            curr = new_curr
-            guess = new_guess
+            y_curr = new_curr
+            y_guess = new_guess
             curr_error = new_error
 
-        self.wall_time_elapsed = datetime.datetime.now() - t
-        self.y = guess
-        return guess
+            self.iteration += 1
+            logger.debug(f'Advanced to iteration {self.iteration}. Current error: {curr_error}.')
+
+        self.y = self.next_curr(y_curr, y_guess)
+        return self.y
+
+
+class CIDESolver(IDESolver):
+    ode_solver = integ.complex_ode
+    dtype = np.complex128
+
+    def global_error(self, y1, y2):
+        diff = y1 - y2
+        return np.sqrt(np.real(np.sum(np.abs(diff * diff))))
