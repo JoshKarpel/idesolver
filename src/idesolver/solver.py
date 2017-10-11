@@ -27,8 +27,8 @@ def complex_quadrature(integrand, a, b, **kwargs):
 
 
 class IDESolver:
-    ode_solver = integ.ode
     dtype = np.float64
+    ode_solver = integ.ode
 
     def __init__(self,
                  y_initial,
@@ -78,8 +78,15 @@ class IDESolver:
         self.y = None
         self.wall_time_elapsed = None
 
-    def initial_y(self):
-        solver = self.ode_solver(self.c)
+    def global_error(self, y1, y2):
+        diff = y1 - y2
+        return np.sqrt(np.sum(diff * diff))
+
+    def interpolate_y(self, y):
+        return inter.interp1d(self.x, y, kind = self.interpolation_kind, fill_value = 'extrapolate', assume_sorted = True)
+
+    def solve_ode(self, rhs):
+        solver = self.ode_solver(rhs)
         solver.set_integrator('lsoda', atol = self.global_error_tolerance, rtol = 0)
         solver.set_initial_value(self.y_initial, self.x[0])
 
@@ -92,12 +99,8 @@ class IDESolver:
 
         return soln
 
-    def global_error(self, y1, y2):
-        diff = y1 - y2
-        return np.sqrt(np.sum(diff * diff))
-
-    def interpolate_y(self, y):
-        return inter.interp1d(self.x, y, kind = self.interpolation_kind, fill_value = 'extrapolate', assume_sorted = True)
+    def initial_y(self):
+        return self.solve_ode(self.c)
 
     def solve_rhs_with_known_y(self, y):
         interp_y = self.interpolate_y(y)
@@ -116,18 +119,7 @@ class IDESolver:
         def rhs(x, y):
             return self.c(x, interp_y(x)) + (self.d(x) * integral(x))
 
-        solver = self.ode_solver(rhs)
-        solver.set_integrator('lsoda', atol = self.global_error_tolerance, rtol = 0)
-        solver.set_initial_value(self.y_initial, self.x[0])
-
-        soln = np.empty_like(self.x, dtype = self.dtype)
-        soln[0] = self.y_initial
-
-        for idx, x in enumerate(self.x[1:]):
-            solver.integrate(x)
-            soln[idx + 1] = solver.y
-
-        return soln
+        return self.solve_ode(rhs)
 
     def next_curr(self, curr, guess):
         return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
@@ -159,8 +151,8 @@ class IDESolver:
 
 
 class CIDESolver(IDESolver):
-    ode_solver = integ.complex_ode
     dtype = np.complex128
+    ode_solver = integ.complex_ode
 
     def global_error(self, y1, y2):
         diff = y1 - y2
