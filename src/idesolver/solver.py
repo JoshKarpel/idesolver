@@ -5,7 +5,7 @@ import numpy as np
 import scipy.integrate as integ
 import scipy.interpolate as inter
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('idesolver')
 logger.setLevel(logging.DEBUG)
 
 
@@ -110,6 +110,7 @@ class IDESolver:
                 lambda s: self.k(x, s) * self.F(interp_y(s)),
                 self.lower_bound(x),
                 self.upper_bound(x),
+                # maxiter = len(self.x),
                 tol = 0,
                 rtol = self.global_error_tolerance,
             )
