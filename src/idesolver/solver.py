@@ -14,6 +14,7 @@ class ConvergenceWarning(Warning):
 
 
 def complex_quadrature(integrand, a, b, **kwargs):
+    """A thin wrapper over `scipy.integrate.quadrature` that handles splitting the real and complex parts of the integral and recombining them."""
     def real_func(x):
         return np.real(integrand(x))
 
@@ -79,13 +80,44 @@ class IDESolver:
         self.wall_time_elapsed = None
 
     def global_error(self, y1, y2):
+        """
+        Return the global error estimate between `y1` and `y2`.
+
+        The estimate is the square root of the sum of squared differences between `y1` and `y2`.
+
+        Parameters
+        ----------
+        y1
+            A guess of the solution.
+        y2
+            Another guess of the solution.
+
+        Returns
+        -------
+        error :
+            The global error estimate between `y1` and `y2`.
+        """
         diff = y1 - y2
         return np.sqrt(np.sum(diff * diff))
 
     def interpolate_y(self, y):
+        """
+        Interpolate `y` along `x`, using `interpolation_kind`.
+
+        Parameters
+        ----------
+        y
+            The guess to interpolate.
+
+        Returns
+        -------
+        interpolator :
+            The interpolated function.
+        """
         return inter.interp1d(self.x, y, kind = self.interpolation_kind, fill_value = 'extrapolate', assume_sorted = True)
 
     def solve_ode(self, rhs):
+        """Solves an ODE with the given right-hand side."""
         solver = self.ode_solver(rhs)
         solver.set_integrator('lsoda', atol = self.global_error_tolerance, rtol = 0)
         solver.set_initial_value(self.y_initial, self.x[0])
@@ -100,6 +132,7 @@ class IDESolver:
         return soln
 
     def initial_y(self):
+        """Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE."""
         return self.solve_ode(self.c)
 
     def solve_rhs_with_known_y(self, y):
@@ -122,9 +155,11 @@ class IDESolver:
         return self.solve_ode(rhs)
 
     def next_curr(self, curr, guess):
+        """Calculate the next guess at the solution by merging two guesses."""
         return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
 
     def solve(self):
+        """Compute the solution to the IDE."""
         self.iteration = 0
         y_curr = self.initial_y()
         y_guess = self.solve_rhs_with_known_y(y_curr)
