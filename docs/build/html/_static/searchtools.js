@@ -194,6 +194,7 @@ var Stemmer = function () {
 };
 
 
+
 /**
  * Simple result scoring code.
  */
@@ -552,7 +553,7 @@ var Search = {
                             Search.output.append(listItem);
                             listItem.slideDown(5, function () {
                                 displayNextItem();
-                            });
+                    });
                         }
                     });
                 } else {

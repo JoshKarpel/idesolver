@@ -3,15 +3,16 @@
 Quickstart
 ==========
 
-Suppose we want to solve the IDE
+Suppose we want to solve the integro-differential equation (IDE)
 
 .. math::
-\frac{dy}{dx} & = y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) + \frac{1}{\left(\ln(2)\right)^2} \int_0^1 \frac{x}{1 + s} \, y(s) \, ds, \\
+
+    \frac{dy}{dx} & = y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) + \frac{1}{\left(\ln(2)\right)^2} \int_0^1 \frac{x}{1 + s} \, y(s) \, ds, \\
     & \mathrm{on} \quad 0 \leq x \leq 1, \quad y(0) = 0.
 
 This analytic solution to this IDE is :math:`y(x) = \ln(1 + x)`.
 
-We begin by creating an instance of :class:`IDESolver`, which contains information about the integro-differential equation (IDE) that we want to solve, as well as options to control the accuracy of the solution.
+We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve.
 
 .. code-block:: python
 

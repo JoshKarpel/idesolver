@@ -19,7 +19,7 @@
     <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="idesolver 1.0 documentation" href="index.html"/>
     <link rel="next" title="API Reference" href="manual.html"/>
-    <link rel="prev" title="Welcome to idesolver’s documentation!" href="index.html"/>
+    <link rel="prev" title="Overview" href="index.html"/>
 
 
     <script src="_static/js/modernizr.min.js"></script>
@@ -63,7 +63,7 @@
 
 
                 <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to idesolver’s documentation!</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
                     <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a></li>
                     <li class="toctree-l1"><a class="reference internal" href="manual.html">API Reference</a></li>
                     <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
@@ -116,13 +116,13 @@
 
                         <div class="section" id="quickstart">
                             <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
-                            <p>Suppose we want to solve the IDE</p>
+                            <p>Suppose we want to solve the integro-differential equation (IDE)</p>
                             <div class="math">
                                 \[\begin{split}\frac{dy}{dx} &amp; = y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) + \frac{1}{\left(\ln(2)\right)^2} \int_0^1 \frac{x}{1 + s} \, y(s) \, ds, \\
                                 &amp; \mathrm{on} \quad 0 \leq x \leq 1, \quad y(0) = 0.\end{split}\]
                             </div>
                             <p>This analytic solution to this IDE is <span class="math">\(y(x) = \ln(1 + x)\)</span>.</p>
-                            <p>We begin by creating an instance of <a class="reference internal" href="manual.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, which contains information about the integro-differential equation (IDE) that we want to solve, as well as options to control the accuracy of the solution.</p>
+                            <p>We begin by creating an instance of <a class="reference internal" href="manual.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve.</p>
                             <div class="highlight-python">
                                 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
@@ -156,7 +156,7 @@
                         <a href="manual.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-                        <a href="index.html" class="btn btn-neutral" title="Welcome to idesolver’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+                        <a href="index.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
                     </div>
 

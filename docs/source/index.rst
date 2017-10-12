@@ -1,20 +1,20 @@
-Welcome to idesolver's documentation!
-=====================================
+Overview
+========
 
 :doc:`quickstart`
-   A brief tutorial in using idesolver.
+    A brief tutorial in using idesolver.
 
 :doc:`manual`
-   Complete documentation.
+    Complete documentation.
 
 :doc:`changelog`
-   Change logs going back to the initial release.
+    Change logs going back to the initial release.
 
 .. toctree::
 :hidden:
-       :maxdepth: 2
+        :maxdepth: 2
 
-       self
-       quickstart
-       manual
-       changelog
+        self
+        quickstart
+        manual
+        changelog
