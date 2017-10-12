@@ -1,3 +1,10 @@
+"""
+A general purpose integro-differential equation (IDE) solver.
+
+Copyright (C) 2017  Joshua T Karpel
+Full license available at github.com/JoshKarpel/LICENSE
+"""
+
 import warnings
 import logging
 
@@ -32,8 +39,8 @@ class IDESolver:
     ode_solver = integ.ode
 
     def __init__(self,
-                 y_initial,
                  x,
+                 y_initial,
                  c = None,
                  d = None,
                  k = None,

@@ -40,8 +40,8 @@ def make_error_plot(name, solver, exact):
 
 def example_1():
     solver = IDESolver(
-        y_initial = 0,
         x = np.linspace(0, 1, 100),
+        y_initial = 0,
         c = lambda x, y: y - (.5 * x) + (1 / (1 + x)) - np.log(1 + x),
         d = lambda x: 1 / (np.log(2)) ** 2,
         k = lambda x, s: x / (1 + s),
@@ -57,8 +57,8 @@ def example_1():
 
 def example_2():
     solver = IDESolver(
-        y_initial = 1,
         x = np.linspace(0, 1, 100),
+        y_initial = 1,
         c = lambda x, y: y - np.cos(2 * np.pi * x) - (2 * np.pi * np.sin(2 * np.pi * x)) - (.5 * np.sin(4 * np.pi * x)),
         d = lambda x: 1,
         k = lambda x, s: np.sin(2 * np.pi * ((2 * x) + s)),
@@ -74,8 +74,8 @@ def example_2():
 
 def example_3():
     solver = IDESolver(
-        y_initial = 1,
         x = np.linspace(0, 1, 100),
+        y_initial = 1,
         c = lambda x, y: 1 - (29 / 60) * x,
         d = lambda x: 1,
         k = lambda x, s: x * s,
