@@ -1,10 +1,4 @@
-API Reference
-=============
+Manual
+======
 
 .. currentmodule:: idesolver
-
-.. autoclass:: IDESolver
-
-    .. automethod:: solve
-
-.. autoclass:: CIDESolver

@@ -5,6 +5,7 @@ Copyright (C) 2017  Joshua T Karpel
 Full license available at github.com/JoshKarpel/LICENSE
 """
 
+from typing import Union, Optional, Callable
 import warnings
 import logging
 
@@ -22,6 +23,7 @@ class ConvergenceWarning(Warning):
 
 def complex_quadrature(integrand, a, b, **kwargs):
     """A thin wrapper over `scipy.integrate.quadrature` that handles splitting the real and complex parts of the integral and recombining them."""
+
     def real_func(x):
         return np.real(integrand(x))
 
@@ -35,23 +37,60 @@ def complex_quadrature(integrand, a, b, **kwargs):
 
 
 class IDESolver:
+    """
+    A class that handles solving an integro-differential equation of the form
+
+    .. math::
+
+        \\frac{dy}{dx} & = c(y, x) + d(x) \\int_{\\alpha(x)}^{\\beta(x)} k(x, s) \\, F( y(s) ) \\, ds, \\\\
+        & x \\in [a, b], \\quad y(a) = y_0.
+
+    """
+
     dtype = np.float64
     ode_solver = integ.ode
 
     def __init__(self,
                  x,
-                 y_initial,
-                 c = None,
-                 d = None,
-                 k = None,
-                 f = None,
-                 lower_bound = None,
-                 upper_bound = None,
-                 global_error_tolerance = 1e-9,
-                 interpolation_kind = 'cubic',
-                 max_iterations = None,
-                 smoothing_factor = .5):
-        self.y_initial = y_initial
+                 y_0: float,
+                 c: Optional[Callable] = None,
+                 d: Optional[Callable] = None,
+                 k: Optional[Callable] = None,
+                 f: Optional[Callable] = None,
+                 lower_bound: Optional[Callable] = None,
+                 upper_bound: Optional[Callable] = None,
+                 global_error_tolerance: float = 1e-9,
+                 interpolation_kind: str = 'cubic',
+                 max_iterations: Optional[str] = None,
+                 smoothing_factor: float = .5):
+        """
+        Parameters
+        ----------
+        x : :class:`numpy.ndarray`
+            The array of :math:`x` values to find the solution :math:`y(x)` at. Generally something like ``numpy.linspace(a, b, num_pts)``.
+        y_0 : :class:`float`
+            The initial condition, :math:`y_0 = y(a)`.
+        c : callable
+            The function :math:`c(y, x)`.
+        d : callable
+            The function :math:`d(x)`.
+        k : callable
+            The kernel function :math:`k(x, s)`.
+        f : callable
+            The function :math:`F(y)`.
+        lower_bound : callable
+            The lower bound function :math:`\\alpha(x)`.
+        upper_bound : callable
+            The upper bound function :math:`\\beta(x)`.
+        global_error_tolerance : :class:`float`
+        interpolation_kind : :class:`str`
+            The type of interpolation to use. As the `kind` option of :class:`scipy.interpolate.interp1d`. Defaults to ``'cubic'``.
+        max_iterations : :class:`int`
+            The maximum number of iterations to use. If ``None``, iteration will not stop unless the `global_error_tolerance` is satisfied. Defaults to ``None``.
+        smoothing_factor : :class:`float`
+            The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to ``0.5``.
+        """
+        self.y_0 = y_0
         self.x = np.array(x)
 
         if c is None:
@@ -86,7 +125,7 @@ class IDESolver:
         self.y = None
         self.wall_time_elapsed = None
 
-    def global_error(self, y1, y2):
+    def global_error(self, y1: np.ndarray, y2: np.ndarray) -> float:
         """
         Return the global error estimate between `y1` and `y2`.
 
@@ -107,7 +146,7 @@ class IDESolver:
         diff = y1 - y2
         return np.sqrt(np.sum(diff * diff))
 
-    def interpolate_y(self, y):
+    def interpolate_y(self, y: np.ndarray) -> inter.interp1d:
         """
         Interpolate `y` along `x`, using `interpolation_kind`.
 
@@ -123,14 +162,14 @@ class IDESolver:
         """
         return inter.interp1d(self.x, y, kind = self.interpolation_kind, fill_value = 'extrapolate', assume_sorted = True)
 
-    def solve_ode(self, rhs):
+    def solve_ode(self, rhs: Callable) -> np.ndarray:
         """Solves an ODE with the given right-hand side."""
         solver = self.ode_solver(rhs)
         solver.set_integrator('lsoda', atol = self.global_error_tolerance, rtol = 0)
-        solver.set_initial_value(self.y_initial, self.x[0])
+        solver.set_initial_value(self.y_0, self.x[0])
 
         soln = np.empty_like(self.x, dtype = self.dtype)
-        soln[0] = self.y_initial
+        soln[0] = self.y_0
 
         for idx, x in enumerate(self.x[1:]):
             solver.integrate(x)
@@ -138,11 +177,11 @@ class IDESolver:
 
         return soln
 
-    def initial_y(self):
+    def initial_y(self) -> np.ndarray:
         """Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE."""
         return self.solve_ode(self.c)
 
-    def solve_rhs_with_known_y(self, y):
+    def solve_rhs_with_known_y(self, y: np.ndarray) -> np.ndarray:
         interp_y = self.interpolate_y(y)
 
         def integral(x):
@@ -162,12 +201,20 @@ class IDESolver:
 
         return self.solve_ode(rhs)
 
-    def next_curr(self, curr, guess):
+    def next_curr(self, curr: np.ndarray, guess: np.ndarray) -> np.ndarray:
         """Calculate the next guess at the solution by merging two guesses."""
         return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
 
-    def solve(self):
-        """Compute the solution to the IDE."""
+    def solve(self) -> np.ndarray:
+        """
+        Compute the solution to the IDE.
+
+        The solution is returned, and also stored in the attribute ``y``.
+
+        Returns
+        -------
+        The solution to the IDE.
+        """
         self.iteration = 0
         y_curr = self.initial_y()
         y_guess = self.solve_rhs_with_known_y(y_curr)
@@ -194,9 +241,14 @@ class IDESolver:
 
 
 class CIDESolver(IDESolver):
+    """
+    This class uses a different set of solvers and a definition of the global error function appropriate for complex :math:`y`.
+    Because it needs to use a complex-valued data type and a complex-valued ODE solver, this solver is slower than the real-valued :class:`IDESolver`.
+    """
+
     dtype = np.complex128
     ode_solver = integ.complex_ode
 
-    def global_error(self, y1, y2):
+    def global_error(self, y1: np.ndarray, y2: np.ndarray) -> np.ndarray:
         diff = y1 - y2
         return np.sqrt(np.real(np.sum(np.abs(diff * diff))))

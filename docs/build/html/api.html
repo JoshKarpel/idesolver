@@ -1,206 +1,318 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API &mdash; idesolver 1.0 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>API Reference &mdash; idesolver 1.0 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css"/>
+  
 
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
 
-    <link rel="index" title="Index"
-            href="genindex.html"/>
-    <link rel="search" title="Search" href="search.html"/>
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="idesolver 1.0 documentation" href="index.html"/>
-    <link rel="next" title="Change Log" href="changelog.html"/>
-    <link rel="prev" title="Tutorial" href="tutorial.html"/>
+        <link rel="next" title="Frequently Asked Questions" href="faq.html"/>
+        <link rel="prev" title="Manual" href="manual.html"/> 
 
-
-    <script src="_static/js/modernizr.min.js"></script>
+  
+  <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="index.html" class="icon icon-home"> idesolver
+          
 
-                <a href="index.html" class="icon icon-home"> idesolver
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    1.0
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="index.html">Welcome to idesolver’s documentation!</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-                    <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="index.html">idesolver</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">idesolver</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="index.html">Docs</a> &raquo;</li>
-
-                        <li>API Reference</li>
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
-
-                        <div class="section" id="api-reference">
-                            <h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
-                            <dl class="class">
-                                <dt id="idesolver.IDESolver">
-                                    <em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">IDESolver</code><span class="sig-paren">(</span><em>y_initial</em>, <em>x</em>, <em>c=None</em>, <em>d=None</em>, <em>k=None</em>, <em>f=None</em>, <em>lower_bound=None</em>, <em>upper_bound=None</em>, <em>global_error_tolerance=1e-09</em>, <em>interpolation_kind='cubic'</em>, <em>max_iterations=None</em>, <em>smoothing_factor=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/solver.html#IDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver" title="Permalink to this definition">¶</a></dt>
-                                <dd>
-                                    <dl class="method">
-                                        <dt id="idesolver.IDESolver.solve">
-                                            <code class="descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/solver.html#IDESolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver.solve" title="Permalink to this definition">¶</a></dt>
-                                        <dd><p>Compute the solution to the IDE.</p>
-                                        </dd>
-                                    </dl>
-
-                                </dd>
-                            </dl>
-
-                            <dl class="class">
-                                <dt id="idesolver.CIDESolver">
-                                    <em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">CIDESolver</code><span class="sig-paren">(</span><em>y_initial</em>, <em>x</em>, <em>c=None</em>, <em>d=None</em>, <em>k=None</em>, <em>f=None</em>, <em>lower_bound=None</em>, <em>upper_bound=None</em>, <em>global_error_tolerance=1e-09</em>, <em>interpolation_kind='cubic'</em>, <em>max_iterations=None</em>, <em>smoothing_factor=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/solver.html#CIDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.CIDESolver" title="Permalink to this definition">¶</a></dt>
-                                <dd></dd>
-                            </dl>
-
-                        </div>
 
 
-                    </div>
-                    <div class="articleComments">
-
-                    </div>
-                </div>
-                <footer>
-
-                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-                        <a href="changelog.html" class="btn btn-neutral float-right" title="Change Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-                        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-                    </div>
 
 
-                    <hr/>
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2017, Joshua T Karpel.
+<div role="navigation" aria-label="breadcrumbs navigation">
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
 
-                </footer>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-idesolver">
+<span id="api"></span><h1>API<a class="headerlink" href="#module-idesolver" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="idesolver.IDESolver">
+<em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">IDESolver</code><span class="sig-paren">(</span><em>x</em>, <em>y_0: float</em>, <em>c: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>d: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>k: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>f: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>lower_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>upper_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>global_error_tolerance: float = 1e-09</em>, <em>interpolation_kind: str = 'cubic'</em>, <em>max_iterations: typing.Union[str</em>, <em>NoneType] = None</em>, <em>smoothing_factor: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/solver.html#IDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that handles solving an integro-differential equation of the form</p>
+<div class="math">
+\[\begin{split}\frac{dy}{dx} &amp; = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
+&amp; x \in [a, b], \quad y(a) = y_0.\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) – The array of <span class="math">\(x\)</span> values to find the solution <span class="math">\(y(x)\)</span> at. Generally something like <code class="docutils literal"><span class="pre">numpy.linspace(a,</span> <span class="pre">b,</span> <span class="pre">num_pts)</span></code>.</li>
+<li><strong>y_0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The initial condition, <span class="math">\(y_0 = y(a)\)</span>.</li>
+<li><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(c(y, x)\)</span>.</li>
+<li><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(d(x)\)</span>.</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The kernel function <span class="math">\(k(x, s)\)</span>.</li>
+<li><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(F(y)\)</span>.</li>
+<li><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The lower bound function <span class="math">\(\alpha(x)\)</span>.</li>
+<li><strong>upper_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The upper bound function <span class="math">\(\beta(x)\)</span>.</li>
+<li><strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – </li>
+<li><strong>interpolation_kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The type of interpolation to use. As the <cite>kind</cite> option of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d" title="(in SciPy v0.19.1)"><code class="xref py py-class docutils literal"><span class="pre">scipy.interpolate.interp1d</span></code></a>. Defaults to <code class="docutils literal"><span class="pre">'cubic'</span></code>.</li>
+<li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a>) – The maximum number of iterations to use. If <code class="docutils literal"><span class="pre">None</span></code>, iteration will not stop unless the <cite>global_error_tolerance</cite> is satisfied. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
+<li><strong>smoothing_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to <code class="docutils literal"><span class="pre">0.5</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="idesolver.IDESolver.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/idesolver/solver.html#IDESolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the solution to the IDE.</p>
+<p>The solution is returned, and also stored in the attribute <code class="docutils literal"><span class="pre">y</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">The solution to the IDE.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-            </div>
-        </div>
+</dd></dl>
 
-    </section>
+<dl class="class">
+<dt id="idesolver.CIDESolver">
+<em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">CIDESolver</code><span class="sig-paren">(</span><em>x</em>, <em>y_0: float</em>, <em>c: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>d: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>k: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>f: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>lower_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>upper_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>global_error_tolerance: float = 1e-09</em>, <em>interpolation_kind: str = 'cubic'</em>, <em>max_iterations: typing.Union[str</em>, <em>NoneType] = None</em>, <em>smoothing_factor: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/solver.html#CIDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.CIDESolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">idesolver.solver.IDESolver</span></code></p>
+<p>This class uses a different set of solvers and a definition of the global error function appropriate for complex <span class="math">\(y\)</span>.
+Because it needs to use a complex-valued data type and a complex-valued ODE solver, this solver is slower than the real-valued <a class="reference internal" href="#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) – The array of <span class="math">\(x\)</span> values to find the solution <span class="math">\(y(x)\)</span> at. Generally something like <code class="docutils literal"><span class="pre">numpy.linspace(a,</span> <span class="pre">b,</span> <span class="pre">num_pts)</span></code>.</li>
+<li><strong>y_0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The initial condition, <span class="math">\(y_0 = y(a)\)</span>.</li>
+<li><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(c(y, x)\)</span>.</li>
+<li><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(d(x)\)</span>.</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The kernel function <span class="math">\(k(x, s)\)</span>.</li>
+<li><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(F(y)\)</span>.</li>
+<li><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The lower bound function <span class="math">\(\alpha(x)\)</span>.</li>
+<li><strong>upper_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The upper bound function <span class="math">\(\beta(x)\)</span>.</li>
+<li><strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – </li>
+<li><strong>interpolation_kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The type of interpolation to use. As the <cite>kind</cite> option of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d" title="(in SciPy v0.19.1)"><code class="xref py py-class docutils literal"><span class="pre">scipy.interpolate.interp1d</span></code></a>. Defaults to <code class="docutils literal"><span class="pre">'cubic'</span></code>.</li>
+<li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a>) – The maximum number of iterations to use. If <code class="docutils literal"><span class="pre">None</span></code>, iteration will not stop unless the <cite>global_error_tolerance</cite> is satisfied. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
+<li><strong>smoothing_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to <code class="docutils literal"><span class="pre">0.5</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
 
-<script type="text/javascript">
-    var DOCUMENTATION_OPTIONS = {
-        URL_ROOT: './',
-        VERSION: '1.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE: true,
-        SOURCELINK_SUFFIX: '.txt'
-    };
-</script>
-<script type="text/javascript" src="_static/jquery.js"></script>
-<script type="text/javascript" src="_static/underscore.js"></script>
-<script type="text/javascript" src="_static/doctools.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="manual.html" class="btn btn-neutral" title="Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Joshua T Karpel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
 
 
-<script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-<script type="text/javascript">
-    jQuery(function () {
-        SphinxRtdTheme.StickyNav.enable();
-    });
-</script>
+  
 
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
 
 </body>
 </html>

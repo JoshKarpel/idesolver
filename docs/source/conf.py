@@ -33,11 +33,15 @@ sys.path.insert(0, os.path.abspath('../../src'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.intersphinx',
-              'sphinx.ext.mathjax',
-              'sphinx.ext.viewcode',
-              'sphinx.ext.githubpages']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon',
+    # 'sphinx_autodoc_typehints',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -193,8 +197,9 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'https://docs.python.org/': None,
-    'http://docs.scipy.org/doc/numpy/': None,
+    'https://docs.python.org/3/': None,
+    'https://docs.scipy.org/doc/numpy/': None,
+    'https://docs.scipy.org/doc/scipy/reference': None,
 }
 
 autodoc_member_order = 'bysource'
