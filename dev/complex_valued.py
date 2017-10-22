@@ -42,7 +42,7 @@ def make_error_plot(name, solver, exact):
 def example_1():
     solver = CIDESolver(
         x = np.linspace(0, 1, 100),
-        y_initial = 0,
+        y_0 = 0,
         c = lambda x, y: (5 * y) + 1,
         d = lambda x: -3j,
         k = lambda x, s: 1,

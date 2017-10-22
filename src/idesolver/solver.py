@@ -62,7 +62,8 @@ class IDESolver:
                  global_error_tolerance: float = 1e-9,
                  interpolation_kind: str = 'cubic',
                  max_iterations: Optional[str] = None,
-                 smoothing_factor: float = .5):
+                 smoothing_factor: float = .5,
+                 store_intermediate = False):
         """
         Parameters
         ----------
@@ -124,6 +125,10 @@ class IDESolver:
         self.iteration = 0
         self.y = None
         self.wall_time_elapsed = None
+
+        self.store_intermediate = True
+        if self.store_intermediate:
+            self.y_intermediate = {}
 
     def global_error(self, y1: np.ndarray, y2: np.ndarray) -> float:
         """
@@ -222,6 +227,9 @@ class IDESolver:
         curr_error = self.global_error(y_curr, y_guess)
 
         while curr_error > self.global_error_tolerance and (self.max_iterations is None or self.iteration < self.max_iterations):
+            if self.store_intermediate:
+                self.y_intermediate[self.iteration] = y_curr
+
             new_curr = self.next_curr(y_curr, y_guess)
             new_guess = self.solve_rhs_with_known_y(new_curr)
 
