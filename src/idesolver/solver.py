@@ -61,9 +61,9 @@ class IDESolver:
                  upper_bound: Optional[Callable] = None,
                  global_error_tolerance: float = 1e-9,
                  interpolation_kind: str = 'cubic',
-                 max_iterations: Optional[str] = None,
+                 max_iterations: Optional[int] = None,
                  smoothing_factor: float = .5,
-                 store_intermediate = False):
+                 store_intermediate: bool = False):
         """
         Parameters
         ----------
@@ -126,7 +126,7 @@ class IDESolver:
         self.y = None
         self.wall_time_elapsed = None
 
-        self.store_intermediate = True
+        self.store_intermediate = store_intermediate
         if self.store_intermediate:
             self.y_intermediate = {}
 
