@@ -1,1 +1,1 @@
-from .solver import *
+from .idesolver import *

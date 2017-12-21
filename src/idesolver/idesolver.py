@@ -21,6 +21,14 @@ class ConvergenceWarning(Warning):
     pass
 
 
+class IDESolverException(Exception):
+    pass
+
+
+class InvalidParameter(IDESolverException):
+    pass
+
+
 def complex_quadrature(integrand, a, b, **kwargs):
     """A thin wrapper over `scipy.integrate.quadrature` that handles splitting the real and complex parts of the integral and recombining them."""
 
@@ -33,7 +41,7 @@ def complex_quadrature(integrand, a, b, **kwargs):
     real_integral = integ.quadrature(real_func, a, b, **kwargs)
     imag_integral = integ.quadrature(imag_func, a, b, **kwargs)
 
-    return real_integral[0] + 1j * imag_integral[0], real_integral[1], imag_integral[1]
+    return real_integral[0] + (1j * imag_integral[0]), real_integral[1], imag_integral[1]
 
 
 class IDESolver:
@@ -51,7 +59,7 @@ class IDESolver:
     ode_solver = integ.ode
 
     def __init__(self,
-                 x,
+                 x: np.ndarray,
                  y_0: float,
                  c: Optional[Callable] = None,
                  d: Optional[Callable] = None,
@@ -118,17 +126,66 @@ class IDESolver:
 
         self.interpolation_kind = interpolation_kind
 
+        if not 0 < self.smoothing_factor < 1:
+            raise InvalidParameter('Smoothing factor must be between 0 and 1')
         self.smoothing_factor = smoothing_factor
 
+        if max_iterations is not None and max_iterations <= 0:
+            raise InvalidParameter('If given, max iterations must be greater than 0')
         self.max_iterations = max_iterations
 
         self.iteration = 0
         self.y = None
-        self.wall_time_elapsed = None
 
         self.store_intermediate = store_intermediate
         if self.store_intermediate:
             self.y_intermediate = {}
+
+    def solve(self) -> np.ndarray:
+        """
+        Compute the solution to the IDE.
+
+        The solution is returned, and also stored in the attribute ``y``.
+
+        Will emit warning messages if the global error increases on an iteration.
+        This does not necessarily mean that the algorithm is not converging, but may indicate that it's having problems.
+
+        Returns
+        -------
+        The solution to the IDE.
+        """
+        self.iteration = 0
+
+        y_curr = self.initial_y()
+        y_guess = self.solve_rhs_with_known_y(y_curr)
+        current_error = self.global_error(y_curr, y_guess)
+
+        while current_error > self.global_error_tolerance and (self.max_iterations is None or self.iteration < self.max_iterations):
+            if self.store_intermediate:
+                self.y_intermediate[self.iteration] = y_curr
+
+            new_current = self.next_y(y_curr, y_guess)
+            new_guess = self.solve_rhs_with_known_y(new_current)
+            new_error = self.global_error(new_current, new_guess)
+            if new_error > current_error:
+                warnings.warn(f'Error increased on iteration {self.iteration}', ConvergenceWarning)
+
+            y_curr, y_guess, current_error = new_current, new_guess, new_error
+
+            self.iteration += 1
+
+            logger.debug(f'Advanced to iteration {self.iteration}. Current error: {current_error}.')
+
+        self.y = self.next_y(y_curr, y_guess)
+        return self.y
+
+    def initial_y(self) -> np.ndarray:
+        """Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE."""
+        return self.solve_ode(self.c)
+
+    def next_y(self, curr: np.ndarray, guess: np.ndarray) -> np.ndarray:
+        """Calculate the next guess at the solution by merging two guesses."""
+        return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
 
     def global_error(self, y1: np.ndarray, y2: np.ndarray) -> float:
         """
@@ -151,40 +208,25 @@ class IDESolver:
         diff = y1 - y2
         return np.sqrt(np.sum(diff * diff))
 
-    def interpolate_y(self, y: np.ndarray) -> inter.interp1d:
-        """
-        Interpolate `y` along `x`, using `interpolation_kind`.
-
-        Parameters
-        ----------
-        y
-            The guess to interpolate.
-
-        Returns
-        -------
-        interpolator :
-            The interpolated function.
-        """
-        return inter.interp1d(self.x, y, kind = self.interpolation_kind, fill_value = 'extrapolate', assume_sorted = True)
-
     def solve_ode(self, rhs: Callable) -> np.ndarray:
         """Solves an ODE with the given right-hand side."""
+        # TODO: update to use new scipy 1.0.0-style integrators
         solver = self.ode_solver(rhs)
-        solver.set_integrator('lsoda', atol = self.global_error_tolerance, rtol = 0)
+        solver.set_integrator(
+            'lsoda',
+            atol = self.global_error_tolerance,
+            rtol = 0,
+        )
         solver.set_initial_value(self.y_0, self.x[0])
 
         soln = np.empty_like(self.x, dtype = self.dtype)
         soln[0] = self.y_0
 
-        for idx, x in enumerate(self.x[1:]):
+        for idx, x in enumerate(self.x[1:], start = 1):
             solver.integrate(x)
-            soln[idx + 1] = solver.y
+            soln[idx] = solver.y
 
         return soln
-
-    def initial_y(self) -> np.ndarray:
-        """Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE."""
-        return self.solve_ode(self.c)
 
     def solve_rhs_with_known_y(self, y: np.ndarray) -> np.ndarray:
         interp_y = self.interpolate_y(y)
@@ -206,46 +248,27 @@ class IDESolver:
 
         return self.solve_ode(rhs)
 
-    def next_curr(self, curr: np.ndarray, guess: np.ndarray) -> np.ndarray:
-        """Calculate the next guess at the solution by merging two guesses."""
-        return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
-
-    def solve(self) -> np.ndarray:
+    def interpolate_y(self, y: np.ndarray) -> inter.interp1d:
         """
-        Compute the solution to the IDE.
+        Interpolate `y` along `x`, using `interpolation_kind`.
 
-        The solution is returned, and also stored in the attribute ``y``.
+        Parameters
+        ----------
+        y
+            The guess to interpolate.
 
         Returns
         -------
-        The solution to the IDE.
+        interpolator :
+            The interpolated function.
         """
-        self.iteration = 0
-        y_curr = self.initial_y()
-        y_guess = self.solve_rhs_with_known_y(y_curr)
-
-        curr_error = self.global_error(y_curr, y_guess)
-
-        while curr_error > self.global_error_tolerance and (self.max_iterations is None or self.iteration < self.max_iterations):
-            if self.store_intermediate:
-                self.y_intermediate[self.iteration] = y_curr
-
-            new_curr = self.next_curr(y_curr, y_guess)
-            new_guess = self.solve_rhs_with_known_y(new_curr)
-
-            new_error = self.global_error(new_curr, new_guess)
-            if new_error > curr_error:
-                warnings.warn(f'Error increased on iteration {self.iteration}', ConvergenceWarning)
-
-            y_curr = new_curr
-            y_guess = new_guess
-            curr_error = new_error
-
-            self.iteration += 1
-            logger.debug(f'Advanced to iteration {self.iteration}. Current error: {curr_error}.')
-
-        self.y = self.next_curr(y_curr, y_guess)
-        return self.y
+        return inter.interp1d(
+            x = self.x,
+            y = y,
+            kind = self.interpolation_kind,
+            fill_value = 'extrapolate',
+            assume_sorted = True,
+        )
 
 
 class CIDESolver(IDESolver):
