@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 
 from idesolver import IDESolver
 
-OUT_DIR = os.path.join(os.getcwd(), 'out')
+OUT_DIR = __file__.strip('.py')
 
 
 def make_comparison_plot(name, solver, exact):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    lines = [solver.initial_y(), solver.y, exact]
+    lines = [solver._initial_y(), solver.y, exact]
     labels = ['initial guess', 'solution', 'exact']
     styles = ['-', '-', '--']
 
@@ -22,7 +22,11 @@ def make_comparison_plot(name, solver, exact):
     ax.legend(loc = 'best')
     ax.grid(True)
 
-    plt.savefig(os.path.join(OUT_DIR, f'ex{name}_comparison'))
+    ax.set_title(f'Solution for Global Error Tolerance = {solver.global_error_tolerance}')
+    ax.set_xlabel(r'$x$')
+    ax.set_ylabel(r'$y(x)$')
+
+    plt.savefig(os.path.join(OUT_DIR, f'example_{name}_comparison_at_tol={solver.global_error_tolerance}'))
 
 
 def make_error_plot(name, solver, exact):
@@ -35,7 +39,11 @@ def make_error_plot(name, solver, exact):
     ax.set_yscale('log')
     ax.grid(True)
 
-    plt.savefig(os.path.join(OUT_DIR, f'ex{name}_error'))
+    ax.set_title(f'Local Error for Global Error Tolerance = {solver.global_error_tolerance}')
+    ax.set_xlabel(r'$x$')
+    ax.set_ylabel(r'$\left| y_{\mathrm{solver}}(x) - y_{\mathrm{exact}}(x) \right|$')
+
+    plt.savefig(os.path.join(OUT_DIR, f'example_{name}_error_at_tol={solver.global_error_tolerance}'))
 
 
 def example_1():
@@ -89,15 +97,42 @@ def example_3():
     return solver, exact
 
 
+def example_4():
+    solver = IDESolver(
+        x = np.linspace(0, 1, 100),
+        y_0 = 1,
+        c = lambda x, y: (x * (1 + np.sqrt(x)) * np.exp(-np.sqrt(x))) - (((x ** 2) + x + 1) * np.exp(-x)),
+        d = lambda x: 1,
+        k = lambda x, s: x * s,
+        lower_bound = lambda x: x,
+        upper_bound = lambda x: np.sqrt(x),
+        f = lambda y: y,
+    )
+    solver.solve()
+    exact = np.exp(-solver.x)
+
+    return solver, exact
+
+
 if __name__ == '__main__':
     try:
         os.mkdir(OUT_DIR)
     except FileExistsError:
         pass
 
-    solver, exact = example_1()
-    # solver, exact = example_2()
-    # solver, exact = example_3()
+    print(f'Sending output to {OUT_DIR}')
 
-    make_comparison_plot('1', solver, exact)
-    make_error_plot('1', solver, exact)
+    examples = [
+        example_1,
+        example_2,
+        example_3,
+        example_4,
+    ]
+
+    for name, example in enumerate(examples, start = 1):
+        solver, exact = example()
+
+        print(f'Example {name} took {solver.iteration} iterations to get to global error {solver.global_error_tolerance}')
+
+        make_comparison_plot(name, solver, exact)
+        make_error_plot(name, solver, exact)

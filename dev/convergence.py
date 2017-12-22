@@ -3,7 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from idesolver import IDESolver, CIDESolver
+from idesolver import IDESolver
 
 OUT_DIR = os.path.join(os.getcwd(), 'out')
 
@@ -16,8 +16,8 @@ def make_comparison_plot(name, solver, exact):
         ax.plot(solver.x, np.real(y), linestyle = '-', color = 'black', alpha = .5 + iteration / solver.iteration)
         ax.plot(solver.x, np.imag(y), linestyle = '--', color = 'black', alpha = .5 + iteration / solver.iteration)
 
-    ax.plot(solver.x, solver.initial_y(), linestyle = '-', color = 'C1',)
-    ax.plot(solver.x, solver.initial_y(), linestyle = '--', color = 'C1',)
+    ax.plot(solver.x, solver._initial_y(), linestyle = '-', color = 'C1', )
+    ax.plot(solver.x, solver._initial_y(), linestyle = '--', color = 'C1', )
 
     ax.plot(solver.x, np.real(exact), linestyle = '-', color = 'C0')
     ax.plot(solver.x, np.imag(exact), linestyle = '--', color = 'C0')
@@ -51,7 +51,6 @@ def example_1():
         lower_bound = lambda x: 0,
         upper_bound = lambda x: 1,
         f = lambda y: y,
-        max_iterations = 50,
     )
     solver.solve()
     exact = np.cos(2 * np.pi * solver.x)
