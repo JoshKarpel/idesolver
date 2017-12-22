@@ -90,21 +90,22 @@ class IDESolver:
         ----------
         x : :class:`numpy.ndarray`
             The array of :math:`x` values to find the solution :math:`y(x)` at. Generally something like ``numpy.linspace(a, b, num_pts)``.
-        y_0 : :class:`float`
+        y_0 : :class:`float` or :class:`complex`
             The initial condition, :math:`y_0 = y(a)`.
-        c : callable
+        c :
             The function :math:`c(y, x)`.
-        d : callable
+        d :
             The function :math:`d(x)`.
-        k : callable
+        k :
             The kernel function :math:`k(x, s)`.
-        f : callable
+        f :
             The function :math:`F(y)`.
         lower_bound : callable
             The lower bound function :math:`\\alpha(x)`.
         upper_bound : callable
             The upper bound function :math:`\\beta(x)`.
         global_error_tolerance : :class:`float`
+            The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations.
         interpolation_kind : :class:`str`
             The type of interpolation to use. As the `kind` option of :class:`scipy.interpolate.interp1d`. Defaults to ``'cubic'``.
         max_iterations : :class:`int`
@@ -213,7 +214,8 @@ class IDESolver:
             except np.ComplexWarning:
                 raise UnexpectedlyComplexValuedIDE('Detected complex-valued IDE. Make sure to pass y_0 as a complex number.')
 
-        self.y = self._next_y(y_curr, y_guess)
+        # self.y = self._next_y(y_curr, y_guess)
+        self.y = y_curr
         self.global_error = current_error
 
         return self.y

@@ -132,7 +132,7 @@ if __name__ == '__main__':
     for name, example in enumerate(examples, start = 1):
         solver, exact = example()
 
-        print(f'Example {name} took {solver.iteration} iterations to get to global error {solver.global_error_tolerance}')
+        print(f'Example {name} took {solver.iteration} iterations to get to global error {solver.global_error}')
 
         make_comparison_plot(name, solver, exact)
         make_error_plot(name, solver, exact)
