@@ -6,6 +6,3 @@ API
 .. autoclass:: IDESolver
 
     .. automethod:: solve
-
-.. autoclass:: CIDESolver
-   :show-inheritance:

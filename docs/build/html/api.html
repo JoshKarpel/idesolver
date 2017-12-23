@@ -164,7 +164,7 @@
 <span id="api"></span><h1>API<a class="headerlink" href="#module-idesolver" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="idesolver.IDESolver">
-<em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">IDESolver</code><span class="sig-paren">(</span><em>x</em>, <em>y_0: float</em>, <em>c: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>d: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>k: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>f: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>lower_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>upper_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>global_error_tolerance: float = 1e-09</em>, <em>interpolation_kind: str = 'cubic'</em>, <em>max_iterations: typing.Union[str</em>, <em>NoneType] = None</em>, <em>smoothing_factor: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/solver.html#IDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">IDESolver</code><span class="sig-paren">(</span><em>x: numpy.ndarray, y_0: typing.Union[float, complex], c: typing.Union[typing.Callable, NoneType] = None, d: typing.Union[typing.Callable, NoneType] = None, k: typing.Union[typing.Callable, NoneType] = None, f: typing.Union[typing.Callable, NoneType] = None, lower_bound: typing.Union[typing.Callable, NoneType] = None, upper_bound: typing.Union[typing.Callable, NoneType] = None, global_error_tolerance: float = 1e-06, max_iterations: typing.Union[int, NoneType] = None, ode_method='RK45', ode_atol=1e-08, ode_rtol=1e-08, int_atol=1e-08, int_rtol=1e-08, interpolation_kind: str = 'cubic', smoothing_factor: float = 0.5, store_intermediate_y: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/idesolver.html#IDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class that handles solving an integro-differential equation of the form</p>
 <div class="math">
 \[\begin{split}\frac{dy}{dx} &amp; = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
@@ -175,15 +175,15 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) – The array of <span class="math">\(x\)</span> values to find the solution <span class="math">\(y(x)\)</span> at. Generally something like <code class="docutils literal"><span class="pre">numpy.linspace(a,</span> <span class="pre">b,</span> <span class="pre">num_pts)</span></code>.</li>
-<li><strong>y_0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The initial condition, <span class="math">\(y_0 = y(a)\)</span>.</li>
-<li><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(c(y, x)\)</span>.</li>
-<li><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(d(x)\)</span>.</li>
-<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The kernel function <span class="math">\(k(x, s)\)</span>.</li>
-<li><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(F(y)\)</span>.</li>
-<li><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The lower bound function <span class="math">\(\alpha(x)\)</span>.</li>
-<li><strong>upper_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The upper bound function <span class="math">\(\beta(x)\)</span>.</li>
-<li><strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – </li>
-<li><strong>interpolation_kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The type of interpolation to use. As the <cite>kind</cite> option of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d" title="(in SciPy v0.19.1)"><code class="xref py py-class docutils literal"><span class="pre">scipy.interpolate.interp1d</span></code></a>. Defaults to <code class="docutils literal"><span class="pre">'cubic'</span></code>.</li>
+<li><strong>y_0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">complex</span></code></a>) – The initial condition, <span class="math">\(y_0 = y(a)\)</span>.</li>
+<li><strong>c</strong> – The function <span class="math">\(c(y, x)\)</span>.</li>
+<li><strong>d</strong> – The function <span class="math">\(d(x)\)</span>.</li>
+<li><strong>k</strong> – The kernel function <span class="math">\(k(x, s)\)</span>.</li>
+<li><strong>f</strong> – The function <span class="math">\(F(y)\)</span>.</li>
+<li><strong>lower_bound</strong> – The lower bound function <span class="math">\(\alpha(x)\)</span>.</li>
+<li><strong>upper_bound</strong> – The upper bound function <span class="math">\(\beta(x)\)</span>.</li>
+<li><strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The algorithm will continue until the global errors goes below this or uses more than <cite>max_iterations</cite> iterations.</li>
+<li><strong>interpolation_kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The type of interpolation to use. As the <cite>kind</cite> option of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d" title="(in SciPy v1.0.0)"><code class="xref py py-class docutils literal"><span class="pre">scipy.interpolate.interp1d</span></code></a>. Defaults to <code class="docutils literal"><span class="pre">'cubic'</span></code>.</li>
 <li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a>) – The maximum number of iterations to use. If <code class="docutils literal"><span class="pre">None</span></code>, iteration will not stop unless the <cite>global_error_tolerance</cite> is satisfied. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
 <li><strong>smoothing_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to <code class="docutils literal"><span class="pre">0.5</span></code>.</li>
 </ul>
@@ -193,51 +193,23 @@
 </table>
 <dl class="method">
 <dt id="idesolver.IDESolver.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/idesolver/solver.html#IDESolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver.solve" title="Permalink to this definition">¶</a></dt>
+<code class="descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/idesolver/idesolver.html#IDESolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the solution to the IDE.</p>
 <p>The solution is returned, and also stored in the attribute <code class="docutils literal"><span class="pre">y</span></code>.</p>
+<p>Will emit warning messages if the global error increases on an iteration.
+This does not necessarily mean that the algorithm is not converging, but may indicate that it’s having problems.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The solution to the IDE (i.e., <span class="math">\(y(x)\)</span>).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">The solution to the IDE.</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="idesolver.CIDESolver">
-<em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">CIDESolver</code><span class="sig-paren">(</span><em>x</em>, <em>y_0: float</em>, <em>c: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>d: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>k: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>f: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>lower_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>upper_bound: typing.Union[typing.Callable</em>, <em>NoneType] = None</em>, <em>global_error_tolerance: float = 1e-09</em>, <em>interpolation_kind: str = 'cubic'</em>, <em>max_iterations: typing.Union[str</em>, <em>NoneType] = None</em>, <em>smoothing_factor: float = 0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/solver.html#CIDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.CIDESolver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">idesolver.solver.IDESolver</span></code></p>
-<p>This class uses a different set of solvers and a definition of the global error function appropriate for complex <span class="math">\(y\)</span>.
-Because it needs to use a complex-valued data type and a complex-valued ODE solver, this solver is slower than the real-valued <a class="reference internal" href="#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) – The array of <span class="math">\(x\)</span> values to find the solution <span class="math">\(y(x)\)</span> at. Generally something like <code class="docutils literal"><span class="pre">numpy.linspace(a,</span> <span class="pre">b,</span> <span class="pre">num_pts)</span></code>.</li>
-<li><strong>y_0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The initial condition, <span class="math">\(y_0 = y(a)\)</span>.</li>
-<li><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(c(y, x)\)</span>.</li>
-<li><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(d(x)\)</span>.</li>
-<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The kernel function <span class="math">\(k(x, s)\)</span>.</li>
-<li><strong>f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The function <span class="math">\(F(y)\)</span>.</li>
-<li><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The lower bound function <span class="math">\(\alpha(x)\)</span>.</li>
-<li><strong>upper_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#callable" title="(in Python v3.6)"><em>callable</em></a>) – The upper bound function <span class="math">\(\beta(x)\)</span>.</li>
-<li><strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – </li>
-<li><strong>interpolation_kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The type of interpolation to use. As the <cite>kind</cite> option of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d" title="(in SciPy v0.19.1)"><code class="xref py py-class docutils literal"><span class="pre">scipy.interpolate.interp1d</span></code></a>. Defaults to <code class="docutils literal"><span class="pre">'cubic'</span></code>.</li>
-<li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a>) – The maximum number of iterations to use. If <code class="docutils literal"><span class="pre">None</span></code>, iteration will not stop unless the <cite>global_error_tolerance</cite> is satisfied. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
-<li><strong>smoothing_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to <code class="docutils literal"><span class="pre">0.5</span></code>.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>

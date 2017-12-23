@@ -100,9 +100,9 @@ class IDESolver:
             The kernel function :math:`k(x, s)`.
         f :
             The function :math:`F(y)`.
-        lower_bound : callable
+        lower_bound :
             The lower bound function :math:`\\alpha(x)`.
-        upper_bound : callable
+        upper_bound :
             The upper bound function :math:`\\beta(x)`.
         global_error_tolerance : :class:`float`
             The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations.
@@ -179,7 +179,8 @@ class IDESolver:
 
         Returns
         -------
-        The solution to the IDE.
+        :class:`numpy.ndarray`
+            The solution to the IDE (i.e., :math:`y(x)`).
         """
         # check if the user messed up by not passing y_0 as a complex number when they should have
         with warnings.catch_warnings():

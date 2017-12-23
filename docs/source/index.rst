@@ -3,7 +3,7 @@ Overview
 
 .. currentmodule:: idesolver
 
-IDESolver is a package that provides an interface for solving real- or complex-valued integro-differential equations (IDEs) of the form
+`IDESolver <https://github.com/JoshKarpel/idesolver>`_ is a package that provides an interface for solving real- or complex-valued integro-differential equations (IDEs) of the form
 
 .. math::
 

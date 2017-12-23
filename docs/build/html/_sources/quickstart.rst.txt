@@ -11,9 +11,9 @@ Suppose we want to solve the integro-differential equation (IDE)
     & x \in [0, 1], \quad y(0) = 0.
 
 This analytic solution to this IDE is :math:`y(x) = \ln(1 + x)`.
-We'll find a numerical solution using IDESolver and compare.
+We'll find a numerical solution using IDESolver and compare it to the analytic solution.
 
-We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve.
+We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve:
 
 ::
 
