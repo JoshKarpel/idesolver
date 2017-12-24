@@ -37,8 +37,8 @@ class UnexpectedlyComplexValuedIDE(IDESolverException):
     pass
 
 
-def complex_quad(integrand, a, b, **kwargs):
-    """A thin wrapper over `scipy.integrate.quadrature` that handles splitting the real and complex parts of the integral and recombining them."""
+def complex_quad(integrand, lower_bound, upper_bound, **kwargs):
+    """A thin wrapper over :func:`scipy.integrate.quad` that handles splitting the real and complex parts of the integral and recombining them."""
 
     def real_func(x):
         return np.real(integrand(x))
@@ -46,8 +46,8 @@ def complex_quad(integrand, a, b, **kwargs):
     def imag_func(x):
         return np.imag(integrand(x))
 
-    real_integral = integ.quad(real_func, a, b, **kwargs)
-    imag_integral = integ.quad(imag_func, a, b, **kwargs)
+    real_integral = integ.quad(real_func, lower_bound, upper_bound, **kwargs)
+    imag_integral = integ.quad(imag_func, lower_bound, upper_bound, **kwargs)
 
     return real_integral[0] + (1j * imag_integral[0]), real_integral[1], imag_integral[1]
 
@@ -77,11 +77,11 @@ class IDESolver:
                  upper_bound: Optional[Callable] = None,
                  global_error_tolerance: float = 1e-6,
                  max_iterations: Optional[int] = None,
-                 ode_method = 'RK45',
-                 ode_atol = 1e-8,
-                 ode_rtol = 1e-8,
-                 int_atol = 1e-8,
-                 int_rtol = 1e-8,
+                 ode_method: str = 'RK45',
+                 ode_atol: float = 1e-8,
+                 ode_rtol: float = 1e-8,
+                 int_atol: float = 1e-8,
+                 int_rtol: float = 1e-8,
                  interpolation_kind: str = 'cubic',
                  smoothing_factor: float = .5,
                  store_intermediate_y: bool = False):
@@ -106,12 +106,24 @@ class IDESolver:
             The upper bound function :math:`\\beta(x)`.
         global_error_tolerance : :class:`float`
             The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations.
-        interpolation_kind : :class:`str`
-            The type of interpolation to use. As the `kind` option of :class:`scipy.interpolate.interp1d`. Defaults to ``'cubic'``.
         max_iterations : :class:`int`
             The maximum number of iterations to use. If ``None``, iteration will not stop unless the `global_error_tolerance` is satisfied. Defaults to ``None``.
+        ode_method : :class:`str`
+            The ODE solution method to use. As the `method` option of :func:`scipy.integrate.solve_ivp`. Defaults to ``'RK45'``, which is good for non-stiff systems.
+        ode_atol : :class:`float`
+            The absolute tolerance for the ODE solver. As the `atol` argument of :func:`scipy.integrate.solve_ivp`.
+        ode_rtol : :class:`float`
+            The relative tolerance for the ODE solver. As the `rtol` argument of :func:`scipy.integrate.solve_ivp`.
+        int_atol : :class:`float`
+            The absolute tolerance for the integration routine. As the `epsabs` argument of :func:`scipy.integrate.quad`.
+        int_rtol : :class:`float`
+            The relative tolerance for the integration routine. As the `epsrel` argument of :func:`scipy.integrate.quad`.
+        interpolation_kind : :class:`str`
+            The type of interpolation to use. As the `kind` argument of :class:`scipy.interpolate.interp1d`. Defaults to ``'cubic'``.
         smoothing_factor : :class:`float`
             The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to ``0.5``.
+        store_intermediate_y : :class:`bool`
+            If ``True``, the intermediate guesses for :math:`y(x)` at each iteration will be stored in the attribute `y_intermediate`.
         """
         if type(y_0) in _COMPLEX_NUMERIC_TYPES:
             self.integrator = complex_quad
@@ -192,11 +204,10 @@ class IDESolver:
                 y_curr = self._initial_y()
                 y_guess = self._solve_rhs_with_known_y(y_curr)
                 current_error = self._global_error(y_curr, y_guess)
+                if self.store_intermediate:
+                    self.y_intermediate.append(y_curr)
 
                 while current_error > self.global_error_tolerance:
-                    if self.store_intermediate:
-                        self.y_intermediate.append(y_curr)
-
                     new_current = self._next_y(y_curr, y_guess)
                     new_guess = self._solve_rhs_with_known_y(new_current)
                     new_error = self._global_error(new_current, new_guess)
@@ -204,6 +215,9 @@ class IDESolver:
                         warnings.warn(f'Error increased on iteration {self.iteration}', IDEConvergenceWarning)
 
                     y_curr, y_guess, current_error = new_current, new_guess, new_error
+
+                    if self.store_intermediate:
+                        self.y_intermediate.append(y_curr)
 
                     self.iteration += 1
 
@@ -215,7 +229,6 @@ class IDESolver:
             except np.ComplexWarning:
                 raise UnexpectedlyComplexValuedIDE('Detected complex-valued IDE. Make sure to pass y_0 as a complex number.')
 
-        # self.y = self._next_y(y_curr, y_guess)
         self.y = y_curr
         self.global_error = current_error
 

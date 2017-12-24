@@ -6,3 +6,5 @@ API
 .. autoclass:: IDESolver
 
     .. automethod:: solve
+
+.. autofunction:: complex_quad

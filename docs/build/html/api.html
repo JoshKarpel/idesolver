@@ -5,73 +5,73 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <title>API &mdash; idesolver 1.0 documentation</title>
-  
 
-  
-  
-  
-  
 
-  
 
-  
-  
-    
 
-  
 
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
 
-  
 
-  
+
+
+
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="idesolver 1.0 documentation" href="index.html"/>
         <link rel="next" title="Frequently Asked Questions" href="faq.html"/>
-        <link rel="prev" title="Manual" href="manual.html"/> 
+        <link rel="prev" title="Manual" href="manual.html"/>
 
-  
+
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
+
   <div class="wy-grid-for-nav">
 
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search">
-          
 
-          
+
+
             <a href="index.html" class="icon icon-home"> idesolver
-          
 
-          
+
+
           </a>
 
-          
-            
-            
+
+
+
               <div class="version">
                 1.0
               </div>
-            
-          
 
-          
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -80,16 +80,16 @@
   </form>
 </div>
 
-          
+
         </div>
 
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
@@ -99,27 +99,27 @@
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 </ul>
 
-            
-          
+
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">idesolver</a>
-        
+
       </nav>
 
 
-      
+
       <div class="wy-nav-content">
         <div class="rst-content">
-          
+
 
 
 
@@ -138,33 +138,34 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="index.html">Docs</a> &raquo;</li>
-        
+
       <li>API</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-            
+
+
             <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
-          
-        
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <div class="section" id="module-idesolver">
 <span id="api"></span><h1>API<a class="headerlink" href="#module-idesolver" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="idesolver.IDESolver">
-<em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">IDESolver</code><span class="sig-paren">(</span><em>x: numpy.ndarray, y_0: typing.Union[float, complex], c: typing.Union[typing.Callable, NoneType] = None, d: typing.Union[typing.Callable, NoneType] = None, k: typing.Union[typing.Callable, NoneType] = None, f: typing.Union[typing.Callable, NoneType] = None, lower_bound: typing.Union[typing.Callable, NoneType] = None, upper_bound: typing.Union[typing.Callable, NoneType] = None, global_error_tolerance: float = 1e-06, max_iterations: typing.Union[int, NoneType] = None, ode_method='RK45', ode_atol=1e-08, ode_rtol=1e-08, int_atol=1e-08, int_rtol=1e-08, interpolation_kind: str = 'cubic', smoothing_factor: float = 0.5, store_intermediate_y: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/idesolver.html#IDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver" title="Permalink to this definition">¶</a></dt>
+    <em class="property">class </em><code class="descclassname">idesolver.</code><code class="descname">IDESolver</code><span class="sig-paren">(</span><em>x: numpy.ndarray, y_0: typing.Union[float, complex], c: typing.Union[typing.Callable, NoneType] = None, d: typing.Union[typing.Callable, NoneType] = None, k: typing.Union[typing.Callable, NoneType] = None, f: typing.Union[typing.Callable, NoneType] = None, lower_bound: typing.Union[typing.Callable, NoneType] = None, upper_bound: typing.Union[typing.Callable, NoneType] = None, global_error_tolerance: float = 1e-06, max_iterations: typing.Union[int, NoneType] = None, ode_method: str = 'RK45', ode_atol: float = 1e-08, ode_rtol: float = 1e-08, int_atol: float = 1e-08, int_rtol: float = 1e-08, interpolation_kind: str = 'cubic', smoothing_factor: float = 0.5, store_intermediate_y: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/idesolver.html#IDESolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver" title="Permalink to this definition">¶</a>
+</dt>
 <dd><p>A class that handles solving an integro-differential equation of the form</p>
 <div class="math">
 \[\begin{split}\frac{dy}{dx} &amp; = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
@@ -183,9 +184,41 @@
 <li><strong>lower_bound</strong> – The lower bound function <span class="math">\(\alpha(x)\)</span>.</li>
 <li><strong>upper_bound</strong> – The upper bound function <span class="math">\(\beta(x)\)</span>.</li>
 <li><strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The algorithm will continue until the global errors goes below this or uses more than <cite>max_iterations</cite> iterations.</li>
-<li><strong>interpolation_kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The type of interpolation to use. As the <cite>kind</cite> option of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d" title="(in SciPy v1.0.0)"><code class="xref py py-class docutils literal"><span class="pre">scipy.interpolate.interp1d</span></code></a>. Defaults to <code class="docutils literal"><span class="pre">'cubic'</span></code>.</li>
 <li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a>) – The maximum number of iterations to use. If <code class="docutils literal"><span class="pre">None</span></code>, iteration will not stop unless the <cite>global_error_tolerance</cite> is satisfied. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
+    <li>
+        <strong>ode_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The ODE solution method to use. As the
+        <cite>method</cite> option of
+        <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.solve_ivp()</span></code></a>. Defaults to
+        <code class="docutils literal"><span class="pre">'RK45'</span></code>, which is good for non-stiff systems.
+    </li>
+    <li><strong>ode_atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The absolute tolerance for the ODE solver. As the
+        <cite>atol</cite> argument of
+        <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.solve_ivp()</span></code></a>.
+    </li>
+    <li><strong>ode_rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The relative tolerance for the ODE solver. As the
+        <cite>rtol</cite> argument of
+        <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.solve_ivp()</span></code></a>.
+    </li>
+    <li><strong>int_atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The absolute tolerance for the integration routine. As the
+        <cite>epsabs</cite> argument of
+        <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a>.
+    </li>
+    <li><strong>int_rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The relative tolerance for the integration routine. As the
+        <cite>epsrel</cite> argument of
+        <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a>.
+    </li>
+    <li>
+        <strong>interpolation_kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The type of interpolation to use. As the
+        <cite>kind</cite> argument of
+        <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html#scipy.interpolate.interp1d" title="(in SciPy v1.0.0)"><code class="xref py py-class docutils literal"><span class="pre">scipy.interpolate.interp1d</span></code></a>. Defaults to
+        <code class="docutils literal"><span class="pre">'cubic'</span></code>.
+    </li>
 <li><strong>smoothing_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to <code class="docutils literal"><span class="pre">0.5</span></code>.</li>
+    <li>
+        <strong>store_intermediate_y</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">bool</span></code></a>) – If
+        <code class="docutils literal"><span class="pre">True</span></code>, the intermediate guesses for <span class="math">\(y(x)\)</span> at each iteration will be stored in the attribute
+        <cite>y_intermediate</cite>.
+    </li>
 </ul>
 </td>
 </tr>
@@ -210,6 +243,16 @@ This does not necessarily mean that the algorithm is not converging, but may ind
 </table>
 </dd></dl>
 
+</dd>
+</dl>
+
+      <dl class="function">
+          <dt id="idesolver.complex_quad">
+              <code class="descclassname">idesolver.</code><code class="descname">complex_quad</code><span class="sig-paren">(</span><em>integrand</em>, <em>lower_bound</em>, <em>upper_bound</em>,
+              <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/idesolver.html#complex_quad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.complex_quad" title="Permalink to this definition">¶</a>
+          </dt>
+          <dd><p>A thin wrapper over <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a> that handles splitting the real and complex parts of the integral and recombining them.
+          </p>
 </dd></dl>
 
 </div>
@@ -217,20 +260,20 @@ This does not necessarily mean that the algorithm is not converging, but may ind
 
            </div>
            <div class="articleComments">
-            
+
            </div>
           </div>
           <footer>
-  
+
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
+
         <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+
+
         <a href="manual.html" class="btn btn-neutral" title="Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+
     </div>
-  
+
 
   <hr/>
 
@@ -240,7 +283,7 @@ This does not necessarily mean that the algorithm is not converging, but may ind
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 
 </footer>
 
@@ -250,10 +293,10 @@ This does not necessarily mean that the algorithm is not converging, but may ind
     </section>
 
   </div>
-  
 
 
-  
+
+
 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
@@ -270,21 +313,21 @@ This does not necessarily mean that the algorithm is not converging, but may ind
       <script type="text/javascript" src="_static/doctools.js"></script>
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-  
 
-  
-  
+
+
+
     <script type="text/javascript" src="_static/js/theme.js"></script>
-  
 
-  
-  
+
+
+
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+
 
 </body>
 </html>

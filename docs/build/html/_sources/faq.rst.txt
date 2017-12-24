@@ -12,6 +12,7 @@ Installing IDESolver is easy, using `pip <https://pip.pypa.io/en/stable/>`_:
 
     $ pip install idesolver
 
+
 I'd like to pickle my IDESolver instance, but it exploded?
 ----------------------------------------------------------
 

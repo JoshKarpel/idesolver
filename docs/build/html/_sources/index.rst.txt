@@ -19,7 +19,7 @@ The algorithm is based on a scheme devised by `Gelmi and Jorquera <https://doi.o
    A brief tutorial in using IDESolver.
 
 :doc:`manual`
-   A detailed manual on using IDESolver.
+   Details about the implementation of IDESolver.
 
 :doc:`api`
    Detailed documentation for IDESolver's API.

@@ -15,6 +15,7 @@ GELMI_EXAMPLES = [
             lower_bound = lambda x: 0,
             upper_bound = lambda x: 1,
             f = lambda y: y,
+            global_error_tolerance = 1e-6,
         ),
         lambda x: np.log(1 + x)
     ),
@@ -28,6 +29,7 @@ GELMI_EXAMPLES = [
             lower_bound = lambda x: 0,
             upper_bound = lambda x: 1,
             f = lambda y: y,
+            global_error_tolerance = 1e-6,
         ),
         lambda x: np.cos(2 * np.pi * x)
     ),
@@ -41,6 +43,7 @@ GELMI_EXAMPLES = [
             lower_bound = lambda x: 0,
             upper_bound = lambda x: 1,
             f = lambda y: y ** 2,
+            global_error_tolerance = 1e-6,
         ),
         lambda x: 1 + x + x ** 2
     ),
@@ -54,6 +57,7 @@ GELMI_EXAMPLES = [
             lower_bound = lambda x: x,
             upper_bound = lambda x: np.sqrt(x),
             f = lambda y: y,
+            global_error_tolerance = 1e-6,
         ),
         lambda x: np.exp(-x)
     ),
@@ -71,4 +75,7 @@ def test_Gelmi2014_example(solver, exact):
     y_exact = exact(solver.x)
 
     assert solver.global_error < solver.global_error_tolerance
-    assert all(np.abs(solver.y - y_exact) <= 1e-6)
+
+    # the following is NOT strictly true
+    # it happens to be true for the Gelmi examples, so it's a good smoke test when changing the algorithm
+    assert np.allclose(solver.y, y_exact, atol = 1e-6)
