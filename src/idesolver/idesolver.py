@@ -46,10 +46,10 @@ def complex_quad(integrand, lower_bound, upper_bound, **kwargs):
     def imag_func(x):
         return np.imag(integrand(x))
 
-    real_integral = integ.quad(real_func, lower_bound, upper_bound, **kwargs)
-    imag_integral = integ.quad(imag_func, lower_bound, upper_bound, **kwargs)
+    real_result, real_error, *_ = integ.quad(real_func, lower_bound, upper_bound, **kwargs)
+    imag_result, imag_error, *_ = integ.quad(imag_func, lower_bound, upper_bound, **kwargs)
 
-    return real_integral[0] + (1j * imag_integral[0]), real_integral[1], imag_integral[1]
+    return real_result + (1j * imag_result), real_error, imag_error
 
 
 _COMPLEX_NUMERIC_TYPES = [complex, np.complex128]
@@ -75,7 +75,7 @@ class IDESolver:
                  f: Optional[Callable] = None,
                  lower_bound: Optional[Callable] = None,
                  upper_bound: Optional[Callable] = None,
-                 global_error_tolerance: float = 1e-6,
+                 global_error_tolerance: Optional[float] = 1e-6,
                  max_iterations: Optional[int] = None,
                  ode_method: str = 'RK45',
                  ode_atol: float = 1e-8,
@@ -105,7 +105,7 @@ class IDESolver:
         upper_bound :
             The upper bound function :math:`\\beta(x)`.
         global_error_tolerance : :class:`float`
-            The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations.
+            The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations. If ``None``, the algorithm continues until hitting `max_iterations`.
         max_iterations : :class:`int`
             The maximum number of iterations to use. If ``None``, iteration will not stop unless the `global_error_tolerance` is satisfied. Defaults to ``None``.
         ode_method : :class:`str`
@@ -153,6 +153,10 @@ class IDESolver:
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
 
+        if global_error_tolerance == 0 and max_iterations is None:
+            raise InvalidParameter('global_error_tolerance cannot be zero if max_iterations is None')
+        if global_error_tolerance < 0:
+            raise InvalidParameter('global_error_tolerance cannot be negative')
         self.global_error_tolerance = global_error_tolerance
 
         self.interpolation_kind = interpolation_kind

@@ -5,22 +5,6 @@ import numpy as np
 from idesolver import IDESolver, IDEConvergenceWarning
 
 
-def test_rhs_is_zero():
-    solver = IDESolver(
-        x = np.linspace(0, 1, 100),
-        y_0 = 1,
-        c = lambda x, y: 0,
-        d = lambda x: 0,
-        k = lambda x, s: 0,
-        lower_bound = lambda x: 0,
-        upper_bound = lambda x: 1,
-        f = lambda y: 0,
-    )
-    solver.solve()
-
-    assert np.allclose(solver.y, solver.y_0, atol = 1e-14)
-
-
 def test_warning_when_not_enough_iterations():
     args = dict(
         x = np.linspace(0, 1, 100),

@@ -10,3 +10,5 @@ The Algorithm
 The algorithm requires an ODE integrator and a quadrature integrator internally.
 IDESolver uses :func:`scipy.integrate.solve_ivp` as the ODE integrator.
 The quadrature integrator is either :func:`scipy.integrate.quad` or :func:`complex_quad`, a thin wrapper over :func:`scipy.integrate.quad` which handles splitting the real and imaginary parts of the integral.
+
+IDESolver can operate in three modes: either a nonzero global error tolerance should be given, or a maximum number of iterations should be given, or both should be given.
