@@ -13,7 +13,7 @@ Suppose we want to solve the integro-differential equation (IDE)
 This analytic solution to this IDE is :math:`y(x) = \ln(1 + x)`.
 We'll find a numerical solution using IDESolver and compare it to the analytic solution.
 
-We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve:
+We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve via ``lambda`` functions for simplicity.
 
 ::
 
@@ -32,12 +32,63 @@ We begin by creating an instance of :class:`IDESolver`, passing it information a
         upper_bound = lambda x: 1,
     )
 
+
+To run the solver, we call the ``solve()`` method on the solver:
+
+::
+
+    solver.solve()
+
+    solver.x  # whatever we passed in for x
+    solver.y  # the solution y(x)
+
+
 The default global error tolerance is :math:`10^{-6}`, with no maximum number of iterations.
 For this IDE the algorithm converges in 40 iterations, resulting in a solution that closely approximates the analytic solution, as seen below.
+
+::
+
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure(dpi = 600)
+    ax = fig.add_subplot(111)
+
+    exact = np.log(1 + solver.x)
+
+    ax.plot(solver.x, solver.y, label = 'IDESolver Solution', linestyle = '-', linewidth = 3)
+    ax.plot(solver.x, exact, label = 'Analytic Solution', linestyle = ':', linewidth = 3)
+
+    ax.legend(loc = 'best')
+    ax.grid(True)
+
+    ax.set_title(f'Solution for Global Error Tolerance = {solver.global_error_tolerance}')
+    ax.set_xlabel(r'$x$')
+    ax.set_ylabel(r'$y(x)$')
+
+    plt.show()
+
 
 .. image:: figs/quickstart_comparison.*
 
 As shown in the next figure, we happen to get agreement with the true solution below :math:`10^{-6}` everywhere, but this is essentially coincidental.
 The global error estimate compares successive approximations to the true solution, but doesn't know what the true solution actually is.
+
+::
+
+    fig = plt.figure(dpi = 600)
+    ax = fig.add_subplot(111)
+
+    error = np.abs(solver.y - exact)
+
+    ax.plot(solver.x, error, linewidth = 3)
+
+    ax.set_yscale('log')
+    ax.grid(True)
+
+    ax.set_title(f'Local Error for Global Error Tolerance = {solver.global_error_tolerance}')
+    ax.set_xlabel(r'$x$')
+    ax.set_ylabel(r'$\left| y_{\mathrm{idesolver}}(x) - y_{\mathrm{analytic}}(x) \right|$')
+
+    plt.show()
 
 .. image:: figs/quickstart_error.*

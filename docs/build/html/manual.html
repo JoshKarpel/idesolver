@@ -68,6 +68,8 @@
                 <li class="toctree-l1 current"><a class="current reference internal" href="#">Manual</a>
                     <ul>
                         <li class="toctree-l2"><a class="reference internal" href="#the-algorithm">The Algorithm</a></li>
+                        <li class="toctree-l2"><a class="reference internal" href="#stopping-conditions">Stopping Conditions</a></li>
+                        <li class="toctree-l2"><a class="reference internal" href="#global-error-estimate">Global Error Estimate</a></li>
                     </ul>
                 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -122,26 +124,62 @@
 
                <div class="section" id="manual">
 <h1>Manual<a class="headerlink" href="#manual" title="Permalink to this headline">¶</a></h1>
+                   <p>
+                       <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a> implements an iterative algorithm from
+                       <a class="reference external" href="https://doi.org/10.1016/j.cpc.2013.09.008">this paper</a> for solving general IDEs.
+                       The algorithm requires an ODE integrator and a quadrature integrator internally.
+                       IDESolver uses
+                       <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.solve_ivp()</span></code></a> as the ODE integrator.
+                       The quadrature integrator is either
+                       <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a> or
+                       <a class="reference internal" href="api.html#idesolver.complex_quad" title="idesolver.complex_quad"><code class="xref py py-func docutils literal"><span class="pre">complex_quad()</span></code></a>, a thin wrapper over
+                       <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a> which handles splitting the real and imaginary parts of the integral.
+                   </p>
                    <div class="section" id="the-algorithm">
+                       <span id="id1"></span>
                        <h2>The Algorithm<a class="headerlink" href="#the-algorithm" title="Permalink to this headline">¶</a></h2>
-                       <p>
-                           <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a> implements an iterative algorithm from
-                           <a class="reference external" href="https://doi.org/10.1016/j.cpc.2013.09.008">this paper</a> for solving general IDEs.
-                           The algorithm requires an ODE integrator and a quadrature integrator internally.
-                           IDESolver uses
-                           <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.solve_ivp()</span></code></a> as the ODE integrator.
-                           The quadrature integrator is either
-                           <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a> or
-                           <a class="reference internal" href="api.html#idesolver.complex_quad" title="idesolver.complex_quad"><code class="xref py py-func docutils literal"><span class="pre">complex_quad()</span></code></a>, a thin wrapper over
-                           <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a> which handles splitting the real and imaginary parts of the integral.
+                       <p>We want to find an approximate solution to</p>
+                       <div class="math">
+                           \[\begin{split}\frac{dy}{dx} &amp; = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
+                           &amp; x \in [a, b], \quad y(a) = y_0.\end{split}\]
+                       </div>
+                       <p>The algorithm begins by creating an initial guess for <span class="math">\(y\)</span> by using an ODE solver on</p>
+                       <div class="math">
+                           \[\frac{dy}{dx} = c(y, x)\]
+                       </div>
+                       <p>Since there’s no integral on the right-hand-side, standard ODE solvers can handle it easily.
+                           Call this guess <span class="math">\(y^{(0)}\)</span>.
+                           We can then produce a better guess by seeing what we would get with the original IDE, but replacing <span class="math">\(y\)</span> on the right-hand-side by
+                           <span class="math">\(y^{(0)}\)</span>:</p>
+                       <div class="math">
+                           \[\frac{dy^{(1/2)}}{dx} = c(y^{(0)}, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y^{(0)}(s) ) \, ds\]
+                       </div>
+                       <p>Again, this is just an ODE, because <span class="math">\(y^{(1/2)}\)</span> does not appear on the right.
+                           At this point in the algorithm we check the global error between <span class="math">\(y^{(0)}\)</span> and <span class="math">\(y^{(1/2)}\)</span>.
+                           If it’s smaller than the tolerance, we stop iterating and take <span class="math">\(y^{(1/2)}\)</span> to be the solution.
+                           If it’s larger than the tolerance, the iteration continue.
+                           To be conservative and make sure we don’t over-correct, we’ll combine <span class="math">\(y^{(1/2)}\)</span> with <span class="math">\(y^{(0)}\)</span>.</p>
+                       <div class="math">
+                           \[y^{(1)} = \alpha y^{(0)} + (1 - \alpha) y^{(1/2)}\]
+                       </div>
+                       <p>The process then repeats: solve the IDE-turned-ODE with <span class="math">\(y^{(1)}\)</span> on the right-hand-side, see how different it is, maybe make a new guess, etc.
                        </p>
-                       <p>IDESolver can operate in three modes: either a nonzero global error tolerance should be given, or a maximum number of iterations should be given, or both should be given.</p>
+                   </div>
+                   <div class="section" id="stopping-conditions">
+                       <h2>Stopping Conditions<a class="headerlink" href="#stopping-conditions" title="Permalink to this headline">¶</a></h2>
+                       <p>IDESolver can operate in three modes: either a nonzero global error tolerance should be given, or a maximum number of iterations should be given, or both should be given.
+                           Nonzero global error tolerance is the standard mode, described in <a class="reference internal" href="#the-algorithm"><span class="std std-ref">The Algorithm</span></a>.
+                           If a maximum number of iterations is given with zero global error tolerance, the algorithm will iterate that many times and then stop.
+                           If both are given, the algorithm terminates either condition is met.</p>
+                   </div>
+                   <div class="section" id="global-error-estimate">
+                       <h2>Global Error Estimate<a class="headerlink" href="#global-error-estimate" title="Permalink to this headline">¶</a></h2>
                        <p>The global error estimate <span class="math">\(G\)</span> between two possible solutions <span class="math">\(y_1\)</span> and <span class="math">\(y_2\)</span> is</p>
                        <div class="math">
                            \[G = \sqrt{ \sum_{x_i} \left| y_1(x_i) - y_2(x_i) \right| }\]
                        </div>
-                   </div>
 </div>
+               </div>
 
 
            </div>

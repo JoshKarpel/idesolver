@@ -38,7 +38,10 @@ class UnexpectedlyComplexValuedIDE(IDESolverException):
 
 
 def complex_quad(integrand: Callable, lower_bound: float, upper_bound: float, **kwargs) -> (complex, float, float, tuple, tuple):
-    """A thin wrapper over :func:`scipy.integrate.quad` that handles splitting the real and complex parts of the integral and recombining them."""
+    """
+    A thin wrapper over :func:`scipy.integrate.quad` that handles splitting the real and complex parts of the integral and recombining them.
+    Keyword arguments are passed to both of the internal ``quad`` calls.
+    """
     real_result, real_error, *real_extra = integ.quad(lambda x: np.real(integrand(x)),
                                                       lower_bound, upper_bound, **kwargs)
     imag_result, imag_error, *imag_extra = integ.quad(lambda x: np.imag(integrand(x)),

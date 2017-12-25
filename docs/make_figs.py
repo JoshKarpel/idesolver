@@ -19,12 +19,8 @@ def make_comparison_plot(name, solver, exact):
     fig = plt.figure(dpi = 600)
     ax = fig.add_subplot(111)
 
-    lines = [solver._initial_y(), solver.y, exact]
-    labels = ['IDESolver Initial Guess', 'IDESolver Solution', 'Analytic Solution']
-    styles = ['-', '-', ':']
-
-    for y, label, style in zip(lines, labels, styles):
-        ax.plot(solver.x, y, label = label, linestyle = style, linewidth = 3)
+    ax.plot(solver.x, solver.y, label = 'IDESolver Solution', linestyle = '-', linewidth = 3)
+    ax.plot(solver.x, exact, label = 'Analytic Solution', linestyle = ':', linewidth = 3)
 
     ax.legend(loc = 'best')
     ax.grid(True)
@@ -43,6 +39,7 @@ def make_error_plot(name, solver, exact):
     error = np.abs(solver.y - exact)
 
     ax.plot(solver.x, error, linewidth = 3)
+
     ax.set_yscale('log')
     ax.grid(True)
 

@@ -6,48 +6,30 @@
 <head>
   <meta charset="utf-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Quickstart &mdash; idesolver 1.0 documentation</title>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <title>Quickstart &mdash; idesolver 1.0 documentation</title>
 
 
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
 
-
-
-
-        <link rel="index" title="Index"
+    <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="idesolver 1.0 documentation" href="index.html"/>
         <link rel="next" title="Manual" href="manual.html"/>
-        <link rel="prev" title="Overview" href="index.html"/>
+    <link rel="prev" title="Overview" href="index.html"/>
 
 
-  <script src="_static/js/modernizr.min.js"></script>
+    <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
 
-  <div class="wy-grid-for-nav">
+<div class="wy-grid-for-nav">
 
 
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
@@ -55,24 +37,18 @@
         <div class="wy-side-nav-search">
 
 
-
             <a href="index.html" class="icon icon-home"> idesolver
 
 
-
-          </a>
-
+            </a>
 
 
-
-              <div class="version">
+            <div class="version">
                 1.0
               </div>
 
 
-
-
-<div role="search">
+            <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
@@ -86,11 +62,7 @@
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
 
-
-
-
-
-              <ul class="current">
+            <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
@@ -100,7 +72,6 @@
 </ul>
 
 
-
         </div>
       </div>
     </nav>
@@ -108,34 +79,19 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
 
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">idesolver</a>
 
-      </nav>
+        </nav>
 
 
-
-      <div class="wy-nav-content">
+        <div class="wy-nav-content">
         <div class="rst-content">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+            <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
 
@@ -147,7 +103,7 @@
       <li class="wy-breadcrumbs-aside">
 
 
-            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
 
 
       </li>
@@ -155,12 +111,12 @@
   </ul>
 
 
-  <hr/>
+                <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <div class="section" id="quickstart">
+               <div class="section" id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
 <p>Suppose we want to solve the integro-differential equation (IDE)</p>
 <div class="math">
@@ -168,7 +124,8 @@
 &amp; x \in [0, 1], \quad y(0) = 0.\end{split}\]</div>
 <p>This analytic solution to this IDE is <span class="math">\(y(x) = \ln(1 + x)\)</span>.
 We’ll find a numerical solution using IDESolver and compare it to the analytic solution.</p>
-<p>We begin by creating an instance of <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve:</p>
+                   <p>We begin by creating an instance of <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve via
+                       <code class="docutils literal"><span class="pre">lambda</span></code> functions for simplicity.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">idesolver</span> <span class="k">import</span> <span class="n">IDESolver</span>
@@ -183,14 +140,64 @@ We’ll find a numerical solution using IDESolver and compare it to the analytic
     <span class="n">lower_bound</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">upper_bound</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span>
+</pre>
+</div>
+</div>
+                   <p>To run the solver, we call the <code class="docutils literal"><span class="pre">solve()</span></code> method on the solver:</p>
+                   <div class="highlight-default">
+                       <div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="n">solver</span><span class="o">.</span><span class="n">x</span>  <span class="c1"># whatever we passed in for x</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">y</span>  <span class="c1"># the solution y(x)</span>
 </pre></div>
 </div>
-      <p>The default global error tolerance is <span class="math">\(10^{-6}\)</span>, with no maximum number of iterations.
-          For this IDE the algorithm converges in 40 iterations, resulting in a solution that closely approximates the analytic solution, as seen below.</p>
-      <img alt="_images/quickstart_comparison.png" src="_images/quickstart_comparison.png"/>
-      <p>As shown in the next figure, we happen to get agreement with the true solution below <span class="math">\(10^{-6}\)</span> everywhere, but this is essentially coincidental.
-          The global error estimate compares successive approximations to the true solution, but doesn’t know what the true solution actually is.</p>
-      <img alt="_images/quickstart_error.png" src="_images/quickstart_error.png"/>
+                   <p>The default global error tolerance is <span class="math">\(10^{-6}\)</span>, with no maximum number of iterations.
+                       For this IDE the algorithm converges in 40 iterations, resulting in a solution that closely approximates the analytic solution, as seen below.</p>
+                   <div class="highlight-default">
+                       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+<span class="n">exact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">solver</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">solver</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;IDESolver Solution&#39;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Analytic Solution&#39;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Solution for Global Error Tolerance = </span><span class="si">{solver.global_error_tolerance}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$x$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$y(x)$&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+                       </div>
+                   </div>
+                   <img alt="_images/quickstart_comparison.png" src="_images/quickstart_comparison.png"/>
+                   <p>As shown in the next figure, we happen to get agreement with the true solution below <span class="math">\(10^{-6}\)</span> everywhere, but this is essentially coincidental.
+                       The global error estimate compares successive approximations to the true solution, but doesn’t know what the true solution actually is.</p>
+                   <div class="highlight-default">
+                       <div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+<span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">exact</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Local Error for Global Error Tolerance = </span><span class="si">{solver.global_error_tolerance}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$x$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\left| y_{\mathrm</span><span class="si">{idesolver}</span><span class="s1">}(x) - y_{\mathrm</span><span class="si">{analytic}</span><span class="s1">}(x) \right|$&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+                       </div>
+                   </div>
+                   <img alt="_images/quickstart_error.png" src="_images/quickstart_error.png"/>
 </div>
 
 
@@ -201,17 +208,17 @@ We’ll find a numerical solution using IDESolver and compare it to the analytic
           </div>
           <footer>
 
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+              <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="manual.html" class="btn btn-neutral float-right" title="Manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-
-
-        <a href="index.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-    </div>
+                  <a href="manual.html" class="btn btn-neutral float-right" title="Manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-  <hr/>
+                  <a href="index.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+              </div>
+
+
+              <hr/>
 
   <div role="contentinfo">
     <p>
@@ -219,7 +226,8 @@ We’ll find a numerical solution using IDESolver and compare it to the analytic
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+              Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by
+              <a href="https://readthedocs.org">Read the Docs</a>.
 
 </footer>
 
@@ -231,10 +239,7 @@ We’ll find a numerical solution using IDESolver and compare it to the analytic
   </div>
 
 
-
-
-
-    <script type="text/javascript">
+<script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'1.0',
@@ -250,15 +255,10 @@ We’ll find a numerical solution using IDESolver and compare it to the analytic
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 
+<script type="text/javascript" src="_static/js/theme.js"></script>
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
-
-  <script type="text/javascript">
+<script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
