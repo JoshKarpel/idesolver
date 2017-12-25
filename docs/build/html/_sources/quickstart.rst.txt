@@ -31,3 +31,13 @@ We begin by creating an instance of :class:`IDESolver`, passing it information a
         lower_bound = lambda x: 0,
         upper_bound = lambda x: 1,
     )
+
+The default global error tolerance is :math:`10^{-6}`, with no maximum number of iterations.
+For this IDE the algorithm converges in 40 iterations, resulting in a solution that closely approximates the analytic solution, as seen below.
+
+.. image:: figs/quickstart_comparison.*
+
+As shown in the next figure, we happen to get agreement with the true solution below :math:`10^{-6}` everywhere, but this is essentially coincidental.
+The global error estimate compares successive approximations to the true solution, but doesn't know what the true solution actually is.
+
+.. image:: figs/quickstart_error.*

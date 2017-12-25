@@ -60,6 +60,19 @@ class IDESolver:
         \\frac{dy}{dx} & = c(y, x) + d(x) \\int_{\\alpha(x)}^{\\beta(x)} k(x, s) \\, F( y(s) ) \\, ds, \\\\
         & x \\in [a, b], \\quad y(a) = y_0.
 
+    Attributes
+    ----------
+    x : :class:`numpy.ndarray`
+        The positions where the solution is calculated (i.e., where `y` is evaluated).
+    y : :class:`numpy.ndarray`
+        The solution :math:`y(x)`. ``None`` until :meth:`IDESolver.solve` is finished.
+    global_error : :class:`float`
+        The final global error estimate. ``None`` until :meth:`IDESolver.solve` is finished.
+    iteration : :class:`int`
+        The current iteration. ``None`` until :meth:`IDESolver.solve` starts.
+    y_intermediate :
+        The intermediate solutions. Only exists if `store_intermediate_y` is ``True``.
+
     """
 
     def __init__(self,
@@ -180,7 +193,7 @@ class IDESolver:
         self.y = None
         self.global_error = None
 
-    def solve(self) -> np.ndarray:
+    def solve(self, callback: Optional[Callable] = None) -> np.ndarray:
         """
         Compute the solution to the IDE.
 
@@ -188,6 +201,13 @@ class IDESolver:
 
         Will emit warning messages if the global error increases on an iteration.
         This does not necessarily mean that the algorithm is not converging, but may indicate that it's having problems.
+
+        Will emit a warning message if the maximum number of iterations is used without reaching the global error tolerance.
+
+        Parameters
+        ----------
+        callback :
+            A function to call after each iteration. The function is passed the :class:`IDESolver` instance, the current :math:`y` guess, and the current global error.
 
         Returns
         -------
@@ -199,15 +219,21 @@ class IDESolver:
             warnings.filterwarnings(action = 'error', message = 'Casting complex values', category = np.ComplexWarning)
 
             try:
-                self.iteration = 0
-
                 y_current = self._initial_y()
                 y_guess = self._solve_rhs_with_known_y(y_current)
                 error_current = self._global_error(y_current, y_guess)
                 if self.store_intermediate:
                     self.y_intermediate.append(y_current)
 
+                self.iteration = 0
+
+                logger.debug(f'Advanced to iteration {self.iteration}. Current error: {error_current}.')
+                if callback is not None:
+                    logger.debug(f'Calling {callback} after iteration {self.iteration}')
+                    callback(self, y_guess, error_current)
+
                 while error_current > self.global_error_tolerance:
+
                     new_current = self._next_y(y_current, y_guess)
                     new_guess = self._solve_rhs_with_known_y(new_current)
                     new_error = self._global_error(new_current, new_guess)
@@ -223,13 +249,17 @@ class IDESolver:
 
                     logger.debug(f'Advanced to iteration {self.iteration}. Current error: {error_current}.')
 
+                    if callback is not None:
+                        logger.debug(f'Calling {callback} after iteration {self.iteration}')
+                        callback(self, y_guess, error_current)
+
                     if self.max_iterations is not None and self.iteration >= self.max_iterations:
                         warnings.warn(IDEConvergenceWarning(f'Used maximum number of iterations ({self.max_iterations}), but only got to global error {error_current} (target {self.global_error_tolerance})'))
                         break
             except np.ComplexWarning:
                 raise UnexpectedlyComplexValuedIDE('Detected complex-valued IDE. Make sure to pass y_0 as a complex number.')
 
-        self.y = y_current
+        self.y = y_guess
         self.global_error = error_current
 
         return self.y

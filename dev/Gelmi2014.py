@@ -9,7 +9,7 @@ OUT_DIR = __file__.strip('.py')
 
 
 def make_comparison_plot(name, solver, exact):
-    fig = plt.figure()
+    fig = plt.figure(dpi = 600)
     ax = fig.add_subplot(111)
 
     lines = [solver._initial_y(), solver.y, exact]
@@ -30,7 +30,7 @@ def make_comparison_plot(name, solver, exact):
 
 
 def make_error_plot(name, solver, exact):
-    fig = plt.figure()
+    fig = plt.figure(dpi = 600)
     ax = fig.add_subplot(111)
 
     error = np.abs(solver.y - exact)
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     for name, example in enumerate(examples, start = 1):
         solver, exact = example()
 
-        print(f'Example {name} took {solver.iteration} iterations to get to global error {solver.global_error}')
+        print(f'Example {name} took {solver.iteration} iterations to get to global error {solver.global_error}. Error compared to analytic solution is {solver._global_error(solver.y, exact)}')
 
         make_comparison_plot(name, solver, exact)
         make_error_plot(name, solver, exact)

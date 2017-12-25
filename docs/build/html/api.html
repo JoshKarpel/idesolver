@@ -6,48 +6,30 @@
 <head>
   <meta charset="utf-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>API &mdash; idesolver 1.0 documentation</title>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <title>API &mdash; idesolver 1.0 documentation</title>
 
 
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
 
-
-
-
-        <link rel="index" title="Index"
+    <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="idesolver 1.0 documentation" href="index.html"/>
         <link rel="next" title="Frequently Asked Questions" href="faq.html"/>
-        <link rel="prev" title="Manual" href="manual.html"/>
+    <link rel="prev" title="Manual" href="manual.html"/>
 
 
-  <script src="_static/js/modernizr.min.js"></script>
+    <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
 
-  <div class="wy-grid-for-nav">
+<div class="wy-grid-for-nav">
 
 
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
@@ -55,24 +37,18 @@
         <div class="wy-side-nav-search">
 
 
-
             <a href="index.html" class="icon icon-home"> idesolver
 
 
-
-          </a>
-
+            </a>
 
 
-
-              <div class="version">
+            <div class="version">
                 1.0
               </div>
 
 
-
-
-<div role="search">
+            <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
@@ -86,11 +62,7 @@
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 
 
-
-
-
-
-              <ul class="current">
+            <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
@@ -100,7 +72,6 @@
 </ul>
 
 
-
         </div>
       </div>
     </nav>
@@ -108,34 +79,19 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
 
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
 
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">idesolver</a>
 
-      </nav>
+        </nav>
 
 
-
-      <div class="wy-nav-content">
+        <div class="wy-nav-content">
         <div class="rst-content">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+            <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
 
@@ -147,7 +103,7 @@
       <li class="wy-breadcrumbs-aside">
 
 
-            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
 
 
       </li>
@@ -155,12 +111,12 @@
   </ul>
 
 
-  <hr/>
+                <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
 
-  <div class="section" id="module-idesolver">
+               <div class="section" id="module-idesolver">
 <span id="api"></span><h1>API<a class="headerlink" href="#module-idesolver" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="idesolver.IDESolver">
@@ -170,7 +126,56 @@
 <div class="math">
 \[\begin{split}\frac{dy}{dx} &amp; = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
 &amp; x \in [a, b], \quad y(a) = y_0.\end{split}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
+    <dl class="attribute">
+        <dt id="idesolver.IDESolver.x">
+            <code class="descname">x</code><a class="headerlink" href="#idesolver.IDESolver.x" title="Permalink to this definition">¶</a></dt>
+        <dd><p>
+            <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> – The positions where the solution is calculated (i.e., where
+            <cite>y</cite> is evaluated).</p>
+        </dd>
+    </dl>
+
+    <dl class="attribute">
+        <dt id="idesolver.IDESolver.y">
+            <code class="descname">y</code><a class="headerlink" href="#idesolver.IDESolver.y" title="Permalink to this definition">¶</a></dt>
+        <dd><p>
+            <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> – The solution
+            <span class="math">\(y(x)\)</span>. <code class="docutils literal"><span class="pre">None</span></code> until
+            <a class="reference internal" href="#idesolver.IDESolver.solve" title="idesolver.IDESolver.solve"><code class="xref py py-meth docutils literal"><span class="pre">IDESolver.solve()</span></code></a> is finished.
+        </p>
+        </dd>
+    </dl>
+
+    <dl class="attribute">
+        <dt id="idesolver.IDESolver.global_error">
+            <code class="descname">global_error</code><a class="headerlink" href="#idesolver.IDESolver.global_error" title="Permalink to this definition">¶</a></dt>
+        <dd><p>
+            <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a> – The final global error estimate.
+            <code class="docutils literal"><span class="pre">None</span></code> until
+            <a class="reference internal" href="#idesolver.IDESolver.solve" title="idesolver.IDESolver.solve"><code class="xref py py-meth docutils literal"><span class="pre">IDESolver.solve()</span></code></a> is finished.
+        </p>
+        </dd>
+    </dl>
+
+    <dl class="attribute">
+        <dt id="idesolver.IDESolver.iteration">
+            <code class="descname">iteration</code><a class="headerlink" href="#idesolver.IDESolver.iteration" title="Permalink to this definition">¶</a></dt>
+        <dd><p>
+            <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a> – The current iteration.
+            <code class="docutils literal"><span class="pre">None</span></code> until
+            <a class="reference internal" href="#idesolver.IDESolver.solve" title="idesolver.IDESolver.solve"><code class="xref py py-meth docutils literal"><span class="pre">IDESolver.solve()</span></code></a> starts.
+        </p>
+        </dd>
+    </dl>
+
+    <dl class="attribute">
+        <dt id="idesolver.IDESolver.y_intermediate">
+            <code class="descname">y_intermediate</code><a class="headerlink" href="#idesolver.IDESolver.y_intermediate" title="Permalink to this definition">¶</a></dt>
+        <dd><p>The intermediate solutions. Only exists if <cite>store_intermediate_y</cite> is <code class="docutils literal"><span class="pre">True</span></code>.</p>
+        </dd>
+    </dl>
+
+    <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -183,7 +188,10 @@
 <li><strong>f</strong> – The function <span class="math">\(F(y)\)</span>.</li>
 <li><strong>lower_bound</strong> – The lower bound function <span class="math">\(\alpha(x)\)</span>.</li>
 <li><strong>upper_bound</strong> – The upper bound function <span class="math">\(\beta(x)\)</span>.</li>
-<li><strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The algorithm will continue until the global errors goes below this or uses more than <cite>max_iterations</cite> iterations.</li>
+    <li>
+        <strong>global_error_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>) – The algorithm will continue until the global errors goes below this or uses more than
+        <cite>max_iterations</cite> iterations. If <code class="docutils literal"><span class="pre">None</span></code>, the algorithm continues until hitting <cite>max_iterations</cite>.
+    </li>
 <li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a>) – The maximum number of iterations to use. If <code class="docutils literal"><span class="pre">None</span></code>, iteration will not stop unless the <cite>global_error_tolerance</cite> is satisfied. Defaults to <code class="docutils literal"><span class="pre">None</span></code>.</li>
     <li>
         <strong>ode_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>) – The ODE solution method to use. As the
@@ -226,18 +234,33 @@
 </table>
 <dl class="method">
 <dt id="idesolver.IDESolver.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/idesolver/idesolver.html#IDESolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver.solve" title="Permalink to this definition">¶</a></dt>
+    <code class="descname">solve</code><span class="sig-paren">(</span><em>callback: typing.Union[typing.Callable</em>, <em>NoneType] = None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/idesolver/idesolver.html#IDESolver.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.IDESolver.solve" title="Permalink to this definition">¶</a>
+</dt>
 <dd><p>Compute the solution to the IDE.</p>
 <p>The solution is returned, and also stored in the attribute <code class="docutils literal"><span class="pre">y</span></code>.</p>
 <p>Will emit warning messages if the global error increases on an iteration.
 This does not necessarily mean that the algorithm is not converging, but may indicate that it’s having problems.</p>
+    <p>Will emit a warning message if the maximum number of iterations is used without reaching the global error tolerance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The solution to the IDE (i.e., <span class="math">\(y(x)\)</span>).</td>
+<tr class="field-odd field">
+    <th class="field-name">Parameters:</th>
+    <td class="field-body"><strong>callback</strong> – A function to call after each iteration. The function is passed the
+        <a class="reference internal" href="#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a> instance, the current
+        <span class="math">\(y\)</span> guess, and the current global error.
+    </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
+<tr class="field-even field">
+    <th class="field-name">Returns:</th>
+    <td class="field-body">The solution to the IDE (i.e., <span class="math">\(y(x)\)</span>).</td>
+</tr>
+<tr class="field-odd field">
+    <th class="field-name">Return type:</th>
+    <td class="field-body">
+        <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.13)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>
+    </td>
 </tr>
 </tbody>
 </table>
@@ -246,13 +269,16 @@ This does not necessarily mean that the algorithm is not converging, but may ind
 </dd>
 </dl>
 
-      <dl class="function">
-          <dt id="idesolver.complex_quad">
-              <code class="descclassname">idesolver.</code><code class="descname">complex_quad</code><span class="sig-paren">(</span><em>integrand</em>, <em>lower_bound</em>, <em>upper_bound</em>,
-              <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/idesolver.html#complex_quad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.complex_quad" title="Permalink to this definition">¶</a>
-          </dt>
-          <dd><p>A thin wrapper over <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a> that handles splitting the real and complex parts of the integral and recombining them.
-          </p>
+                   <dl class="function">
+                       <dt id="idesolver.complex_quad">
+                           <code class="descclassname">idesolver.</code><code class="descname">complex_quad</code><span class="sig-paren">(</span><em>integrand: typing.Callable</em>,
+                           <em>lower_bound: float</em>, <em>upper_bound: float</em>, <em>**kwargs) -&gt; (&lt;class 'complex'&gt;</em>, <em>&lt;class 'float'&gt;</em>, <em>&lt;class 'float'&gt;</em>,
+                           <em>&lt;class 'tuple'&gt;</em>,
+                           <em>&lt;class 'tuple'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/idesolver/idesolver.html#complex_quad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#idesolver.complex_quad" title="Permalink to this definition">¶</a>
+                       </dt>
+                       <dd><p>A thin wrapper over
+                           <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.quad.html#scipy.integrate.quad" title="(in SciPy v1.0.0)"><code class="xref py py-func docutils literal"><span class="pre">scipy.integrate.quad()</span></code></a> that handles splitting the real and complex parts of the integral and recombining them.
+                       </p>
 </dd></dl>
 
 </div>
@@ -265,17 +291,17 @@ This does not necessarily mean that the algorithm is not converging, but may ind
           </div>
           <footer>
 
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+              <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
 
-        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-
-
-        <a href="manual.html" class="btn btn-neutral" title="Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-    </div>
+                  <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-  <hr/>
+                  <a href="manual.html" class="btn btn-neutral" title="Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+
+              </div>
+
+
+              <hr/>
 
   <div role="contentinfo">
     <p>
@@ -283,7 +309,8 @@ This does not necessarily mean that the algorithm is not converging, but may ind
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+              Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by
+              <a href="https://readthedocs.org">Read the Docs</a>.
 
 </footer>
 
@@ -295,10 +322,7 @@ This does not necessarily mean that the algorithm is not converging, but may ind
   </div>
 
 
-
-
-
-    <script type="text/javascript">
+<script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'1.0',
@@ -314,15 +338,10 @@ This does not necessarily mean that the algorithm is not converging, but may ind
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 
+<script type="text/javascript" src="_static/js/theme.js"></script>
 
 
-
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-
-
-
-  <script type="text/javascript">
+<script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
