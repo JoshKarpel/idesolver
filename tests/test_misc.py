@@ -32,6 +32,23 @@ def test_warning_when_not_enough_iterations():
         bad_solver.solve()
 
 
+def test_y_intermediate_list_exists_if_store_intermediate_y_is_true():
+    solver = IDESolver(
+        x = np.linspace(0, 1, 100),
+        y_0 = 0,
+        c = lambda x, y: y - (.5 * x) + (1 / (1 + x)) - np.log(1 + x),
+        d = lambda x: 1 / (np.log(2)) ** 2,
+        k = lambda x, s: x / (1 + s),
+        lower_bound = lambda x: 0,
+        upper_bound = lambda x: 1,
+        f = lambda y: y,
+        global_error_tolerance = 1e-6,
+        store_intermediate_y = True,
+    )
+
+    assert hasattr(solver, 'y_intermediate')
+
+
 def test_number_of_intermediate_solutions_is_same_as_iteration_count_plus_one():
     solver = IDESolver(
         x = np.linspace(0, 1, 100),

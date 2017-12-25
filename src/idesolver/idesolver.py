@@ -37,21 +37,17 @@ class UnexpectedlyComplexValuedIDE(IDESolverException):
     pass
 
 
-def complex_quad(integrand, lower_bound, upper_bound, **kwargs):
+def complex_quad(integrand: Callable, lower_bound: float, upper_bound: float, **kwargs) -> (complex, float, float, tuple, tuple):
     """A thin wrapper over :func:`scipy.integrate.quad` that handles splitting the real and complex parts of the integral and recombining them."""
+    real_result, real_error, *real_extra = integ.quad(lambda x: np.real(integrand(x)),
+                                                      lower_bound, upper_bound, **kwargs)
+    imag_result, imag_error, *imag_extra = integ.quad(lambda x: np.imag(integrand(x)),
+                                                      lower_bound, upper_bound, **kwargs)
 
-    def real_func(x):
-        return np.real(integrand(x))
-
-    def imag_func(x):
-        return np.imag(integrand(x))
-
-    real_result, real_error, *_ = integ.quad(real_func, lower_bound, upper_bound, **kwargs)
-    imag_result, imag_error, *_ = integ.quad(imag_func, lower_bound, upper_bound, **kwargs)
-
-    return real_result + (1j * imag_result), real_error, imag_error
+    return real_result + (1j * imag_result), real_error, imag_error, real_extra, imag_extra
 
 
+# types to recognize as complex in y_0
 _COMPLEX_NUMERIC_TYPES = [complex, np.complex128]
 
 
@@ -75,7 +71,7 @@ class IDESolver:
                  f: Optional[Callable] = None,
                  lower_bound: Optional[Callable] = None,
                  upper_bound: Optional[Callable] = None,
-                 global_error_tolerance: Optional[float] = 1e-6,
+                 global_error_tolerance: float = 1e-6,
                  max_iterations: Optional[int] = None,
                  ode_method: str = 'RK45',
                  ode_atol: float = 1e-8,
@@ -205,36 +201,36 @@ class IDESolver:
             try:
                 self.iteration = 0
 
-                y_curr = self._initial_y()
-                y_guess = self._solve_rhs_with_known_y(y_curr)
-                current_error = self._global_error(y_curr, y_guess)
+                y_current = self._initial_y()
+                y_guess = self._solve_rhs_with_known_y(y_current)
+                error_current = self._global_error(y_current, y_guess)
                 if self.store_intermediate:
-                    self.y_intermediate.append(y_curr)
+                    self.y_intermediate.append(y_current)
 
-                while current_error > self.global_error_tolerance:
-                    new_current = self._next_y(y_curr, y_guess)
+                while error_current > self.global_error_tolerance:
+                    new_current = self._next_y(y_current, y_guess)
                     new_guess = self._solve_rhs_with_known_y(new_current)
                     new_error = self._global_error(new_current, new_guess)
-                    if new_error > current_error:
+                    if new_error > error_current:
                         warnings.warn(f'Error increased on iteration {self.iteration}', IDEConvergenceWarning)
 
-                    y_curr, y_guess, current_error = new_current, new_guess, new_error
+                    y_current, y_guess, error_current = new_current, new_guess, new_error
 
                     if self.store_intermediate:
-                        self.y_intermediate.append(y_curr)
+                        self.y_intermediate.append(y_current)
 
                     self.iteration += 1
 
-                    logger.debug(f'Advanced to iteration {self.iteration}. Current error: {current_error}.')
+                    logger.debug(f'Advanced to iteration {self.iteration}. Current error: {error_current}.')
 
                     if self.max_iterations is not None and self.iteration >= self.max_iterations:
-                        warnings.warn(IDEConvergenceWarning(f'Used maximum number of iterations ({self.max_iterations}), but only got to global error {current_error} (target {self.global_error_tolerance})'))
+                        warnings.warn(IDEConvergenceWarning(f'Used maximum number of iterations ({self.max_iterations}), but only got to global error {error_current} (target {self.global_error_tolerance})'))
                         break
             except np.ComplexWarning:
                 raise UnexpectedlyComplexValuedIDE('Detected complex-valued IDE. Make sure to pass y_0 as a complex number.')
 
-        self.y = y_curr
-        self.global_error = current_error
+        self.y = y_current
+        self.global_error = error_current
 
         return self.y
 
@@ -254,14 +250,14 @@ class IDESolver:
 
         Parameters
         ----------
-        y1
+        y1 : :class:`numpy.ndarray`
             A guess of the solution.
-        y2
+        y2 : :class:`numpy.ndarray`
             Another guess of the solution.
 
         Returns
         -------
-        error :
+        error : :class:`float`
             The global error estimate between `y1` and `y2`.
         """
         diff = y1 - y2
@@ -269,11 +265,11 @@ class IDESolver:
 
     def _solve_rhs_with_known_y(self, y: np.ndarray) -> np.ndarray:
         """Solves the right-hand-side of the IDE as if :math:`y` was `y`."""
-        interp_y = self._interpolate_y(y)
+        interpolated_y = self._interpolate_y(y)
 
         def integral(x):
             result, *_ = self.integrator(
-                lambda s: self.k(x, s) * self.F(interp_y(s)),
+                lambda s: self.k(x, s) * self.F(interpolated_y(s)),
                 self.lower_bound(x),
                 self.upper_bound(x),
                 epsabs = self.int_atol,
@@ -282,7 +278,7 @@ class IDESolver:
             return result
 
         def rhs(x, y):
-            return self.c(x, interp_y(x)) + (self.d(x) * integral(x))
+            return self.c(x, interpolated_y(x)) + (self.d(x) * integral(x))
 
         return self._solve_ode(rhs)
 
@@ -292,12 +288,12 @@ class IDESolver:
 
         Parameters
         ----------
-        y
+        y : :class:`numpy.ndarray`
             The y values to interpolate (probably a guess at the solution).
 
         Returns
         -------
-        interpolator :
+        interpolator : :class:`scipy.interpolate.interp1d`
             The interpolator function.
         """
         return inter.interp1d(
