@@ -85,5 +85,5 @@ def test_callback_is_called_correct_number_of_times(mocker):
     )
     solver.solve(callback = callback)
 
-    # first iteration is number 0, so add one to left to total number of callbacks called
+    # first iteration is number 0, so add one to left to get total number of callback calls
     assert callback.call_count == solver.iteration + 1

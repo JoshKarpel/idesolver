@@ -148,11 +148,11 @@ class IDESolver:
         if c is None:
             c = lambda x, y: 0
         if d is None:
-            d = lambda x: 0
+            d = lambda x: 1
         if k is None:
             k = lambda x, s: 1
         if f is None:
-            f = lambda y: y
+            f = lambda y: 0
         self.c = c
         self.d = d
         self.k = k
