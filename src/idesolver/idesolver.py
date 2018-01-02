@@ -156,7 +156,7 @@ class IDESolver:
         self.c = c
         self.d = d
         self.k = k
-        self.F = f
+        self.f = f
 
         if lower_bound is None:
             lower_bound = lambda x: self.x[0]
@@ -302,7 +302,7 @@ class IDESolver:
 
         def integral(x):
             result, *_ = self.integrator(
-                lambda s: self.k(x, s) * self.F(interpolated_y(s)),
+                lambda s: self.k(x, s) * self.f(interpolated_y(s)),
                 self.lower_bound(x),
                 self.upper_bound(x),
                 epsabs = self.int_atol,

@@ -78,7 +78,7 @@ REAL_IDES = [
         ),
         lambda x: 1,
     ),
-    (  # RHS = 0 is the default, so if we pass nothing, we should get it back
+    (  # RHS = 0 is the default, so if we pass nothing, we should get that
         IDESolver(
             x = np.linspace(0, 1, 100),
             y_0 = 1,
