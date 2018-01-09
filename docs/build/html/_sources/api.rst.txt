@@ -7,4 +7,6 @@ API
 
     .. automethod:: solve
 
+.. autofunction:: global_error
+
 .. autofunction:: complex_quad

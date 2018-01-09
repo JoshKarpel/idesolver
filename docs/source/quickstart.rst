@@ -13,7 +13,29 @@ Suppose we want to solve the integro-differential equation (IDE)
 This analytic solution to this IDE is :math:`y(x) = \ln(1 + x)`.
 We'll find a numerical solution using IDESolver and compare it to the analytic solution.
 
-We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve via ``lambda`` functions for simplicity.
+We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve.
+The format is
+
+.. math::
+
+   \frac{dy}{dx} & = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
+   & x \in [a, b], \quad y(a) = y_0.
+
+so we have
+
+.. math::
+
+    a &= 0 \\
+    b &= 1 \\
+    y(a) &= 0 \\ \\
+    c(x, y) =& y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) \\
+    d(x) =& \frac{1}{\left(\ln(2)\right)^2} \\
+    k(x, s) =& \frac{x}{1 + s} \\
+    f(s) &= y(s) \\ \\
+    \alpha(x) =& 0 \\
+    \beta(x) =& 1.
+
+In code, that looks like (using ``lambda`` functions for simplicity):
 
 ::
 
@@ -33,7 +55,7 @@ We begin by creating an instance of :class:`IDESolver`, passing it information a
     )
 
 
-To run the solver, we call the ``solve()`` method on the solver:
+To run the solver, we call the ``solve()`` method:
 
 ::
 

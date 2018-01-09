@@ -1,5 +1,7 @@
 @ECHO OFF
 
+python make_figs.py
+
 pushd %~dp0
 
 REM Command file for Sphinx documentation

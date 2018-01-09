@@ -64,7 +64,7 @@ GELMI_EXAMPLES = [
 ]
 
 REAL_IDES = [
-    (
+    (  # RHS = 0
         IDESolver(
             x = np.linspace(0, 1, 100),
             y_0 = 1,
@@ -74,6 +74,14 @@ REAL_IDES = [
             lower_bound = lambda x: 0,
             upper_bound = lambda x: 1,
             f = lambda y: 0,
+            global_error_tolerance = 1e-6,
+        ),
+        lambda x: 1,
+    ),
+    (  # RHS = 0 is the default, so if we pass nothing, we should get that
+        IDESolver(
+            x = np.linspace(0, 1, 100),
+            y_0 = 1,
             global_error_tolerance = 1e-6,
         ),
         lambda x: 1,
