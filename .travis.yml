@@ -8,5 +8,5 @@ install:
   - pip install codecov
 script:
   - pytest --cov
-after_sucess:
+after_success:
   - codecov
