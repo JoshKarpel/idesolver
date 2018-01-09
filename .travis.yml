@@ -6,6 +6,6 @@ install:
   - pip install pytest pytest-mock pytest-cov hypothesis
   - pip install codecov
 script:
-  - pytest --cov=./
+  - pytest --cov
 after_sucess:
   - codecov
