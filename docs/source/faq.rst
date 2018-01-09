@@ -13,10 +13,10 @@ Installing IDESolver is easy, using `pip <https://pip.pypa.io/en/stable/>`_:
     $ pip install idesolver
 
 
-I'd like to pickle my IDESolver instance, but it exploded?
-----------------------------------------------------------
+Can I pickle an ``IDESolver`` instance?
+---------------------------------------
 
-It probably exploded because you passed ``lambda`` functions as your callables.
+Yes, with one caveat.
 You'll need to define the callables somewhere that Python can find them in the global namespace (i.e., top-level functions in a module, methods in a top-level class, etc.).
 
 

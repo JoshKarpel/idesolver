@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>idesolver.idesolver &mdash; idesolver 1.0 documentation</title>
+
+
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css"/>
+
+
+    <link rel="index" title="Index"
+          href="../../genindex.html"/>
+    <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="idesolver 1.0 documentation" href="../../index.html"/>
+    <link rel="up" title="Module code" href="../index.html"/>
+
+
+    <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+
+<div class="wy-grid-for-nav">
+
+
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
+
+
+                <a href="../../index.html" class="icon icon-home"> idesolver
+
+
+                </a>
+
+
+                <div class="version">
+                    1.0
+                </div>
+
+
+                <div role="search">
+                    <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+                        <input type="text" name="q" placeholder="Search docs"/>
+                        <input type="hidden" name="check_keywords" value="yes"/>
+                        <input type="hidden" name="area" value="default"/>
+                    </form>
+                </div>
+
+
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../index.html">Overview</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../manual.html">Manual</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Change Log</a></li>
+                </ul>
+
+
+            </div>
+        </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+
+        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <a href="../../index.html">idesolver</a>
+
+        </nav>
+
+
+        <div class="wy-nav-content">
+            <div class="rst-content">
+
+
+                <div role="navigation" aria-label="breadcrumbs navigation">
+
+                    <ul class="wy-breadcrumbs">
+
+                        <li><a href="../../index.html">Docs</a> &raquo;</li>
+
+                        <li><a href="../index.html">Module code</a> &raquo;</li>
+
+                        <li>idesolver.idesolver</li>
+
+
+                        <li class="wy-breadcrumbs-aside">
+
+
+                        </li>
+
+                    </ul>
+
+
+                    <hr/>
+                </div>
+                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                    <div itemprop="articleBody">
+
+                        <h1>Source code for idesolver.idesolver</h1>
+                        <div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A general purpose integro-differential equation (IDE) solver.</span>
+
+<span class="sd">Copyright (C) 2017-2018  Joshua T Karpel</span>
+<span class="sd">Full license available at github.com/JoshKarpel/LICENSE</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.integrate</span> <span class="k">as</span> <span class="nn">integ</span>
+<span class="kn">import</span> <span class="nn">scipy.interpolate</span> <span class="k">as</span> <span class="nn">inter</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;idesolver&#39;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">IDEConvergenceWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">IDESolverException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">InvalidParameter</span><span class="p">(</span><span class="n">IDESolverException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">ODESolutionFailed</span><span class="p">(</span><span class="n">IDESolverException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">UnexpectedlyComplexValuedIDE</span><span class="p">(</span><span class="n">IDESolverException</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="complex_quad"><a class="viewcode-back" href="../../api.html#idesolver.complex_quad">[docs]</a><span class="k">def</span> <span class="nf">complex_quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">complex</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A thin wrapper over :func:`scipy.integrate.quad` that handles splitting the real and complex parts of the integral and recombining them.</span>
+<span class="sd">    Keyword arguments are passed to both of the internal ``quad`` calls.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">real_result</span><span class="p">,</span> <span class="n">real_error</span><span class="p">,</span> <span class="o">*</span><span class="n">real_extra</span> <span class="o">=</span> <span class="n">integ</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">integrand</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span>
+                                                      <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">imag_result</span><span class="p">,</span> <span class="n">imag_error</span><span class="p">,</span> <span class="o">*</span><span class="n">imag_extra</span> <span class="o">=</span> <span class="n">integ</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">integrand</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span>
+                                                      <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">real_result</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">imag_result</span><span class="p">),</span> <span class="n">real_error</span><span class="p">,</span> <span class="n">imag_error</span><span class="p">,</span> <span class="n">real_extra</span><span class="p">,</span> <span class="n">imag_extra</span></div>
+
+
+<div class="viewcode-block" id="global_error"><a class="viewcode-back" href="../../api.html#idesolver.global_error">[docs]</a><span class="k">def</span> <span class="nf">global_error</span><span class="p">(</span><span class="n">y1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The default global error function.</span>
+
+<span class="sd">    The estimate is the square root of the sum of squared differences between `y1` and `y2`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y1 : :class:`numpy.ndarray`</span>
+<span class="sd">        A guess of the solution.</span>
+<span class="sd">    y2 : :class:`numpy.ndarray`</span>
+<span class="sd">        Another guess of the solution.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    error : :class:`float`</span>
+<span class="sd">        The global error estimate between `y1` and `y2`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">diff</span><span class="p">)))</span></div>
+
+
+<span class="c1"># types to recognize as complex in y_0</span>
+<span class="n">_COMPLEX_NUMERIC_TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="nb">complex</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="IDESolver"><a class="viewcode-back" href="../../api.html#idesolver.IDESolver">[docs]</a><span class="k">class</span> <span class="nc">IDESolver</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class that handles solving an integro-differential equation of the form</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \\frac{dy}{dx} &amp; = c(y, x) + d(x) \\int_{\\alpha(x)}^{\\beta(x)} k(x, s) \\, F( y(s) ) \\, ds, \\\\</span>
+<span class="sd">        &amp; x \\in [a, b], \\quad y(a) = y_0.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : :class:`numpy.ndarray`</span>
+<span class="sd">        The positions where the solution is calculated (i.e., where `y` is evaluated).</span>
+<span class="sd">    y : :class:`numpy.ndarray`</span>
+<span class="sd">        The solution :math:`y(x)`. ``None`` until :meth:`IDESolver.solve` is finished.</span>
+<span class="sd">    global_error : :class:`float`</span>
+<span class="sd">        The final global error estimate. ``None`` until :meth:`IDESolver.solve` is finished.</span>
+<span class="sd">    iteration : :class:`int`</span>
+<span class="sd">        The current iteration. ``None`` until :meth:`IDESolver.solve` starts.</span>
+<span class="sd">    y_intermediate :</span>
+<span class="sd">        The intermediate solutions. Only exists if `store_intermediate_y` is ``True``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">y_0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">],</span>
+                 <span class="n">c</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">d</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">f</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">lower_bound</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">upper_bound</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">global_error_tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+                 <span class="n">max_iterations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ode_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;RK45&#39;</span><span class="p">,</span>
+                 <span class="n">ode_atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
+                 <span class="n">ode_rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
+                 <span class="n">int_atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
+                 <span class="n">int_rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
+                 <span class="n">interpolation_kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
+                 <span class="n">smoothing_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">store_intermediate_y</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">global_error_function</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">global_error</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : :class:`numpy.ndarray`</span>
+<span class="sd">            The array of :math:`x` values to find the solution :math:`y(x)` at. Generally something like ``numpy.linspace(a, b, num_pts)``.</span>
+<span class="sd">        y_0 : :class:`float` or :class:`complex`</span>
+<span class="sd">            The initial condition, :math:`y_0 = y(a)`.</span>
+<span class="sd">        c :</span>
+<span class="sd">            The function :math:`c(y, x)`.</span>
+<span class="sd">        d :</span>
+<span class="sd">            The function :math:`d(x)`.</span>
+<span class="sd">        k :</span>
+<span class="sd">            The kernel function :math:`k(x, s)`.</span>
+<span class="sd">        f :</span>
+<span class="sd">            The function :math:`F(y)`.</span>
+<span class="sd">        lower_bound :</span>
+<span class="sd">            The lower bound function :math:`\\alpha(x)`.</span>
+<span class="sd">        upper_bound :</span>
+<span class="sd">            The upper bound function :math:`\\beta(x)`.</span>
+<span class="sd">        global_error_tolerance : :class:`float`</span>
+<span class="sd">            The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations. If ``None``, the algorithm continues until hitting `max_iterations`.</span>
+<span class="sd">        max_iterations : :class:`int`</span>
+<span class="sd">            The maximum number of iterations to use. If ``None``, iteration will not stop unless the `global_error_tolerance` is satisfied. Defaults to ``None``.</span>
+<span class="sd">        ode_method : :class:`str`</span>
+<span class="sd">            The ODE solution method to use. As the `method` option of :func:`scipy.integrate.solve_ivp`. Defaults to ``&#39;RK45&#39;``, which is good for non-stiff systems.</span>
+<span class="sd">        ode_atol : :class:`float`</span>
+<span class="sd">            The absolute tolerance for the ODE solver. As the `atol` argument of :func:`scipy.integrate.solve_ivp`.</span>
+<span class="sd">        ode_rtol : :class:`float`</span>
+<span class="sd">            The relative tolerance for the ODE solver. As the `rtol` argument of :func:`scipy.integrate.solve_ivp`.</span>
+<span class="sd">        int_atol : :class:`float`</span>
+<span class="sd">            The absolute tolerance for the integration routine. As the `epsabs` argument of :func:`scipy.integrate.quad`.</span>
+<span class="sd">        int_rtol : :class:`float`</span>
+<span class="sd">            The relative tolerance for the integration routine. As the `epsrel` argument of :func:`scipy.integrate.quad`.</span>
+<span class="sd">        interpolation_kind : :class:`str`</span>
+<span class="sd">            The type of interpolation to use. As the `kind` argument of :class:`scipy.interpolate.interp1d`. Defaults to ``&#39;cubic&#39;``.</span>
+<span class="sd">        smoothing_factor : :class:`float`</span>
+<span class="sd">            The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to ``0.5``.</span>
+<span class="sd">        store_intermediate_y : :class:`bool`</span>
+<span class="sd">            If ``True``, the intermediate guesses for :math:`y(x)` at each iteration will be stored in the attribute `y_intermediate`.</span>
+<span class="sd">        global_error_function :</span>
+<span class="sd">            The function to use to calculate the global error. Defaults to :func:`global_error`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y_0</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_COMPLEX_NUMERIC_TYPES</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">integrator</span> <span class="o">=</span> <span class="n">complex_quad</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">integrator</span> <span class="o">=</span> <span class="n">integ</span><span class="o">.</span><span class="n">quad</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_0</span> <span class="o">=</span> <span class="n">y_0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+        <span class="k">if</span> <span class="n">lower_bound</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lower_bound</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">upper_bound</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">upper_bound</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">lower_bound</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">upper_bound</span>
+
+        <span class="k">if</span> <span class="n">global_error_tolerance</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">max_iterations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameter</span><span class="p">(</span><span class="s1">&#39;global_error_tolerance cannot be zero if max_iterations is None&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">global_error_tolerance</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameter</span><span class="p">(</span><span class="s1">&#39;global_error_tolerance cannot be negative&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_error_tolerance</span> <span class="o">=</span> <span class="n">global_error_tolerance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_error_function</span> <span class="o">=</span> <span class="n">global_error_function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_kind</span> <span class="o">=</span> <span class="n">interpolation_kind</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">smoothing_factor</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameter</span><span class="p">(</span><span class="s1">&#39;Smoothing factor must be between 0 and 1&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smoothing_factor</span> <span class="o">=</span> <span class="n">smoothing_factor</span>
+
+        <span class="k">if</span> <span class="n">max_iterations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_iterations</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameter</span><span class="p">(</span><span class="s1">&#39;If given, max iterations must be greater than 0&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations</span> <span class="o">=</span> <span class="n">max_iterations</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ode_method</span> <span class="o">=</span> <span class="n">ode_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ode_atol</span> <span class="o">=</span> <span class="n">ode_atol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ode_rtol</span> <span class="o">=</span> <span class="n">ode_rtol</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">int_atol</span> <span class="o">=</span> <span class="n">int_atol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">int_rtol</span> <span class="o">=</span> <span class="n">int_rtol</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_intermediate</span> <span class="o">=</span> <span class="n">store_intermediate_y</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_intermediate</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_intermediate</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_error</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="IDESolver.solve"><a class="viewcode-back" href="../../api.html#idesolver.IDESolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the solution to the IDE.</span>
+
+<span class="sd">        Will emit a warning message if the global error increases on an iteration.</span>
+<span class="sd">        This does not necessarily mean that the algorithm is not converging, but may indicate that it&#39;s having problems.</span>
+
+<span class="sd">        Will emit a warning message if the maximum number of iterations is used without reaching the global error tolerance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        callback :</span>
+<span class="sd">            A function to call after each iteration. The function is passed the :class:`IDESolver` instance, the current :math:`y` guess, and the current global error.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`numpy.ndarray`</span>
+<span class="sd">            The solution to the IDE (i.e., :math:`y(x)`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if the user messed up by not passing y_0 as a complex number when they should have</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="n">action</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Casting complex values&#39;</span><span class="p">,</span> <span class="n">category</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ComplexWarning</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">y_current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_y</span><span class="p">()</span>
+                <span class="n">y_guess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_rhs_with_known_y</span><span class="p">(</span><span class="n">y_current</span><span class="p">)</span>
+                <span class="n">error_current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_error</span><span class="p">(</span><span class="n">y_current</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_intermediate</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">y_intermediate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_current</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Advanced to iteration </span><span class="si">{self.iteration}</span><span class="s1">. Current error: </span><span class="si">{error_current}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Calling </span><span class="si">{callback}</span><span class="s1"> after iteration </span><span class="si">{self.iteration}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">error_current</span><span class="p">)</span>
+
+                <span class="k">while</span> <span class="n">error_current</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_error_tolerance</span><span class="p">:</span>
+
+                    <span class="n">new_current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_y</span><span class="p">(</span><span class="n">y_current</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">)</span>
+                    <span class="n">new_guess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_rhs_with_known_y</span><span class="p">(</span><span class="n">new_current</span><span class="p">)</span>
+                    <span class="n">new_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_error</span><span class="p">(</span><span class="n">new_current</span><span class="p">,</span> <span class="n">new_guess</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">new_error</span> <span class="o">&gt;</span> <span class="n">error_current</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error increased on iteration </span><span class="si">{self.iteration}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">IDEConvergenceWarning</span><span class="p">)</span>
+
+                    <span class="n">y_current</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">error_current</span> <span class="o">=</span> <span class="n">new_current</span><span class="p">,</span> <span class="n">new_guess</span><span class="p">,</span> <span class="n">new_error</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_intermediate</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">y_intermediate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_current</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Advanced to iteration </span><span class="si">{self.iteration}</span><span class="s1">. Current error: </span><span class="si">{error_current}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Calling </span><span class="si">{callback}</span><span class="s1"> after iteration </span><span class="si">{self.iteration}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">error_current</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">IDEConvergenceWarning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Used maximum number of iterations (</span><span class="si">{self.max_iterations}</span><span class="s1">), but only got to global error </span><span class="si">{error_current}</span><span class="s1"> (target </span><span class="si">{self.global_error_tolerance}</span><span class="s1">)&#39;</span><span class="p">))</span>
+                        <span class="k">break</span>
+            <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">ComplexWarning</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">UnexpectedlyComplexValuedIDE</span><span class="p">(</span><span class="s1">&#39;Detected complex-valued IDE. Make sure to pass y_0 as a complex number.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y_guess</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_error</span> <span class="o">=</span> <span class="n">error_current</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span></div>
+
+    <span class="k">def</span> <span class="nf">_initial_y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_ode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_next_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">guess</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the next guess at the solution by merging two guesses.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smoothing_factor</span> <span class="o">*</span> <span class="n">curr</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">smoothing_factor</span><span class="p">)</span> <span class="o">*</span> <span class="n">guess</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_global_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the global error estimate between `y1` and `y2`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y1 : :class:`numpy.ndarray`</span>
+<span class="sd">            A guess of the solution.</span>
+<span class="sd">        y2 : :class:`numpy.ndarray`</span>
+<span class="sd">            Another guess of the solution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        error : :class:`float`</span>
+<span class="sd">            The global error estimate between `y1` and `y2`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_error_function</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_solve_rhs_with_known_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Solves the right-hand-side of the IDE as if :math:`y` was `y`.&quot;&quot;&quot;</span>
+        <span class="n">interpolated_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolate_y</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">integral</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrator</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">interpolated_y</span><span class="p">(</span><span class="n">s</span><span class="p">)),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                <span class="n">epsabs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_atol</span><span class="p">,</span>
+                <span class="n">epsrel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_rtol</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">def</span> <span class="nf">rhs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">interpolated_y</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">integral</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_ode</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_interpolate_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">inter</span><span class="o">.</span><span class="n">interp1d</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interpolate `y` along `x`, using `interpolation_kind`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : :class:`numpy.ndarray`</span>
+<span class="sd">            The y values to interpolate (probably a guess at the solution).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        interpolator : :class:`scipy.interpolate.interp1d`</span>
+<span class="sd">            The interpolator function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">inter</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">kind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_kind</span><span class="p">,</span>
+            <span class="n">fill_value</span> <span class="o">=</span> <span class="s1">&#39;extrapolate&#39;</span><span class="p">,</span>
+            <span class="n">assume_sorted</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_solve_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Solves an ODE with the given right-hand side.&quot;&quot;&quot;</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">integ</span><span class="o">.</span><span class="n">solve_ivp</span><span class="p">(</span>
+            <span class="n">fun</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">,</span>
+            <span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">y_0</span><span class="p">]),</span>
+            <span class="n">t_span</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">t_eval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_method</span><span class="p">,</span>
+            <span class="n">atol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_atol</span><span class="p">,</span>
+            <span class="n">rtol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ode_rtol</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sol</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ODESolutionFailed</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Error while trying to solve ODE: </span><span class="si">{sol.status}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+</pre>
+                        </div>
+
+                    </div>
+                    <div class="articleComments">
+
+                    </div>
+                </div>
+                <footer>
+
+
+                    <hr/>
+
+                    <div role="contentinfo">
+                        <p>
+                            &copy; Copyright 2017, Joshua T Karpel.
+
+                        </p>
+                    </div>
+                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by
+                    <a href="https://readthedocs.org">Read the Docs</a>.
+
+                </footer>
+
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+
+<script type="text/javascript">
+    var DOCUMENTATION_OPTIONS = {
+        URL_ROOT: '../../',
+        VERSION: '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE: true,
+        SOURCELINK_SUFFIX: '.txt'
+    };
+</script>
+<script type="text/javascript" src="../../_static/jquery.js"></script>
+<script type="text/javascript" src="../../_static/underscore.js"></script>
+<script type="text/javascript" src="../../_static/doctools.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+
+<script type="text/javascript">
+    jQuery(function () {
+        SphinxRtdTheme.StickyNav.enable();
+    });
+</script>
+
+
+</body>
+</html>

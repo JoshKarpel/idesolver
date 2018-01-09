@@ -10,7 +10,7 @@ Suppose we want to solve the integro-differential equation (IDE)
     \frac{dy}{dx} & = y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) + \frac{1}{\left(\ln(2)\right)^2} \int_0^1 \frac{x}{1 + s} \, y(s) \, ds, \\
     & x \in [0, 1], \quad y(0) = 0.
 
-This analytic solution to this IDE is :math:`y(x) = \ln(1 + x)`.
+The analytic solution to this IDE is :math:`y(x) = \ln(1 + x)`.
 We'll find a numerical solution using IDESolver and compare it to the analytic solution.
 
 We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve.
@@ -91,9 +91,6 @@ For this IDE the algorithm converges in 40 iterations, resulting in a solution t
 
 
 .. image:: figs/quickstart_comparison.*
-
-As shown in the next figure, we happen to get agreement with the true solution below :math:`10^{-6}` everywhere, but this is essentially coincidental.
-The global error estimate compares successive approximations to the true solution, but doesn't know what the true solution actually is.
 
 ::
 

@@ -40,8 +40,8 @@ We can then produce a better guess by seeing what we would get with the original
 Again, this is just an ODE, because :math:`y^{(1/2)}` does not appear on the right.
 At this point in the algorithm we check the global error between :math:`y^{(0)}` and :math:`y^{(1/2)}`.
 If it's smaller than the tolerance, we stop iterating and take :math:`y^{(1/2)}` to be the solution.
-If it's larger than the tolerance, the iteration continue.
-To be conservative and make sure we don't over-correct, we'll combine :math:`y^{(1/2)}` with :math:`y^{(0)}`.
+If it's larger than the tolerance, the iteration continues.
+To be conservative and to make sure we don't over-correct, we'll combine :math:`y^{(1/2)}` with :math:`y^{(0)}`.
 
 .. math::
 
@@ -56,7 +56,7 @@ Stopping Conditions
 IDESolver can operate in three modes: either a nonzero global error tolerance should be given, or a maximum number of iterations should be given, or both should be given.
 Nonzero global error tolerance is the standard mode, described in :ref:`the-algorithm`.
 If a maximum number of iterations is given with zero global error tolerance, the algorithm will iterate that many times and then stop.
-If both are given, the algorithm terminates either condition is met.
+If both are given, the algorithm terminates if either condition is met.
 
 
 Global Error Estimate
