@@ -3,6 +3,9 @@ python:
   - "3.6"
 install:
   - pip install .
-  - pip install pytest pytest-mock hypothesis
+  - pip install pytest pytest-mock pytest-cov hypothesis
+  - pip install codecov
 script:
-  - pytest
+  - pytest --cov=./
+after_sucess:
+  - codecov
