@@ -3,6 +3,6 @@ python:
   - "3.6"
 install:
   - pip install .
-  - pip install pytest hypothesis
+  - pip install pytest pytest-mock hypothesis
 script:
   - pytest
