@@ -1,4 +1,6 @@
 import pytest
+import hypothesis as hyp
+import hypothesis.strategies as st
 
 import numpy as np
 
@@ -85,5 +87,43 @@ def test_callback_is_called_correct_number_of_times(mocker):
     )
     solver.solve(callback = callback)
 
-    # first iteration is number 0, so add one to left to total number of callbacks called
+    # first iteration is number 0, so add one to left to get total number of callback calls
     assert callback.call_count == solver.iteration + 1
+
+
+@pytest.fixture(scope = 'function')
+def default_solver():
+    solver = IDESolver(
+        x = np.linspace(0, 1, 100),
+        y_0 = 0,
+    )
+
+    return solver
+
+
+@hyp.given(x = st.complex_numbers(), y = st.complex_numbers())
+def test_default_c(default_solver, x, y):
+    assert default_solver.c(x, y) == 0
+
+
+@hyp.given(x = st.complex_numbers())
+def test_default_d(default_solver, x):
+    assert default_solver.d(x) == 1
+
+
+@hyp.given(x = st.complex_numbers(), s = st.complex_numbers())
+def test_default_c(default_solver, x, s):
+    assert default_solver.k(x, s) == 1
+
+
+@hyp.given(y = st.complex_numbers())
+def test_default_f(default_solver, y):
+    assert default_solver.f(y) == 0
+
+
+def test_default_lower_bound(default_solver):
+    assert default_solver.lower_bound(default_solver.x) == default_solver.x[0]
+
+
+def test_default_upper_bound(default_solver):
+    assert default_solver.upper_bound(default_solver.x) == default_solver.x[-1]
