@@ -1,3 +1,2 @@
 [run]
-source = ./src/idesolver
-omit = tests/*
+omit = tests/*, */virtualenv/*
