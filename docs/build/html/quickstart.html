@@ -168,7 +168,23 @@
 &amp; x \in [0, 1], \quad y(0) = 0.\end{split}\]</div>
 <p>This analytic solution to this IDE is <span class="math">\(y(x) = \ln(1 + x)\)</span>.
 We’ll find a numerical solution using IDESolver and compare it to the analytic solution.</p>
-<p>We begin by creating an instance of <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve via <code class="docutils literal"><span class="pre">lambda</span></code> functions for simplicity.</p>
+<p>We begin by creating an instance of <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve.
+The format is</p>
+<div class="math">
+\[\begin{split}\frac{dy}{dx} &amp; = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
+&amp; x \in [a, b], \quad y(a) = y_0.\end{split}\]</div>
+<p>so we have</p>
+<div class="math">
+\[\begin{split}a &amp;= 0 \\
+b &amp;= 1 \\
+y(a) &amp;= 0 \\ \\
+c(x, y) =&amp; y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) \\
+d(x) =&amp; \frac{1}{\left(\ln(2)\right)^2} \\
+k(x, s) =&amp; \frac{x}{1 + s} \\
+f(s) &amp;= y(s) \\ \\
+\alpha(x) =&amp; 0 \\
+\beta(x) =&amp; 1.\end{split}\]</div>
+<p>In code, that looks like (using <code class="docutils literal"><span class="pre">lambda</span></code> functions for simplicity):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">idesolver</span> <span class="k">import</span> <span class="n">IDESolver</span>
@@ -185,7 +201,7 @@ We’ll find a numerical solution using IDESolver and compare it to the analytic
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>To run the solver, we call the <code class="docutils literal"><span class="pre">solve()</span></code> method on the solver:</p>
+<p>To run the solver, we call the <code class="docutils literal"><span class="pre">solve()</span></code> method:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
 <span class="n">solver</span><span class="o">.</span><span class="n">x</span>  <span class="c1"># whatever we passed in for x</span>

@@ -203,9 +203,10 @@ If both are given, the algorithm terminates either condition is met.</p>
 </div>
 <div class="section" id="global-error-estimate">
 <h2>Global Error Estimate<a class="headerlink" href="#global-error-estimate" title="Permalink to this headline">¶</a></h2>
-<p>The global error estimate <span class="math">\(G\)</span> between two possible solutions <span class="math">\(y_1\)</span> and <span class="math">\(y_2\)</span> is</p>
+<p>The default global error estimate <span class="math">\(G\)</span> between two possible solutions <span class="math">\(y_1\)</span> and <span class="math">\(y_2\)</span> is</p>
 <div class="math">
 \[G = \sqrt{ \sum_{x_i} \left| y_1(x_i) - y_2(x_i) \right| }\]</div>
+<p>A different global error estimator can be passed in the constructor as the argument <cite>global_error_function</cite>.</p>
 </div>
 </div>
 

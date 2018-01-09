@@ -62,8 +62,10 @@ If both are given, the algorithm terminates either condition is met.
 Global Error Estimate
 ---------------------
 
-The global error estimate :math:`G` between two possible solutions :math:`y_1` and :math:`y_2` is
+The default global error estimate :math:`G` between two possible solutions :math:`y_1` and :math:`y_2` is
 
 .. math::
 
     G = \sqrt{ \sum_{x_i} \left| y_1(x_i) - y_2(x_i) \right| }
+
+A different global error estimator can be passed in the constructor as the argument `global_error_function`.

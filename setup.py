@@ -8,7 +8,7 @@ with open(os.path.join(THIS_DIR, 'README.rst')) as f:
 
 setup(
     name = 'idesolver',
-    version = '1.0.0',
+    version = '1.0.1',
     author = 'Josh Karpel',
     author_email = 'karpel@wisc.edu',
     maintainer = 'Josh Karpel',

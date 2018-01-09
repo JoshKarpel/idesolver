@@ -1,7 +1,7 @@
 """
 A general purpose integro-differential equation (IDE) solver.
 
-Copyright (C) 2017  Joshua T Karpel
+Copyright (C) 2017-2018  Joshua T Karpel
 Full license available at github.com/JoshKarpel/LICENSE
 """
 
@@ -50,6 +50,28 @@ def complex_quad(integrand: Callable, lower_bound: float, upper_bound: float, **
     return real_result + (1j * imag_result), real_error, imag_error, real_extra, imag_extra
 
 
+def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
+    """
+    The default global error function.
+
+    The estimate is the square root of the sum of squared differences between `y1` and `y2`.
+
+    Parameters
+    ----------
+    y1 : :class:`numpy.ndarray`
+        A guess of the solution.
+    y2 : :class:`numpy.ndarray`
+        Another guess of the solution.
+
+    Returns
+    -------
+    error : :class:`float`
+        The global error estimate between `y1` and `y2`.
+    """
+    diff = y1 - y2
+    return np.sqrt(np.real(np.vdot(diff, diff)))
+
+
 # types to recognize as complex in y_0
 _COMPLEX_NUMERIC_TYPES = [complex, np.complex128]
 
@@ -96,7 +118,8 @@ class IDESolver:
                  int_rtol: float = 1e-8,
                  interpolation_kind: str = 'cubic',
                  smoothing_factor: float = .5,
-                 store_intermediate_y: bool = False):
+                 store_intermediate_y: bool = False,
+                 global_error_function: Callable = global_error):
         """
         Parameters
         ----------
@@ -136,6 +159,8 @@ class IDESolver:
             The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to ``0.5``.
         store_intermediate_y : :class:`bool`
             If ``True``, the intermediate guesses for :math:`y(x)` at each iteration will be stored in the attribute `y_intermediate`.
+        global_error_function :
+            The function to use to calculate the global error. Defaults to :func:`global_error`.
         """
         if type(y_0) in _COMPLEX_NUMERIC_TYPES:
             self.integrator = complex_quad
@@ -170,6 +195,7 @@ class IDESolver:
         if global_error_tolerance < 0:
             raise InvalidParameter('global_error_tolerance cannot be negative')
         self.global_error_tolerance = global_error_tolerance
+        self.global_error_function = global_error_function
 
         self.interpolation_kind = interpolation_kind
 
@@ -200,9 +226,7 @@ class IDESolver:
         """
         Compute the solution to the IDE.
 
-        The solution is returned, and also stored in the attribute ``y``.
-
-        Will emit warning messages if the global error increases on an iteration.
+        Will emit a warning message if the global error increases on an iteration.
         This does not necessarily mean that the algorithm is not converging, but may indicate that it's having problems.
 
         Will emit a warning message if the maximum number of iterations is used without reaching the global error tolerance.
@@ -279,8 +303,6 @@ class IDESolver:
         """
         Return the global error estimate between `y1` and `y2`.
 
-        The estimate is the square root of the sum of squared differences between `y1` and `y2`.
-
         Parameters
         ----------
         y1 : :class:`numpy.ndarray`
@@ -293,8 +315,7 @@ class IDESolver:
         error : :class:`float`
             The global error estimate between `y1` and `y2`.
         """
-        diff = y1 - y2
-        return np.sqrt(np.real(np.vdot(diff, diff)))
+        return self.global_error_function(y1, y2)
 
     def _solve_rhs_with_known_y(self, y: np.ndarray) -> np.ndarray:
         """Solves the right-hand-side of the IDE as if :math:`y` was `y`."""
