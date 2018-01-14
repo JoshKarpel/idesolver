@@ -10,24 +10,34 @@ authors:
 affiliations:
  - name: University of Wisconsin - Madison
    index: 1
-date: 12 October 2017
+date: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 bibliography: paper.bib
 ---
 
 # Summary
 
-This package provides a general-purpose integro-differential equation solver based on an iterative algorithm devised by Gelmi and Jorquera [@Gelmi2014].
-Integro-differential equations appear in many contexts, particularly when trying to describe a system whose current behavior depends on its own history.
-A good example is in electronics, where the differential equation for a circuit made only of resistors, capacitors, and inductors can be written in a mixed form where both the derivative and integral of the current appear (for the inductors and capacitors respectively).
+IDESolver provides a general-purpose integro-differential equation (IDE) solver based on an iterative algorithm devised by Gelmi and Jorquera [@Gelmi2014].
+IDEs appear in many contexts, particularly when trying to describe a system whose current behavior depends on its own history.
+A common example is in electronics, where the governing equation for a circuit made only of resistors, capacitors, and inductors can be written in a mixed form where both the derivative and integral of the current appear (for the inductors and capacitors respectively).
+More complicated examples may contain convolutions of the unknown function against some kernel function, or even be nonlinear in the unknown function.
 
-Very simple IDEs like those in electronics can often by solved by Laplace transformation (or turned into double-differential form and solved by Fourier transform or any number of other techniques).
+Very simple IDEs can often by solved using integral transforms.
+For example, Laplace and Fourier transforms are often used to solve simple circuit problems analytically.
 Finding analytic solutions for more complicated IDEs is an area of active research and tends to require a special approach for each one.
-Even these techniques often produce non-closed forms for the result.
+Even these techniques often produce non-closed forms for the result, which can be difficult to apply practically depending on their convergence properties.
+The details of these methods are often far more complicated than a researcher who just wants a numerical solution to their IDE will want to deal with.
 
-In 2014, Gelmi and Jorquera [@Gelmi2014] published a simple iterative algorithm for finding the solution to a fairly generic integro-differential equation.
-IDESolver implements a modified and expanded version of this algorithm.
-It can handle both real- and complex-valued IDEs, and uses a slightly different error estimate.
+In 2014, Gelmi and Jorquera [@Gelmi2014] published a simple and robust algorithm for finding numeric solutions of generic integro-differential equations.
+IDESolver implements a modified and expanded version of this algorithm as a Python library.
+It handles both real-valued and complex-valued IDEs, allows for configuration of the error estimator, and provides control over the error tolerances of the internal parts of the algorithm through a convenient interface.
+The typical user should not need to think about the methodology of solving their IDE at all (but advanced users can provide alternate subroutines if desired).
 
+# The Algorithm
+
+Gelmi and Jorquera's algorithm is iterative: it produces a new guess of the solution by solving the IDE as if it was an ODE (ordinary differential equation), pretending that the derivative of the new guess is given by the integral equation, but with the old guess substituted for the new guess.
+This means that there is never a need to solve the actual IDE, just a series of ODEs.
+Once the guess stops changing dramatically (according to some tolerance set by the user) or a maximum number of iterations is reached (again, set by the user) the algorithm terminates.
+This is conceptually similar to iterative approximation methods in linear algebra [@Axelsson1996], but repurposed for use with an IDE.
 
 # References
 
