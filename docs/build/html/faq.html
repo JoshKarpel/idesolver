@@ -97,7 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#how-do-i-install-idesolver">How do I install IDESolver?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#i-d-like-to-pickle-my-idesolver-instance-but-it-exploded">I’d like to pickle my IDESolver instance, but it exploded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#can-i-pickle-an-idesolver-instance">Can I pickle an <code class="docutils literal"><span class="pre">IDESolver</span></code> instance?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#can-i-parallelize-idesolver-over-multiple-cores">Can I parallelize IDESolver over multiple cores?</a></li>
 </ul>
 </li>
@@ -174,9 +174,9 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="i-d-like-to-pickle-my-idesolver-instance-but-it-exploded">
-<h2>I’d like to pickle my IDESolver instance, but it exploded?<a class="headerlink" href="#i-d-like-to-pickle-my-idesolver-instance-but-it-exploded" title="Permalink to this headline">¶</a></h2>
-<p>It probably exploded because you passed <code class="docutils literal"><span class="pre">lambda</span></code> functions as your callables.
+<div class="section" id="can-i-pickle-an-idesolver-instance">
+<h2>Can I pickle an <code class="docutils literal"><span class="pre">IDESolver</span></code> instance?<a class="headerlink" href="#can-i-pickle-an-idesolver-instance" title="Permalink to this headline">¶</a></h2>
+<p>Yes, with one caveat.
 You’ll need to define the callables somewhere that Python can find them in the global namespace (i.e., top-level functions in a module, methods in a top-level class, etc.).</p>
 </div>
 <div class="section" id="can-i-parallelize-idesolver-over-multiple-cores">

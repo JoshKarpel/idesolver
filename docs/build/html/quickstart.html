@@ -166,7 +166,7 @@
 <div class="math">
 \[\begin{split}\frac{dy}{dx} &amp; = y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) + \frac{1}{\left(\ln(2)\right)^2} \int_0^1 \frac{x}{1 + s} \, y(s) \, ds, \\
 &amp; x \in [0, 1], \quad y(0) = 0.\end{split}\]</div>
-<p>This analytic solution to this IDE is <span class="math">\(y(x) = \ln(1 + x)\)</span>.
+<p>The analytic solution to this IDE is <span class="math">\(y(x) = \ln(1 + x)\)</span>.
 We’ll find a numerical solution using IDESolver and compare it to the analytic solution.</p>
 <p>We begin by creating an instance of <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve.
 The format is</p>
@@ -231,8 +231,6 @@ For this IDE the algorithm converges in 40 iterations, resulting in a solution t
 </pre></div>
 </div>
 <img alt="_images/quickstart_comparison.png" src="_images/quickstart_comparison.png" />
-<p>As shown in the next figure, we happen to get agreement with the true solution below <span class="math">\(10^{-6}\)</span> everywhere, but this is essentially coincidental.
-The global error estimate compares successive approximations to the true solution, but doesn’t know what the true solution actually is.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
