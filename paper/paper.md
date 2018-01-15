@@ -1,5 +1,5 @@
 ---
-title: 'IDESolver: a general purpose integro-differential equation (IDE) solver'
+title: 'IDESolver: a general purpose integro-differential equation solver'
 tags:
   - Python
   - Integro-Differential Equations
@@ -16,7 +16,7 @@ bibliography: paper.bib
 
 # Summary
 
-IDESolver provides a general-purpose integro-differential equation (IDE) solver based on an iterative algorithm devised by Gelmi and Jorquera [@Gelmi2014].
+IDESolver provides a general-purpose numerical integro-differential equation (IDE) solver based on an iterative algorithm devised by Gelmi and Jorquera [@Gelmi2014].
 IDEs appear in many contexts, particularly when trying to describe a system whose current behavior depends on its own history.
 A common example is in electronics, where the governing equation for a circuit made only of resistors, capacitors, and inductors can be written in a mixed form where both the derivative and integral of the current appear (for the inductors and capacitors respectively).
 More complicated examples may contain convolutions of the unknown function against some kernel function, or even be nonlinear in the unknown function.
