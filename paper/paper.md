@@ -1,5 +1,5 @@
 ---
-title: 'idesolver: a general purpose integro-differential equation (IDE) solver'
+title: 'IDESolver: a general purpose integro-differential equation solver'
 tags:
   - Python
   - Integro-Differential Equations
@@ -10,18 +10,18 @@ authors:
 affiliations:
  - name: University of Wisconsin - Madison
    index: 1
-date: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+date: 15 January 2018
 bibliography: paper.bib
 ---
 
 # Summary
 
-IDESolver provides a general-purpose integro-differential equation (IDE) solver based on an iterative algorithm devised by Gelmi and Jorquera [@Gelmi2014].
+IDESolver provides a general-purpose numerical integro-differential equation (IDE) solver based on an iterative algorithm devised by Gelmi and Jorquera [@Gelmi2014].
 IDEs appear in many contexts, particularly when trying to describe a system whose current behavior depends on its own history.
 A common example is in electronics, where the governing equation for a circuit made only of resistors, capacitors, and inductors can be written in a mixed form where both the derivative and integral of the current appear (for the inductors and capacitors respectively).
 More complicated examples may contain convolutions of the unknown function against some kernel function, or even be nonlinear in the unknown function.
 
-Very simple IDEs can often by solved using integral transforms.
+Simple IDEs can often by solved using integral transforms.
 For example, Laplace and Fourier transforms are often used to solve simple circuit problems analytically.
 Finding analytic solutions for more complicated IDEs is an area of active research and tends to require a special approach for each one.
 Even these techniques often produce non-closed forms for the result, which can be difficult to apply practically depending on their convergence properties.
@@ -34,10 +34,10 @@ The typical user should not need to think about the methodology of solving their
 
 # The Algorithm
 
-Gelmi and Jorquera's algorithm is iterative: it produces a new guess of the solution by solving the IDE as if it was an ODE (ordinary differential equation), pretending that the derivative of the new guess is given by the integral equation, but with the old guess substituted for the new guess.
+Gelmi and Jorquera's algorithm is conceptually similar to iterative approximation methods in linear algebra [@Axelsson1996], but repurposed for use with an IDE.
+At each step it produces a new guess of the solution by solving the IDE as if it was an ODE (ordinary differential equation), but using the previous guess to evaluate the new derivative.
 This means that there is never a need to solve the actual IDE, just a series of ODEs.
 Once the guess stops changing dramatically (according to some tolerance set by the user) or a maximum number of iterations is reached (again, set by the user) the algorithm terminates.
-This is conceptually similar to iterative approximation methods in linear algebra [@Axelsson1996], but repurposed for use with an IDE.
 
 # References
 
