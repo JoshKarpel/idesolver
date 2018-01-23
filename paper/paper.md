@@ -27,7 +27,7 @@ Finding analytic solutions for more complicated IDEs is an area of active resear
 Even these techniques often produce non-closed forms for the result, which can be difficult to apply practically depending on their convergence properties.
 The details of these methods are often far more complicated than a researcher who just wants a numerical solution to their IDE will want to deal with.
 
-In 2014, Gelmi and Jorquera [@Gelmi2014] published a simple and robust algorithm for finding numeric solutions of generic integro-differential equations.
+In 2014, Gelmi and Jorquera published a simple and robust algorithm for finding numeric solutions of generic integro-differential equations.
 IDESolver implements a modified and expanded version of this algorithm as a Python library.
 It handles both real-valued and complex-valued IDEs, allows for configuration of the error estimator, and provides control over the error tolerances of the internal parts of the algorithm through a convenient interface.
 The typical user should not need to think about the methodology of solving their IDE at all (but advanced users can provide alternate subroutines if desired).
