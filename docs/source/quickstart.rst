@@ -13,7 +13,10 @@ Suppose we want to solve the integro-differential equation (IDE)
 The analytic solution to this IDE is :math:`y(x) = \ln(1 + x)`.
 We'll find a numerical solution using IDESolver and compare it to the analytic solution.
 
-We begin by creating an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve.
+The very first thing we need to do is install IDESolver.
+You'll want to install it via `pip` (`pip install idesolver`) into a `virtual environment <https://docs.python.org/3/tutorial/venv.html>`_.
+
+Now we can create an instance of :class:`IDESolver`, passing it information about the IDE that we want to solve.
 The format is
 
 .. math::
