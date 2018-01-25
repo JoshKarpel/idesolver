@@ -48,7 +48,7 @@ In code, that looks like (using ``lambda`` functions for simplicity):
 
     solver = IDESolver(
         x = np.linspace(0, 1, 100),
-        y_initial = 0,
+        y_0 = 0,
         c = lambda x, y: y - (.5 * x) + (1 / (1 + x)) - np.log(1 + x),
         d = lambda x: 1 / (np.log(2)) ** 2,
         k = lambda x, s: x / (1 + s),
