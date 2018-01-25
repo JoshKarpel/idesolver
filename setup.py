@@ -36,7 +36,7 @@ setup(
     packages = find_packages('src'),
     package_dir = {'': 'src'},
     install_requires = [
-        'numpy',
-        'scipy',
+        'numpy>=1.13.0',
+        'scipy>=1.0.0',
     ],
 )
