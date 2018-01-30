@@ -69,3 +69,10 @@ The default global error estimate :math:`G` between two possible solutions :math
     G = \sqrt{ \sum_{x_i} \left| y_1(x_i) - y_2(x_i) \right| }
 
 A different global error estimator can be passed in the constructor as the argument `global_error_function`.
+
+Test Suite
+----------
+
+Running the test suite requires some additional Python packages: `pip install pytest pytest-mock hypothesis`.
+You'll also need to get the entire IDESolver repository via `git clone https://github.com/JoshKarpel/idesolver.git`.
+Once installed, you can run the test suite by running `pytest` from the top-level directory of the package.

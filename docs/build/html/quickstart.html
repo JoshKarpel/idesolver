@@ -168,7 +168,9 @@
 &amp; x \in [0, 1], \quad y(0) = 0.\end{split}\]</div>
 <p>The analytic solution to this IDE is <span class="math">\(y(x) = \ln(1 + x)\)</span>.
 We’ll find a numerical solution using IDESolver and compare it to the analytic solution.</p>
-<p>We begin by creating an instance of <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve.
+<p>The very first thing we need to do is install IDESolver.
+You’ll want to install it via <cite>pip</cite> (<cite>pip install idesolver</cite>) into a <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">virtual environment</a>.</p>
+<p>Now we can create an instance of <a class="reference internal" href="api.html#idesolver.IDESolver" title="idesolver.IDESolver"><code class="xref py py-class docutils literal"><span class="pre">IDESolver</span></code></a>, passing it information about the IDE that we want to solve.
 The format is</p>
 <div class="math">
 \[\begin{split}\frac{dy}{dx} &amp; = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
@@ -191,7 +193,7 @@ f(s) &amp;= y(s) \\ \\
 
 <span class="n">solver</span> <span class="o">=</span> <span class="n">IDESolver</span><span class="p">(</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
-    <span class="n">y_initial</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">y_0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">c</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="p">),</span>
     <span class="n">d</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
     <span class="n">k</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">s</span><span class="p">),</span>

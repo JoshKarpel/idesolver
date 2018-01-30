@@ -97,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#the-algorithm">The Algorithm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#stopping-conditions">Stopping Conditions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#global-error-estimate">Global Error Estimate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-suite">Test Suite</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
@@ -207,6 +208,12 @@ If both are given, the algorithm terminates if either condition is met.</p>
 <div class="math">
 \[G = \sqrt{ \sum_{x_i} \left| y_1(x_i) - y_2(x_i) \right| }\]</div>
 <p>A different global error estimator can be passed in the constructor as the argument <cite>global_error_function</cite>.</p>
+</div>
+<div class="section" id="test-suite">
+<h2>Test Suite<a class="headerlink" href="#test-suite" title="Permalink to this headline">¶</a></h2>
+<p>Running the test suite requires some additional Python packages: <cite>pip install pytest pytest-mock hypothesis</cite>.
+You’ll also need to get the entire IDESolver repository via <cite>git clone https://github.com/JoshKarpel/idesolver.git</cite>.
+Once installed, you can run the test suite by running <cite>pytest</cite> from the top-level directory of the package.</p>
 </div>
 </div>
 

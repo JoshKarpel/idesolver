@@ -20,6 +20,7 @@ The algorithm is based on a scheme devised by `Gelmi and Jorquera <https://doi.o
 
 :doc:`manual`
    Details about the implementation of IDESolver.
+   Includes information about running the test suite.
 
 :doc:`api`
    Detailed documentation for IDESolver's API.
