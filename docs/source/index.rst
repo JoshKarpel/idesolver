@@ -14,6 +14,7 @@ Integro-differential equations appear in many contexts, particularly when trying
 The IDESolver is an iterative solver, which means it generates successive approximations to the exact solution, using each approximation to generate the next (hopefully better) one.
 The algorithm is based on a scheme devised by `Gelmi and Jorquera <https://doi.org/10.1016/j.cpc.2013.09.008>`_.
 
+If you use IDESolver in your work, please consider `citing it <https://doi.org/10.21105/joss.00542>`_.
 
 :doc:`quickstart`
    A brief tutorial in using IDESolver.

@@ -20,6 +20,8 @@ We recommend installing into a `virtual environment <https://docs.python.org/3/t
 
 Full documentation can be found `here <https://joshkarpel.github.io/idesolver/build/html/index.html>`_.
 
+If you use IDESolver in your work, please consider `citing it <https://doi.org/10.21105/joss.00542>`_.
+
 Details about running the test suite are at the end of the `manual <https://joshkarpel.github.io/idesolver/build/html/manual.html>`_.
 Problems with IDESolver should be reported via `GitHub issues <https://github.com/JoshKarpel/idesolver/issues>`_.
 We are open to improvements: see the `Code of Conduct <https://github.com/JoshKarpel/idesolver/blob/master/CODE_OF_CONDUCT.md>`_ and the `Contribution Guidelines <https://github.com/JoshKarpel/idesolver/blob/master/CONTRIBUTING.md>`_ for details.
