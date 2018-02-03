@@ -21,6 +21,7 @@ setup(
     author_email = 'karpel@wisc.edu',
     maintainer = 'Josh Karpel',
     maintainer_email = 'karpel@wisc.edu',
+    short_description = 'A general purpose iterative numeric integro-differential equation (IDE) solver',
     long_description = long_desc,
     url = 'https://github.com/JoshKarpel/idesolver',
     classifiers = [

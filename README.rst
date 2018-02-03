@@ -10,7 +10,7 @@ idesolver
 .. image:: http://joss.theoj.org/papers/9d3ba306da6abb37f7cf357cd9aad695/status.svg
     :target: http://joss.theoj.org/papers/9d3ba306da6abb37f7cf357cd9aad695
 
-A general purpose integro-differential equation (IDE) solver, based on an iterative scheme devised by `Gelmi and Jorquera <https://doi.org/10.1016/j.cpc.2013.09.008>`_.
+A general purpose numeric integro-differential equation (IDE) solver, based on an iterative scheme devised by `Gelmi and Jorquera <https://doi.org/10.1016/j.cpc.2013.09.008>`_.
 IDEs appear in many contexts, particularly when trying to describe a system whose current behavior depends on its own history.
 IDESolver provides a simple interface for solving these kinds of equations in Python.
 
