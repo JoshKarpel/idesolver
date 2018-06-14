@@ -93,7 +93,7 @@ For this IDE the algorithm converges in 40 iterations, resulting in a solution t
     plt.show()
 
 
-.. image:: figs/quickstart_comparison.*
+.. image:: /_static/figs/quickstart_comparison.*
 
 ::
 
@@ -113,4 +113,4 @@ For this IDE the algorithm converges in 40 iterations, resulting in a solution t
 
     plt.show()
 
-.. image:: figs/quickstart_error.*
+.. image:: /_static/figs/quickstart_error.*
