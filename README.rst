@@ -1,6 +1,9 @@
 idesolver
 ---------
 
+.. image:: https://readthedocs.org/projects/idesolver/badge/?version=latest
+    :target: https://idesolver.readthedocs.io/en/latest/?badge=latest
+
 .. image:: https://travis-ci.org/JoshKarpel/idesolver.svg?branch=master
     :target: https://travis-ci.org/JoshKarpel/idesolver
 
@@ -18,8 +21,8 @@ Stable releases are available on PyPI: ``pip install idesolver``.
 IDESolver requires Python 3.6+, `numpy <https://pypi.python.org/pypi/numpy>`_, and `scipy <https://pypi.python.org/pypi/scipy/>`_.
 We recommend installing into a `virtual environment <https://docs.python.org/3/tutorial/venv.html>`_.
 
-Full documentation can be found `here <https://joshkarpel.github.io/idesolver/build/html/index.html>`_.
+Full documentation can be found `here <https://idesolver.readthedocs.io/en/latest/>`_.
 
-Details about running the test suite are at the end of the `manual <https://joshkarpel.github.io/idesolver/build/html/manual.html>`_.
+Details about running the test suite are at the end of the `manual <https://idesolver.readthedocs.io/en/latest/manual.html>`_.
 Problems with IDESolver should be reported via `GitHub issues <https://github.com/JoshKarpel/idesolver/issues>`_.
 We are open to improvements: see the `Code of Conduct <https://github.com/JoshKarpel/idesolver/blob/master/CODE_OF_CONDUCT.md>`_ and the `Contribution Guidelines <https://github.com/JoshKarpel/idesolver/blob/master/CONTRIBUTING.md>`_ for details.
