@@ -16,7 +16,7 @@ with open(os.path.join(THIS_DIR, 'README.rst')) as f:
 
 setup(
     name = 'idesolver',
-    version = '1.0.2',
+    version = '1.0.3',
     author = 'Josh Karpel',
     author_email = 'karpel@wisc.edu',
     maintainer = 'Josh Karpel',
@@ -34,8 +34,7 @@ setup(
         'Topic :: Scientific/Engineering :: Mathematics',
         'Intended Audience :: Science/Research',
     ],
-    packages = find_packages('src'),
-    package_dir = {'': 'src'},
+    packages = find_packages(),
     install_requires = [
         'numpy>=1.13.0',
         'scipy>=1.0.0',

@@ -1,12 +1,17 @@
+dist: xenial
+
 language: python
 python:
   - "3.6"
+  - "3.7"
+
 install:
-  - pip install -r requirements.txt
+  - pip install --upgrade -r requirements-tests.txt
   - pip install -e .
-  - pip install pytest pytest-mock pytest-cov hypothesis
   - pip install codecov
+
 script:
   - pytest --cov
+
 after_success:
   - codecov
