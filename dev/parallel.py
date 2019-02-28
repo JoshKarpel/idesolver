@@ -12,7 +12,7 @@ def run(solver):
 
 
 def c(x, y):
-    return y - (.5 * x) + (1 / (1 + x)) - np.log(1 + x)
+    return y - (0.5 * x) + (1 / (1 + x)) - np.log(1 + x)
 
 
 def d(x):
@@ -35,23 +35,23 @@ def f(y):
     return y
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # create 20 IDESolvers
     ides = [
         IDESolver(
-            x = np.linspace(0, 1, 100),
-            y_0 = 0,
-            c = c,
-            d = d,
-            k = k,
-            lower_bound = lower_bound,
-            upper_bound = upper_bound,
-            f = f,
+            x=np.linspace(0, 1, 100),
+            y_0=0,
+            c=c,
+            d=d,
+            k=k,
+            lower_bound=lower_bound,
+            upper_bound=upper_bound,
+            f=f,
         )
         for y_0 in np.linspace(0, 1, 20)
     ]
 
-    with multiprocessing.Pool(processes = 2) as pool:
+    with multiprocessing.Pool(processes=2) as pool:
         results = pool.map(run, ides)
 
     print(results)

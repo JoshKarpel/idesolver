@@ -4,12 +4,7 @@ import pytest
 import coverage
 import os
 
-cov = coverage.coverage(
-    branch = True,
-    omit = [
-        'tests/*',
-    ],
-)
+cov = coverage.coverage(branch=True, omit=["tests/*"])
 cov.start()
 
 pytest.main([])
@@ -17,11 +12,11 @@ pytest.main([])
 cov.stop()
 cov.save()
 
-print('Coverage Report:')
+print("Coverage Report:")
 cov.report()
 
-report_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'covreport')
-cov.html_report(directory = report_dir)
+report_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "covreport")
+cov.html_report(directory=report_dir)
 print(f'HTML Report at {os.path.join(report_dir, "index.html")}')
 
 cov.erase()

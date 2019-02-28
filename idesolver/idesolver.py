@@ -13,7 +13,7 @@ import numpy as np
 import scipy.integrate as integ
 import scipy.interpolate as inter
 
-logger = logging.getLogger('idesolver')
+logger = logging.getLogger("idesolver")
 logger.setLevel(logging.DEBUG)
 
 
@@ -37,17 +37,27 @@ class UnexpectedlyComplexValuedIDE(IDESolverException):
     pass
 
 
-def complex_quad(integrand: Callable, lower_bound: float, upper_bound: float, **kwargs) -> (complex, float, float, tuple, tuple):
+def complex_quad(
+    integrand: Callable, lower_bound: float, upper_bound: float, **kwargs
+) -> (complex, float, float, tuple, tuple):
     """
     A thin wrapper over :func:`scipy.integrate.quad` that handles splitting the real and complex parts of the integral and recombining them.
     Keyword arguments are passed to both of the internal ``quad`` calls.
     """
-    real_result, real_error, *real_extra = integ.quad(lambda x: np.real(integrand(x)),
-                                                      lower_bound, upper_bound, **kwargs)
-    imag_result, imag_error, *imag_extra = integ.quad(lambda x: np.imag(integrand(x)),
-                                                      lower_bound, upper_bound, **kwargs)
+    real_result, real_error, *real_extra = integ.quad(
+        lambda x: np.real(integrand(x)), lower_bound, upper_bound, **kwargs
+    )
+    imag_result, imag_error, *imag_extra = integ.quad(
+        lambda x: np.imag(integrand(x)), lower_bound, upper_bound, **kwargs
+    )
 
-    return real_result + (1j * imag_result), real_error, imag_error, real_extra, imag_extra
+    return (
+        real_result + (1j * imag_result),
+        real_error,
+        imag_error,
+        real_extra,
+        imag_extra,
+    )
 
 
 def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
@@ -100,26 +110,28 @@ class IDESolver:
 
     """
 
-    def __init__(self,
-                 x: np.ndarray,
-                 y_0: Union[float, np.float64, complex, np.complex128],
-                 c: Optional[Callable] = None,
-                 d: Optional[Callable] = None,
-                 k: Optional[Callable] = None,
-                 f: Optional[Callable] = None,
-                 lower_bound: Optional[Callable] = None,
-                 upper_bound: Optional[Callable] = None,
-                 global_error_tolerance: float = 1e-6,
-                 max_iterations: Optional[int] = None,
-                 ode_method: str = 'RK45',
-                 ode_atol: float = 1e-8,
-                 ode_rtol: float = 1e-8,
-                 int_atol: float = 1e-8,
-                 int_rtol: float = 1e-8,
-                 interpolation_kind: str = 'cubic',
-                 smoothing_factor: float = .5,
-                 store_intermediate_y: bool = False,
-                 global_error_function: Callable = global_error):
+    def __init__(
+        self,
+        x: np.ndarray,
+        y_0: Union[float, np.float64, complex, np.complex128],
+        c: Optional[Callable] = None,
+        d: Optional[Callable] = None,
+        k: Optional[Callable] = None,
+        f: Optional[Callable] = None,
+        lower_bound: Optional[Callable] = None,
+        upper_bound: Optional[Callable] = None,
+        global_error_tolerance: float = 1e-6,
+        max_iterations: Optional[int] = None,
+        ode_method: str = "RK45",
+        ode_atol: float = 1e-8,
+        ode_rtol: float = 1e-8,
+        int_atol: float = 1e-8,
+        int_rtol: float = 1e-8,
+        interpolation_kind: str = "cubic",
+        smoothing_factor: float = 0.5,
+        store_intermediate_y: bool = False,
+        global_error_function: Callable = global_error,
+    ):
         """
         Parameters
         ----------
@@ -191,20 +203,22 @@ class IDESolver:
         self.upper_bound = upper_bound
 
         if global_error_tolerance == 0 and max_iterations is None:
-            raise InvalidParameter('global_error_tolerance cannot be zero if max_iterations is None')
+            raise InvalidParameter(
+                "global_error_tolerance cannot be zero if max_iterations is None"
+            )
         if global_error_tolerance < 0:
-            raise InvalidParameter('global_error_tolerance cannot be negative')
+            raise InvalidParameter("global_error_tolerance cannot be negative")
         self.global_error_tolerance = global_error_tolerance
         self.global_error_function = global_error_function
 
         self.interpolation_kind = interpolation_kind
 
         if not 0 < smoothing_factor < 1:
-            raise InvalidParameter('Smoothing factor must be between 0 and 1')
+            raise InvalidParameter("Smoothing factor must be between 0 and 1")
         self.smoothing_factor = smoothing_factor
 
         if max_iterations is not None and max_iterations <= 0:
-            raise InvalidParameter('If given, max iterations must be greater than 0')
+            raise InvalidParameter("If given, max iterations must be greater than 0")
         self.max_iterations = max_iterations
 
         self.ode_method = ode_method
@@ -243,7 +257,11 @@ class IDESolver:
         """
         # check if the user messed up by not passing y_0 as a complex number when they should have
         with warnings.catch_warnings():
-            warnings.filterwarnings(action = 'error', message = 'Casting complex values', category = np.ComplexWarning)
+            warnings.filterwarnings(
+                action="error",
+                message="Casting complex values",
+                category=np.ComplexWarning,
+            )
 
             try:
                 y_current = self._initial_y()
@@ -254,9 +272,11 @@ class IDESolver:
 
                 self.iteration = 0
 
-                logger.debug(f'Advanced to iteration {self.iteration}. Current error: {error_current}.')
+                logger.debug(
+                    f"Advanced to iteration {self.iteration}. Current error: {error_current}."
+                )
                 if callback is not None:
-                    logger.debug(f'Calling {callback} after iteration {self.iteration}')
+                    logger.debug(f"Calling {callback} after iteration {self.iteration}")
                     callback(self, y_guess, error_current)
 
                 while error_current > self.global_error_tolerance:
@@ -265,26 +285,46 @@ class IDESolver:
                     new_guess = self._solve_rhs_with_known_y(new_current)
                     new_error = self._global_error(new_current, new_guess)
                     if new_error > error_current:
-                        warnings.warn(f'Error increased on iteration {self.iteration}', IDEConvergenceWarning)
+                        warnings.warn(
+                            f"Error increased on iteration {self.iteration}",
+                            IDEConvergenceWarning,
+                        )
 
-                    y_current, y_guess, error_current = new_current, new_guess, new_error
+                    y_current, y_guess, error_current = (
+                        new_current,
+                        new_guess,
+                        new_error,
+                    )
 
                     if self.store_intermediate:
                         self.y_intermediate.append(y_current)
 
                     self.iteration += 1
 
-                    logger.debug(f'Advanced to iteration {self.iteration}. Current error: {error_current}.')
+                    logger.debug(
+                        f"Advanced to iteration {self.iteration}. Current error: {error_current}."
+                    )
 
                     if callback is not None:
-                        logger.debug(f'Calling {callback} after iteration {self.iteration}')
+                        logger.debug(
+                            f"Calling {callback} after iteration {self.iteration}"
+                        )
                         callback(self, y_guess, error_current)
 
-                    if self.max_iterations is not None and self.iteration >= self.max_iterations:
-                        warnings.warn(IDEConvergenceWarning(f'Used maximum number of iterations ({self.max_iterations}), but only got to global error {error_current} (target {self.global_error_tolerance})'))
+                    if (
+                        self.max_iterations is not None
+                        and self.iteration >= self.max_iterations
+                    ):
+                        warnings.warn(
+                            IDEConvergenceWarning(
+                                f"Used maximum number of iterations ({self.max_iterations}), but only got to global error {error_current} (target {self.global_error_tolerance})"
+                            )
+                        )
                         break
             except np.ComplexWarning:
-                raise UnexpectedlyComplexValuedIDE('Detected complex-valued IDE. Make sure to pass y_0 as a complex number.')
+                raise UnexpectedlyComplexValuedIDE(
+                    "Detected complex-valued IDE. Make sure to pass y_0 as a complex number."
+                )
 
         self.y = y_guess
         self.global_error = error_current
@@ -326,8 +366,8 @@ class IDESolver:
                 lambda s: self.k(x, s) * self.f(interpolated_y(s)),
                 self.lower_bound(x),
                 self.upper_bound(x),
-                epsabs = self.int_atol,
-                epsrel = self.int_rtol,
+                epsabs=self.int_atol,
+                epsrel=self.int_rtol,
             )
             return result
 
@@ -351,26 +391,26 @@ class IDESolver:
             The interpolator function.
         """
         return inter.interp1d(
-            x = self.x,
-            y = y,
-            kind = self.interpolation_kind,
-            fill_value = 'extrapolate',
-            assume_sorted = True,
+            x=self.x,
+            y=y,
+            kind=self.interpolation_kind,
+            fill_value="extrapolate",
+            assume_sorted=True,
         )
 
     def _solve_ode(self, rhs: Callable) -> np.ndarray:
         """Solves an ODE with the given right-hand side."""
         sol = integ.solve_ivp(
-            fun = rhs,
-            y0 = np.array([self.y_0]),
-            t_span = (self.x[0], self.x[-1]),
-            t_eval = self.x,
-            method = self.ode_method,
-            atol = self.ode_atol,
-            rtol = self.ode_rtol,
+            fun=rhs,
+            y0=np.array([self.y_0]),
+            t_span=(self.x[0], self.x[-1]),
+            t_eval=self.x,
+            method=self.ode_method,
+            atol=self.ode_atol,
+            rtol=self.ode_rtol,
         )
 
         if not sol.success:
-            raise ODESolutionFailed(f'Error while trying to solve ODE: {sol.status}')
+            raise ODESolutionFailed(f"Error while trying to solve ODE: {sol.status}")
 
         return sol.y[0]
