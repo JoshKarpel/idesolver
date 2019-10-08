@@ -3,4 +3,4 @@ pytest
 pytest-xdist
 pytest-mock
 pytest-cov
-hypothesis
+hypothesis==4.38.0
