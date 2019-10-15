@@ -35,6 +35,7 @@ setup(
     short_description="A general purpose iterative numeric integro-differential equation (IDE) solver",
     long_description=long_desc,
     url="https://github.com/JoshKarpel/idesolver",
+    license = "GPL v3.0",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
