@@ -1,7 +1,7 @@
 """
 A general purpose integro-differential equation (IDE) solver.
 
-Copyright (C) 2017-2018  Joshua T Karpel
+Copyright (C) 2017-2019  Joshua T Karpel
 Full license available at github.com/JoshKarpel/LICENSE
 """
 
@@ -13,28 +13,10 @@ import numpy as np
 import scipy.integrate as integ
 import scipy.interpolate as inter
 
+from . import exceptions
+
 logger = logging.getLogger("idesolver")
 logger.setLevel(logging.DEBUG)
-
-
-class IDEConvergenceWarning(Warning):
-    pass
-
-
-class IDESolverException(Exception):
-    pass
-
-
-class InvalidParameter(IDESolverException):
-    pass
-
-
-class ODESolutionFailed(IDESolverException):
-    pass
-
-
-class UnexpectedlyComplexValuedIDE(IDESolverException):
-    pass
 
 
 def complex_quad(
@@ -203,22 +185,22 @@ class IDESolver:
         self.upper_bound = upper_bound
 
         if global_error_tolerance == 0 and max_iterations is None:
-            raise InvalidParameter(
-                "global_error_tolerance cannot be zero if max_iterations is None"
+            raise exceptions.InvalidParameter(
+                "global_error_tolerance cannot be 0 if max_iterations is None"
             )
         if global_error_tolerance < 0:
-            raise InvalidParameter("global_error_tolerance cannot be negative")
+            raise exceptions.InvalidParameter("global_error_tolerance cannot be negative")
         self.global_error_tolerance = global_error_tolerance
         self.global_error_function = global_error_function
 
         self.interpolation_kind = interpolation_kind
 
         if not 0 < smoothing_factor < 1:
-            raise InvalidParameter("Smoothing factor must be between 0 and 1")
+            raise exceptions.InvalidParameter("Smoothing factor must be between 0 and 1")
         self.smoothing_factor = smoothing_factor
 
         if max_iterations is not None and max_iterations <= 0:
-            raise InvalidParameter("If given, max iterations must be greater than 0")
+            raise exceptions.InvalidParameter("If given, max iterations must be greater than 0")
         self.max_iterations = max_iterations
 
         self.ode_method = ode_method
@@ -287,7 +269,7 @@ class IDESolver:
                     if new_error > error_current:
                         warnings.warn(
                             f"Error increased on iteration {self.iteration}",
-                            IDEConvergenceWarning,
+                            exceptions.IDEConvergenceWarning,
                         )
 
                     y_current, y_guess, error_current = (
@@ -316,13 +298,13 @@ class IDESolver:
                         and self.iteration >= self.max_iterations
                     ):
                         warnings.warn(
-                            IDEConvergenceWarning(
+                            exceptions.IDEConvergenceWarning(
                                 f"Used maximum number of iterations ({self.max_iterations}), but only got to global error {error_current} (target {self.global_error_tolerance})"
                             )
                         )
                         break
             except np.ComplexWarning:
-                raise UnexpectedlyComplexValuedIDE(
+                raise exceptions.UnexpectedlyComplexValuedIDE(
                     "Detected complex-valued IDE. Make sure to pass y_0 as a complex number."
                 )
 
@@ -345,9 +327,9 @@ class IDESolver:
 
         Parameters
         ----------
-        y1 : :class:`numpy.ndarray`
+        y1
             A guess of the solution.
-        y2 : :class:`numpy.ndarray`
+        y2
             Another guess of the solution.
 
         Returns
@@ -411,6 +393,6 @@ class IDESolver:
         )
 
         if not sol.success:
-            raise ODESolutionFailed(f"Error while trying to solve ODE: {sol.status}")
+            raise exceptions.ODESolutionFailed(f"Error while trying to solve ODE: {sol.status}")
 
         return sol.y[0]
