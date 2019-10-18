@@ -11,7 +11,6 @@ from idesolver.version import _version_info
         ('2.4.3b3', (2, 4, 3, 'b', 3)),
         ('12.44.33', (12, 44, 33, None, None)),
         ('12.44.33b99', (12, 44, 33, 'b', 99)),
-        ('12.44.33post1', (12, 44, 33, 'post', 1)),
     ]
 )
 def test_version_info(version, expected):
