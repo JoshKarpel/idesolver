@@ -1,10 +1,3 @@
-"""
-A general purpose integro-differential equation (IDE) solver.
-
-Copyright (C) 2017-2019  Joshua T Karpel
-Full license available at github.com/JoshKarpel/LICENSE
-"""
-
 from typing import Union, Optional, Callable
 import warnings
 import logging
