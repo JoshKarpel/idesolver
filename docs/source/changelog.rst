@@ -3,6 +3,10 @@ Change Log
 
 .. currentmodule:: idesolver
 
+v1.0.4
+------
+* Revision of packaging and CI flow. There shouldn't be any impact on users.
+
 v1.0.3
 ------
 * Revision of package structure and CI flow. There shouldn't be any impact on users.
