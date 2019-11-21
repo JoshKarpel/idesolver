@@ -4,9 +4,6 @@ idesolver
 .. image:: https://readthedocs.org/projects/idesolver/badge/?version=latest
     :target: https://idesolver.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://travis-ci.org/JoshKarpel/idesolver.svg?branch=master
-    :target: https://travis-ci.org/JoshKarpel/idesolver
-
 .. image:: https://codecov.io/gh/JoshKarpel/idesolver/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/JoshKarpel/idesolver
 
@@ -22,6 +19,7 @@ IDESolver requires Python 3.6+, `numpy <https://pypi.python.org/pypi/numpy>`_, a
 We recommend installing into a `virtual environment <https://docs.python.org/3/tutorial/venv.html>`_.
 
 Full documentation can be found `here <https://idesolver.readthedocs.io/en/latest/>`_.
+If you use `idesolver` in your research, please consider `citing the associated paper <https://joss.theoj.org/papers/10.21105/joss.00542>`_.
 
 Details about running the test suite are at the end of the `manual <https://idesolver.readthedocs.io/en/latest/manual.html>`_.
 Problems with IDESolver should be reported via `GitHub issues <https://github.com/JoshKarpel/idesolver/issues>`_.
