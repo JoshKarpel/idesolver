@@ -233,9 +233,7 @@ class IDESolver:
         # check if the user messed up by not passing y_0 as a complex number when they should have
         with warnings.catch_warnings():
             warnings.filterwarnings(
-                action="error",
-                message="Casting complex values",
-                category=np.ComplexWarning,
+                action="error", message="Casting complex values", category=np.ComplexWarning,
             )
 
             try:
@@ -281,15 +279,10 @@ class IDESolver:
                     )
 
                     if callback is not None:
-                        logger.debug(
-                            f"Calling {callback} after iteration {self.iteration}"
-                        )
+                        logger.debug(f"Calling {callback} after iteration {self.iteration}")
                         callback(self, y_guess, error_current)
 
-                    if (
-                        self.max_iterations is not None
-                        and self.iteration >= self.max_iterations
-                    ):
+                    if self.max_iterations is not None and self.iteration >= self.max_iterations:
                         warnings.warn(
                             exceptions.IDEConvergenceWarning(
                                 f"Used maximum number of iterations ({self.max_iterations}), but only got to global error {error_current} (target {self.global_error_tolerance})"

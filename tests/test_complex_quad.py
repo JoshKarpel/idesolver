@@ -27,9 +27,7 @@ def real_integrand(request):
 
 
 def test_real_part_passes_through(x, real_integrand):
-    cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(
-        real_integrand, x[0], x[-1]
-    )
+    cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(real_integrand, x[0], x[-1])
 
     quad_result, quad_error = integ.quad(real_integrand, x[0], x[-1])
 
@@ -40,9 +38,7 @@ def test_real_part_passes_through(x, real_integrand):
 def test_imag_part_passes_through(x, real_integrand):
     imag_integrand = lambda x: 1j * real_integrand(x)
 
-    cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(
-        imag_integrand, x[0], x[-1]
-    )
+    cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(imag_integrand, x[0], x[-1])
 
     quad_result, quad_error = integ.quad(real_integrand, x[0], x[-1])
 
@@ -58,9 +54,7 @@ def test_real_and_imag_parts_combined(x, real_integrand, second_integrand):
     imag_integrand = lambda x: 1j * second_integrand(x)
     combined_integrand = lambda x: real_integrand(x) + imag_integrand(x)
 
-    cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(
-        combined_integrand, x[0], x[-1]
-    )
+    cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(combined_integrand, x[0], x[-1])
 
     quad_real_result, quad_real_error = integ.quad(real_integrand, x[0], x[-1])
     quad_imag_result, quad_imag_error = integ.quad(second_integrand, x[0], x[-1])

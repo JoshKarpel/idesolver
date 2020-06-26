@@ -101,10 +101,7 @@ COMPLEX_IDES = [
             f=lambda y: y,
             global_error_tolerance=1e-6,
         ),
-        lambda x: 2
-        * np.exp(5 * x / 2)
-        * np.sinh(0.5 * np.sqrt(25 - 12j) * x)
-        / np.sqrt(25 - 12j),
+        lambda x: 2 * np.exp(5 * x / 2) * np.sinh(0.5 * np.sqrt(25 - 12j) * x) / np.sqrt(25 - 12j),
     )
 ]
 
