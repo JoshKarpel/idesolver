@@ -1,6 +1,5 @@
-import pytest
-
 import numpy as np
+import pytest
 import scipy.integrate as integ
 
 from idesolver import complex_quad

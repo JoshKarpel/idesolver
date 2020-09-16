@@ -1,6 +1,6 @@
-from typing import Union, Optional, Callable
-import warnings
 import logging
+import warnings
+from typing import Callable, Optional, Union
 
 import numpy as np
 import scipy.integrate as integ
@@ -233,7 +233,9 @@ class IDESolver:
         # check if the user messed up by not passing y_0 as a complex number when they should have
         with warnings.catch_warnings():
             warnings.filterwarnings(
-                action="error", message="Casting complex values", category=np.ComplexWarning,
+                action="error",
+                message="Casting complex values",
+                category=np.ComplexWarning,
             )
 
             try:

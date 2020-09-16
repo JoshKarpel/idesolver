@@ -1,6 +1,6 @@
-import pytest
 import hypothesis as hyp
 import hypothesis.strategies as st
+import pytest
 
 from idesolver import IDESolver, InvalidParameter
 
@@ -29,15 +29,21 @@ def test_cannot_construct_with_bad_smoothing_factor(dummy_args, smoothing_factor
         IDESolver(*dummy_args, smoothing_factor=smoothing_factor)
 
 
-def test_can_construct_with_global_error_tolerance_set_and_without_max_iterations(dummy_args,):
+def test_can_construct_with_global_error_tolerance_set_and_without_max_iterations(
+    dummy_args,
+):
     IDESolver(*dummy_args, global_error_tolerance=1e-6, max_iterations=None)
 
 
-def test_can_construct_with_global_error_tolerance_set_and_with_max_iterations_set(dummy_args,):
+def test_can_construct_with_global_error_tolerance_set_and_with_max_iterations_set(
+    dummy_args,
+):
     IDESolver(*dummy_args, global_error_tolerance=1e-6, max_iterations=50)
 
 
-def test_can_construct_without_global_error_tolerance_set_and_with_max_iterations(dummy_args,):
+def test_can_construct_without_global_error_tolerance_set_and_with_max_iterations(
+    dummy_args,
+):
     IDESolver(*dummy_args, global_error_tolerance=0, max_iterations=50)
 
 

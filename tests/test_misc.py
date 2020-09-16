@@ -1,10 +1,9 @@
-import pytest
 import hypothesis as hyp
 import hypothesis.strategies as st
-
 import numpy as np
+import pytest
 
-from idesolver import IDESolver, IDEConvergenceWarning
+from idesolver import IDEConvergenceWarning, IDESolver
 
 
 def test_warning_when_not_enough_iterations():

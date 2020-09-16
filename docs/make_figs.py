@@ -1,7 +1,7 @@
 import os
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from idesolver import IDESolver
 
@@ -46,7 +46,8 @@ def make_error_plot(name, solver, exact):
     ax.set_title(f"Local Error for Global Error Tolerance = {solver.global_error_tolerance}")
     ax.set_xlabel(r"$x$", fontsize=12)
     ax.set_ylabel(
-        r"$\left| y_{\mathrm{idesolver}}(x) - y_{\mathrm{analytic}}(x) \right|$", fontsize=12,
+        r"$\left| y_{\mathrm{idesolver}}(x) - y_{\mathrm{analytic}}(x) \right|$",
+        fontsize=12,
     )
 
     savefig(name)
