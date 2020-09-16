@@ -3,6 +3,11 @@ Change Log
 
 .. currentmodule:: idesolver
 
+v1.0.5
+------
+* Relaxes dependency version restrictions in advance of changes to ``pip``.
+  There shouldn't be any impact on users.
+
 v1.0.4
 ------
 * Revision of packaging and CI flow. There shouldn't be any impact on users.
