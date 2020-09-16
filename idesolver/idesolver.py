@@ -1,6 +1,6 @@
-from typing import Union, Optional, Callable
-import warnings
 import logging
+import warnings
+from typing import Callable, Optional, Union
 
 import numpy as np
 import scipy.integrate as integ
@@ -281,15 +281,10 @@ class IDESolver:
                     )
 
                     if callback is not None:
-                        logger.debug(
-                            f"Calling {callback} after iteration {self.iteration}"
-                        )
+                        logger.debug(f"Calling {callback} after iteration {self.iteration}")
                         callback(self, y_guess, error_current)
 
-                    if (
-                        self.max_iterations is not None
-                        and self.iteration >= self.max_iterations
-                    ):
+                    if self.max_iterations is not None and self.iteration >= self.max_iterations:
                         warnings.warn(
                             exceptions.IDEConvergenceWarning(
                                 f"Used maximum number of iterations ({self.max_iterations}), but only got to global error {error_current} (target {self.global_error_tolerance})"

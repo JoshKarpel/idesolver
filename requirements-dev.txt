@@ -1,6 +1,0 @@
--r requirements.txt
-pytest
-pytest-xdist
-pytest-mock
-pytest-cov
-hypothesis

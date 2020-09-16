@@ -1,7 +1,7 @@
 import os
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from idesolver import IDESolver
 
@@ -22,16 +22,12 @@ def make_comparison_plot(name, solver, exact):
     ax.legend(loc="best")
     ax.grid(True)
 
-    ax.set_title(
-        f"Solution for Global Error Tolerance = {solver.global_error_tolerance}"
-    )
+    ax.set_title(f"Solution for Global Error Tolerance = {solver.global_error_tolerance}")
     ax.set_xlabel(r"$x$")
     ax.set_ylabel(r"$y(x)$")
 
     plt.savefig(
-        os.path.join(
-            OUT_DIR, f"example_{name}_comparison_at_tol={solver.global_error_tolerance}"
-        )
+        os.path.join(OUT_DIR, f"example_{name}_comparison_at_tol={solver.global_error_tolerance}")
     )
 
 
@@ -45,16 +41,12 @@ def make_error_plot(name, solver, exact):
     ax.set_yscale("log")
     ax.grid(True)
 
-    ax.set_title(
-        f"Local Error for Global Error Tolerance = {solver.global_error_tolerance}"
-    )
+    ax.set_title(f"Local Error for Global Error Tolerance = {solver.global_error_tolerance}")
     ax.set_xlabel(r"$x$")
     ax.set_ylabel(r"$\left| y_{\mathrm{solver}}(x) - y_{\mathrm{exact}}(x) \right|$")
 
     plt.savefig(
-        os.path.join(
-            OUT_DIR, f"example_{name}_error_at_tol={solver.global_error_tolerance}"
-        )
+        os.path.join(OUT_DIR, f"example_{name}_error_at_tol={solver.global_error_tolerance}")
     )
 
 

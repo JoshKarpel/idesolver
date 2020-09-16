@@ -1,7 +1,7 @@
 import os
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from idesolver import IDESolver
 
@@ -25,9 +25,7 @@ def make_comparison_plot(name, solver, exact):
     ax.legend(loc="best")
     ax.grid(True)
 
-    ax.set_title(
-        f"Solution for Global Error Tolerance = {solver.global_error_tolerance}"
-    )
+    ax.set_title(f"Solution for Global Error Tolerance = {solver.global_error_tolerance}")
     ax.set_xlabel(r"$x$", fontsize=12)
     ax.set_ylabel(r"$y(x)$", fontsize=12)
 
@@ -45,9 +43,7 @@ def make_error_plot(name, solver, exact):
     ax.set_yscale("log")
     ax.grid(True)
 
-    ax.set_title(
-        f"Local Error for Global Error Tolerance = {solver.global_error_tolerance}"
-    )
+    ax.set_title(f"Local Error for Global Error Tolerance = {solver.global_error_tolerance}")
     ax.set_xlabel(r"$x$", fontsize=12)
     ax.set_ylabel(
         r"$\left| y_{\mathrm{idesolver}}(x) - y_{\mathrm{analytic}}(x) \right|$",

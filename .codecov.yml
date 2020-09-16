@@ -2,6 +2,6 @@ coverage:
   range: 50..90
   round: down
   precision: 0
-  
+
 comment:
   layout: "diff, files"

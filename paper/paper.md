@@ -40,4 +40,3 @@ This means that there is never a need to solve the actual IDE, just a series of 
 Once the guess stops changing dramatically (according to some tolerance set by the user) or a maximum number of iterations is reached (again, set by the user) the algorithm terminates.
 
 # References
-
