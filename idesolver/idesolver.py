@@ -88,7 +88,7 @@ class IDESolver:
     def __init__(
         self,
         x: np.ndarray,
-        y_0: Union[float, np.float64, complex, np.complex128],
+        y_0: Union[float, np.float64, complex, np.complex128, np.ndarray],
         c: Optional[Callable] = None,
         d: Optional[Callable] = None,
         k: Optional[Callable] = None,
@@ -112,8 +112,8 @@ class IDESolver:
         ----------
         x : :class:`numpy.ndarray`
             The array of :math:`x` values to find the solution :math:`y(x)` at. Generally something like ``numpy.linspace(a, b, num_pts)``.
-        y_0 : :class:`float` or :class:`complex`
-            The initial condition, :math:`y_0 = y(a)`.
+        y_0 : :class:`float` or :class:`complex` or  :class:`numpy.ndarray`
+            The initial condition, :math:`y_0 = y(a)` (can be multidimensional).
         c :
             The function :math:`c(y, x)`.
         d :
@@ -153,18 +153,20 @@ class IDESolver:
             self.integrator = complex_quad
         else:
             self.integrator = integ.quad
-        self.y_0 = y_0
+
+        self.y_0 = np.array(y_0, ndmin=1, copy=False)
+        self.ndim = self.y_0.size
 
         self.x = np.array(x)
 
         if c is None:
-            c = lambda x, y: 0
+            c = lambda x, y: np.zeros(self.ndim)
         if d is None:
             d = lambda x: 1
         if k is None:
             k = lambda x, s: 1
         if f is None:
-            f = lambda y: 0
+            f = lambda y: np.zeros(self.ndim)
         self.c = c
         self.d = d
         self.k = k
@@ -299,6 +301,13 @@ class IDESolver:
         self.y = y_guess
         self.global_error = error_current
 
+        # get rid of the array wrapper if the dimension is 1
+        if self.ndim == 1:
+            self.y = self.y[0]
+            if self.store_intermediate:
+                for j in range(len(self.y_intermediate)):
+                    self.y_intermediate[j] = self.y_intermediate[0]
+
         return self.y
 
     def _initial_y(self) -> np.ndarray:
@@ -332,13 +341,20 @@ class IDESolver:
         interpolated_y = self._interpolate_y(y)
 
         def integral(x):
-            result, *_ = self.integrator(
-                lambda s: self.k(x, s) * self.f(interpolated_y(s)),
-                self.lower_bound(x),
-                self.upper_bound(x),
-                epsabs=self.int_atol,
-                epsrel=self.int_rtol,
-            )
+            def integrand(s):
+                return np.array(self.k(x, s) * self.f(interpolated_y(s)),
+                                ndmin=1,
+                                copy=False)
+
+            result = np.zeros(self.ndim, dtype=type(y))
+            for i in range(self.ndim):
+                result[i], *_ = self.integrator(
+                    lambda s: integrand(s)[i],
+                    self.lower_bound(x),
+                    self.upper_bound(x),
+                    epsabs=self.int_atol,
+                    epsrel=self.int_rtol,
+                )
             return result
 
         def rhs(x, y):
@@ -372,7 +388,7 @@ class IDESolver:
         """Solves an ODE with the given right-hand side."""
         sol = integ.solve_ivp(
             fun=rhs,
-            y0=np.array([self.y_0]),
+            y0=self.y_0,
             t_span=(self.x[0], self.x[-1]),
             t_eval=self.x,
             method=self.ode_method,
@@ -383,4 +399,4 @@ class IDESolver:
         if not sol.success:
             raise exceptions.ODESolutionFailed(f"Error while trying to solve ODE: {sol.status}")
 
-        return sol.y[0]
+        return sol.y

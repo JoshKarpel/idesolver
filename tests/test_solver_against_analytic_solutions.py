@@ -104,8 +104,23 @@ COMPLEX_IDES = [
     )
 ]
 
+MULTIDIM = [
+    (
+        IDESolver(
+            x = np.linspace(0, 7, 100),
+            y_0 = [0, 1],
+            c = lambda x,y: [0.5*(y[1]+1), -0.5*y[0]],
+            d=lambda x:-0.5,
+            f=lambda y: y,
+            lower_bound=lambda x: 0,
+            upper_bound=lambda x:x
+        ),
+        lambda x: [np.sin(x), np.cos(x)]
+    )
+]
 
-@pytest.mark.parametrize("solver, exact", GELMI_EXAMPLES + REAL_IDES + COMPLEX_IDES)
+
+@pytest.mark.parametrize("solver, exact", GELMI_EXAMPLES + REAL_IDES + COMPLEX_IDES + MULTIDIM)
 def test_real_ide_against_analytic_solution(solver, exact):
     solver.solve()
 
