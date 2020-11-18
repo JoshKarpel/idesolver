@@ -56,6 +56,12 @@ def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
     diff = y1 - y2
     return np.sqrt(np.real(np.vdot(diff, diff)))
 
+def coerce_to_array(
+        to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray]
+) -> np.ndarray:
+    """Coerce `to_coerce` into a numpy array"""
+    return np.array(to_coerce, ndmin=1, copy=False)
+
 
 # types to recognize as complex in y_0
 _COMPLEX_NUMERIC_TYPES = [complex, np.complex128]
@@ -154,23 +160,22 @@ class IDESolver:
         else:
             self.integrator = integ.quad
 
-        self.y_0 = np.array(y_0, ndmin=1, copy=False)
-        self.ndim = self.y_0.size
+        self.y_0 = coerce_to_array(y_0)
 
         self.x = np.array(x)
 
         if c is None:
-            c = lambda x, y: np.zeros(self.ndim)
+            c = lambda x, y: np.zeros_like(self.y_0)
         if d is None:
             d = lambda x: 1
         if k is None:
             k = lambda x, s: 1
         if f is None:
-            f = lambda y: np.zeros(self.ndim)
-        self.c = c
-        self.d = d
-        self.k = k
-        self.f = f
+            f = lambda y: np.zeros_like(self.y_0)
+        self.c = lambda x, y: coerce_to_array(c(x, y))
+        self.d = lambda x: coerce_to_array(d(x))
+        self.k = lambda x, s: coerce_to_array(k(x, s))
+        self.f = lambda y: coerce_to_array(f(y))
 
         if lower_bound is None:
             lower_bound = lambda x: self.x[0]
@@ -293,22 +298,22 @@ class IDESolver:
                             )
                         )
                         break
-            except np.ComplexWarning:
+            except (np.ComplexWarning, TypeError) as e:
                 raise exceptions.UnexpectedlyComplexValuedIDE(
                     "Detected complex-valued IDE. Make sure to pass y_0 as a complex number."
-                )
+                ) from e
 
         self.y = y_guess
         self.global_error = error_current
 
         # get rid of the array wrapper if the dimension is 1
-        if self.ndim == 1:
+        if self.y_0.size == 1:
             self.y = self.y[0]
             if self.store_intermediate:
-                for j in range(len(self.y_intermediate)):
-                    self.y_intermediate[j] = self.y_intermediate[0]
+                self.y_intermediate = [y[0] for y in self.y_intermediate]
 
         return self.y
+
 
     def _initial_y(self) -> np.ndarray:
         """Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE."""
@@ -342,12 +347,10 @@ class IDESolver:
 
         def integral(x):
             def integrand(s):
-                return np.array(self.k(x, s) * self.f(interpolated_y(s)),
-                                ndmin=1,
-                                copy=False)
+                return self.k(x, s) * self.f(interpolated_y(s))
 
-            result = np.zeros(self.ndim, dtype=type(y))
-            for i in range(self.ndim):
+            result = np.zeros_like(self.y_0, dtype=type(y))
+            for i in range(self.y_0.size):
                 result[i], *_ = self.integrator(
                     lambda s: integrand(s)[i],
                     self.lower_bound(x),
