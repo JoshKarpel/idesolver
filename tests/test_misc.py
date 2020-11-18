@@ -100,7 +100,6 @@ def test_intermediate_solutions_of_vector_problem_is_list_of_vector_arrays():
     assert np.all([y.shape == (3, 100) for y in solver.y_intermediate])
 
 
-
 def test_callback_is_called_correct_number_of_times(mocker):
     callback = mocker.Mock()
 

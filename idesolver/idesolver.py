@@ -56,8 +56,9 @@ def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
     diff = y1 - y2
     return np.sqrt(np.real(np.vdot(diff, diff)))
 
+
 def coerce_to_array(
-        to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray]
+    to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray]
 ) -> np.ndarray:
     """Coerce `to_coerce` into a numpy array"""
     return np.array(to_coerce, ndmin=1, copy=False)
@@ -313,7 +314,6 @@ class IDESolver:
                 self.y_intermediate = [y[0] for y in self.y_intermediate]
 
         return self.y
-
 
     def _initial_y(self) -> np.ndarray:
         """Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE."""
