@@ -1,14 +1,18 @@
 idesolver
 ---------
 
+.. image:: http://joss.theoj.org/papers/9d3ba306da6abb37f7cf357cd9aad695/status.svg
+    :target: http://joss.theoj.org/papers/9d3ba306da6abb37f7cf357cd9aad695
+
 .. image:: https://readthedocs.org/projects/idesolver/badge/?version=latest
     :target: https://idesolver.readthedocs.io/en/latest/?badge=latest
 
 .. image:: https://codecov.io/gh/JoshKarpel/idesolver/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/JoshKarpel/idesolver
 
-.. image:: http://joss.theoj.org/papers/9d3ba306da6abb37f7cf357cd9aad695/status.svg
-    :target: http://joss.theoj.org/papers/9d3ba306da6abb37f7cf357cd9aad695
+.. image:: https://results.pre-commit.ci/badge/github/JoshKarpel/idesolver/master.svg
+   :target: https://results.pre-commit.ci/latest/github/JoshKarpel/idesolver/master
+   :alt: pre-commit.ci status
 
 A general purpose numeric integro-differential equation (IDE) solver, based on an iterative scheme devised by `Gelmi and Jorquera <https://doi.org/10.1016/j.cpc.2013.09.008>`_.
 IDEs appear in many contexts, particularly when trying to describe a system whose current behavior depends on its own history.
