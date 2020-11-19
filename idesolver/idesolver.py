@@ -68,7 +68,7 @@ def dtype(n):
     return n.dtype if isinstance(n, np.ndarray) else type(n)
 
 
-# types to recognize as complex in y_0
+# data types to recognize as complex in y_0
 _COMPLEX_NUMERIC_TYPES = [complex, np.complex128]
 
 
