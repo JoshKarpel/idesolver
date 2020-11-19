@@ -7,6 +7,7 @@ source =
 branch = True
 
 [report]
+
 exclude_lines =
     pragma: no cover
     pragma: unreachable
@@ -17,3 +18,6 @@ exclude_lines =
     if 0:
     if False:
     if __name__ == .__main__.:
+
+skip_empty = True
+show_missing = True
