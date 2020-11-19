@@ -3,6 +3,10 @@ Change Log
 
 .. currentmodule:: idesolver
 
+v1.1.0
+------
+* Add support for multidimensional IDEs (PR :pr:`35` resolves :issue:`28`, thanks `nbrucy <https://github.com/nbrucy>`_!)
+
 v1.0.5
 ------
 * Relaxes dependency version restrictions in advance of changes to ``pip``.
