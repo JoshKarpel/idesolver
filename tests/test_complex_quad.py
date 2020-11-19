@@ -18,7 +18,7 @@ def x():
         lambda x: 0.1 * x ** 2,
         lambda x: np.exp(x),
         lambda x: np.log(x),
-        lambda x: 1 / x,
+        lambda x: 1 / (x + 0.1),
     ],
 )
 def real_integrand(request):

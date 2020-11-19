@@ -9,10 +9,12 @@ include = "\\.pyi?$"
 
 [tool.isort]
 known_third_party = ["hypothesis", "matplotlib", "numpy", "pytest", "scipy", "setuptools", "sphinx_rtd_theme"]
+profile = "black"
 line_length = 100
-multi_line_output = "VERTICAL_HANGING_INDENT"
-include_trailing_comma = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 console_output_style = "count"
+
+[tool.pycln]
+all = true

@@ -121,11 +121,9 @@ def test_callback_is_called_correct_number_of_times(mocker):
     assert callback.call_count == solver.iteration + 1
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def default_solver():
-    solver = IDESolver(x=np.linspace(0, 1, 100), y_0=0)
-
-    return solver
+    return IDESolver(x=np.linspace(0, 1, 100), y_0=0)
 
 
 @hyp.given(x=st.complex_numbers(), y=st.complex_numbers())
