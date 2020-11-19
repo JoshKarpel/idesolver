@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
+    "sphinx_issues",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -210,3 +211,6 @@ intersphinx_mapping = {
 
 autodoc_member_order = "bysource"
 autoclass_content = "both"
+
+# sphinx-issues config
+issues_github_path = "JoshKarpel/idesolver"
