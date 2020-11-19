@@ -137,7 +137,7 @@ def test_default_d(default_solver, x):
 
 
 @hyp.given(x=st.complex_numbers(), s=st.complex_numbers())
-def test_default_c(default_solver, x, s):
+def test_default_k(default_solver, x, s):
     assert default_solver.k(x, s) == 1
 
 
