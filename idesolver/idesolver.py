@@ -84,15 +84,19 @@ class IDESolver:
     Attributes
     ----------
     x : :class:`numpy.ndarray`
-        The positions where the solution is calculated (i.e., where `y` is evaluated).
+        The positions where the solution is calculated (i.e., where :math:`y` is evaluated).
     y : :class:`numpy.ndarray`
-        The solution :math:`y(x)`. ``None`` until :meth:`IDESolver.solve` is finished.
+        The solution :math:`y(x)`.
+        ``None`` until :meth:`IDESolver.solve` is finished.
     global_error : :class:`float`
-        The final global error estimate. ``None`` until :meth:`IDESolver.solve` is finished.
+        The final global error estimate.
+        ``None`` until :meth:`IDESolver.solve` is finished.
     iteration : :class:`int`
-        The current iteration. ``None`` until :meth:`IDESolver.solve` starts.
+        The current iteration.
+        ``None`` until :meth:`IDESolver.solve` starts.
     y_intermediate :
-        The intermediate solutions. Only exists if `store_intermediate_y` is ``True``.
+        The intermediate solutions.
+        Only exists if ``store_intermediate_y`` is ``True``.
 
     """
 
@@ -122,21 +126,28 @@ class IDESolver:
         Parameters
         ----------
         x : :class:`numpy.ndarray`
-            The array of :math:`x` values to find the solution :math:`y(x)` at. Generally something like ``numpy.linspace(a, b, num_pts)``.
+            The array of :math:`x` values to find the solution :math:`y(x)` at.
+            Generally something like ``numpy.linspace(a, b, num_pts)``.
         y_0 : :class:`float` or :class:`complex` or  :class:`numpy.ndarray`
             The initial condition, :math:`y_0 = y(a)` (can be multidimensional).
         c :
             The function :math:`c(y, x)`.
+            Defaults to :math:`c(y, x) = 0`.
         d :
             The function :math:`d(x)`.
+            Defaults to :math:`d(x) = 1`.
         k :
             The kernel function :math:`k(x, s)`.
+            Defaults to :math:`k(x, s) = 1`.
         f :
             The function :math:`F(y)`.
+            Defaults to :math:`f(y) = 0`.
         lower_bound :
             The lower bound function :math:`\\alpha(x)`.
+            Defaults to the first element of ``x``.
         upper_bound :
             The upper bound function :math:`\\beta(x)`.
+            Defaults to the last element of ``x``.
         global_error_tolerance : :class:`float`
             The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations. If ``None``, the algorithm continues until hitting `max_iterations`.
         max_iterations : :class:`int`
@@ -144,9 +155,11 @@ class IDESolver:
         ode_method : :class:`str`
             The ODE solution method to use. As the `method` option of :func:`scipy.integrate.solve_ivp`. Defaults to ``'RK45'``, which is good for non-stiff systems.
         ode_atol : :class:`float`
-            The absolute tolerance for the ODE solver. As the `atol` argument of :func:`scipy.integrate.solve_ivp`.
+            The absolute tolerance for the ODE solver.
+            As the `atol` argument of :func:`scipy.integrate.solve_ivp`.
         ode_rtol : :class:`float`
-            The relative tolerance for the ODE solver. As the `rtol` argument of :func:`scipy.integrate.solve_ivp`.
+            The relative tolerance for the ODE solver.
+            As the `rtol` argument of :func:`scipy.integrate.solve_ivp`.
         int_atol : :class:`float`
             The absolute tolerance for the integration routine. As the `epsabs` argument of :func:`scipy.integrate.quad`.
         int_rtol : :class:`float`
