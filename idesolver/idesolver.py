@@ -58,10 +58,14 @@ def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
 
 
 def coerce_to_array(
-    to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray]
+    to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray, list]
 ) -> np.ndarray:
     """Coerce `to_coerce` into a numpy array"""
     return np.array(to_coerce, ndmin=1, copy=False)
+
+
+def dtype(n):
+    return n.dtype if isinstance(n, np.ndarray) else type(n)
 
 
 # types to recognize as complex in y_0
@@ -95,7 +99,7 @@ class IDESolver:
     def __init__(
         self,
         x: np.ndarray,
-        y_0: Union[float, np.float64, complex, np.complex128, np.ndarray],
+        y_0: Union[float, np.float64, complex, np.complex128, np.ndarray, list],
         c: Optional[Callable] = None,
         d: Optional[Callable] = None,
         k: Optional[Callable] = None,
@@ -156,23 +160,24 @@ class IDESolver:
         global_error_function :
             The function to use to calculate the global error. Defaults to :func:`global_error`.
         """
-        if type(y_0) in _COMPLEX_NUMERIC_TYPES:
+        self.y_0 = coerce_to_array(y_0)
+
+        if dtype(self.y_0) in _COMPLEX_NUMERIC_TYPES:
             self.integrator = complex_quad
         else:
             self.integrator = integ.quad
 
-        self.y_0 = coerce_to_array(y_0)
-
         self.x = np.array(x)
 
         if c is None:
-            c = lambda x, y: np.zeros_like(self.y_0)
+            c = lambda x, y: self._zeros()
         if d is None:
             d = lambda x: 1
         if k is None:
             k = lambda x, s: 1
         if f is None:
-            f = lambda y: np.zeros_like(self.y_0)
+            f = lambda y: self._zeros()
+
         self.c = lambda x, y: coerce_to_array(c(x, y))
         self.d = lambda x: coerce_to_array(d(x))
         self.k = lambda x, s: coerce_to_array(k(x, s))
@@ -218,6 +223,9 @@ class IDESolver:
         self.iteration = None
         self.y = None
         self.global_error = None
+
+    def _zeros(self) -> np.ndarray:
+        return np.zeros_like(self.y_0)
 
     def solve(self, callback: Optional[Callable] = None) -> np.ndarray:
         """
@@ -349,16 +357,17 @@ class IDESolver:
             def integrand(s):
                 return self.k(x, s) * self.f(interpolated_y(s))
 
-            result = np.zeros_like(self.y_0, dtype=type(y))
+            result = []
             for i in range(self.y_0.size):
-                result[i], *_ = self.integrator(
+                r, *_ = self.integrator(
                     lambda s: integrand(s)[i],
                     self.lower_bound(x),
                     self.upper_bound(x),
                     epsabs=self.int_atol,
                     epsrel=self.int_rtol,
                 )
-            return result
+                result.append(r)
+            return coerce_to_array(result)
 
         def rhs(x, y):
             return self.c(x, interpolated_y(x)) + (self.d(x) * integral(x))
