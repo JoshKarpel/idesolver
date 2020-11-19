@@ -57,6 +57,17 @@ def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
     return np.sqrt(np.real(np.vdot(diff, diff)))
 
 
+def coerce_to_array(
+    to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray, list]
+) -> np.ndarray:
+    """Coerce `to_coerce` into a numpy array"""
+    return np.array(to_coerce, ndmin=1, copy=False)
+
+
+def dtype(n):
+    return n.dtype if isinstance(n, np.ndarray) else type(n)
+
+
 # types to recognize as complex in y_0
 _COMPLEX_NUMERIC_TYPES = [complex, np.complex128]
 
@@ -88,7 +99,7 @@ class IDESolver:
     def __init__(
         self,
         x: np.ndarray,
-        y_0: Union[float, np.float64, complex, np.complex128],
+        y_0: Union[float, np.float64, complex, np.complex128, np.ndarray, list],
         c: Optional[Callable] = None,
         d: Optional[Callable] = None,
         k: Optional[Callable] = None,
@@ -112,8 +123,8 @@ class IDESolver:
         ----------
         x : :class:`numpy.ndarray`
             The array of :math:`x` values to find the solution :math:`y(x)` at. Generally something like ``numpy.linspace(a, b, num_pts)``.
-        y_0 : :class:`float` or :class:`complex`
-            The initial condition, :math:`y_0 = y(a)`.
+        y_0 : :class:`float` or :class:`complex` or  :class:`numpy.ndarray`
+            The initial condition, :math:`y_0 = y(a)` (can be multidimensional).
         c :
             The function :math:`c(y, x)`.
         d :
@@ -149,26 +160,28 @@ class IDESolver:
         global_error_function :
             The function to use to calculate the global error. Defaults to :func:`global_error`.
         """
-        if type(y_0) in _COMPLEX_NUMERIC_TYPES:
+        self.y_0 = coerce_to_array(y_0)
+
+        if dtype(self.y_0) in _COMPLEX_NUMERIC_TYPES:
             self.integrator = complex_quad
         else:
             self.integrator = integ.quad
-        self.y_0 = y_0
 
         self.x = np.array(x)
 
         if c is None:
-            c = lambda x, y: 0
+            c = lambda x, y: self._zeros()
         if d is None:
             d = lambda x: 1
         if k is None:
             k = lambda x, s: 1
         if f is None:
-            f = lambda y: 0
-        self.c = c
-        self.d = d
-        self.k = k
-        self.f = f
+            f = lambda y: self._zeros()
+
+        self.c = lambda x, y: coerce_to_array(c(x, y))
+        self.d = lambda x: coerce_to_array(d(x))
+        self.k = lambda x, s: coerce_to_array(k(x, s))
+        self.f = lambda y: coerce_to_array(f(y))
 
         if lower_bound is None:
             lower_bound = lambda x: self.x[0]
@@ -210,6 +223,9 @@ class IDESolver:
         self.iteration = None
         self.y = None
         self.global_error = None
+
+    def _zeros(self) -> np.ndarray:
+        return np.zeros_like(self.y_0)
 
     def solve(self, callback: Optional[Callable] = None) -> np.ndarray:
         """
@@ -291,13 +307,19 @@ class IDESolver:
                             )
                         )
                         break
-            except np.ComplexWarning:
+            except (np.ComplexWarning, TypeError) as e:
                 raise exceptions.UnexpectedlyComplexValuedIDE(
                     "Detected complex-valued IDE. Make sure to pass y_0 as a complex number."
-                )
+                ) from e
 
         self.y = y_guess
         self.global_error = error_current
+
+        # get rid of the array wrapper if the dimension is 1
+        if self.y_0.size == 1:
+            self.y = self.y[0]
+            if self.store_intermediate:
+                self.y_intermediate = [y[0] for y in self.y_intermediate]
 
         return self.y
 
@@ -332,14 +354,20 @@ class IDESolver:
         interpolated_y = self._interpolate_y(y)
 
         def integral(x):
-            result, *_ = self.integrator(
-                lambda s: self.k(x, s) * self.f(interpolated_y(s)),
-                self.lower_bound(x),
-                self.upper_bound(x),
-                epsabs=self.int_atol,
-                epsrel=self.int_rtol,
-            )
-            return result
+            def integrand(s):
+                return self.k(x, s) * self.f(interpolated_y(s))
+
+            result = []
+            for i in range(self.y_0.size):
+                r, *_ = self.integrator(
+                    lambda s: integrand(s)[i],
+                    self.lower_bound(x),
+                    self.upper_bound(x),
+                    epsabs=self.int_atol,
+                    epsrel=self.int_rtol,
+                )
+                result.append(r)
+            return coerce_to_array(result)
 
         def rhs(x, y):
             return self.c(x, interpolated_y(x)) + (self.d(x) * integral(x))
@@ -372,7 +400,7 @@ class IDESolver:
         """Solves an ODE with the given right-hand side."""
         sol = integ.solve_ivp(
             fun=rhs,
-            y0=np.array([self.y_0]),
+            y0=self.y_0,
             t_span=(self.x[0], self.x[-1]),
             t_eval=self.x,
             method=self.ode_method,
@@ -383,4 +411,4 @@ class IDESolver:
         if not sol.success:
             raise exceptions.ODESolutionFailed(f"Error while trying to solve ODE: {sol.status}")
 
-        return sol.y[0]
+        return sol.y
