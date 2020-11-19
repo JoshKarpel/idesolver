@@ -1,4 +1,9 @@
 [run]
+
+source =
+    idesolver
+    tests
+
 branch = True
 
 [report]
