@@ -15,6 +15,3 @@ line_length = 100
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 console_output_style = "count"
-
-[tool.pycln]
-all = true
