@@ -7,6 +7,8 @@ idesolver
 .. image:: https://readthedocs.org/projects/idesolver/badge/?version=latest
     :target: https://idesolver.readthedocs.io/en/latest/?badge=latest
 
+.. image:: https://img.shields.io/pypi/v/idesolver   :alt: PyPI
+
 .. image:: https://codecov.io/gh/JoshKarpel/idesolver/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/JoshKarpel/idesolver
 
