@@ -6,7 +6,7 @@ Change Log
 v1.2.0
 ------
 
-* :math:`k(x, s)` can now be a matrix.
+* :math:`d(x)` and :math:`k(x, s)` can now be matrices.
 * `UnexpectedlyComplexValuedIDE` is no longer raised if any `TypeError` occurs during integration.
   This may lead to less-explicit errors, but this is preferable to incorrect error reporting.
 

@@ -389,7 +389,12 @@ class IDESolver:
             return coerce_to_array(result)
 
         def rhs(x, y):
-            return self.c(x, interpolated_y(x)) + (self.d(x) * integral(x))
+            c = self.c(x, interpolated_y(x))
+            d = self.d(x)
+            if d.size == 1:
+                return c + (d * integral(x))
+            else:
+                return c + (d @ integral(x))
 
         return self._solve_ode(rhs)
 
