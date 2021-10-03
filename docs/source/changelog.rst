@@ -3,6 +3,13 @@ Change Log
 
 .. currentmodule:: idesolver
 
+v1.2.0
+------
+
+* :math:`k(x, s)` can now be a matrix.
+* `UnexpectedlyComplexValuedIDE` is no longer raised if any `TypeError` occurs during integration.
+  This may lead to less-explicit errors, but this is preferable to incorrect error reporting.
+
 v1.1.0
 ------
 * Add support for multidimensional IDEs (PR :pr:`35` resolves :issue:`28`, thanks `nbrucy <https://github.com/nbrucy>`_!)

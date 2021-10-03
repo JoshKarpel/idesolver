@@ -116,7 +116,20 @@ MULTIDIM = [
             upper_bound=lambda x: x,
         ),
         lambda x: [np.sin(x), np.cos(x)],
-    )
+    ),
+    (  # equivalent to previous case, but with k(x, s) as a matrix instead of a scalar
+        IDESolver(
+            x=np.linspace(0, 7, 100),
+            y_0=[0, 1],
+            c=lambda x, y: [0.5 * (y[1] + 1), -0.5 * y[0]],
+            d=lambda x: -0.5,
+            k=lambda x, s: np.array([[1, 0], [0, 1]]),
+            f=lambda y: y,
+            lower_bound=lambda x: 0,
+            upper_bound=lambda x: x,
+        ),
+        lambda x: [np.sin(x), np.cos(x)],
+    ),
 ]
 
 
