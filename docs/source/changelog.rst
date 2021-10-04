@@ -6,13 +6,13 @@ Change Log
 v1.2.0
 ------
 
-* :math:`d(x)` and :math:`k(x, s)` can now be matrices.
+* :math:`d(x)` and :math:`k(x, s)` can now be matrices or vectors (PR :pr:`60`, thanks `nbrucy <https://github.com/nbrucy>`_ for reviewing).
 * `UnexpectedlyComplexValuedIDE` is no longer raised if any `TypeError` occurs during integration.
   This may lead to less-explicit errors, but this is preferable to incorrect error reporting.
 
 v1.1.0
 ------
-* Add support for multidimensional IDEs (PR :pr:`35` resolves :issue:`28`, thanks `nbrucy <https://github.com/nbrucy>`_!)
+* Add support for multidimensional IDEs (PR :pr:`35` resolves :issue:`28`, thanks `nbrucy <https://github.com/nbrucy>`_!).
 
 v1.0.5
 ------
