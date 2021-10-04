@@ -371,7 +371,7 @@ class IDESolver:
                 k = self.k(x, s)
                 f = self.f(interpolated_y(s))
 
-                if k.size == 1:
+                if k.ndim == 1:
                     return k * f
                 else:
                     return k @ f
@@ -391,7 +391,7 @@ class IDESolver:
         def rhs(x, y):
             c = self.c(x, interpolated_y(x))
             d = self.d(x)
-            if d.size == 1:
+            if d.ndim == 1:
                 return c + (d * integral(x))
             else:
                 return c + (d @ integral(x))
