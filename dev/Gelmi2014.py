@@ -96,10 +96,10 @@ def example_3():
         k=lambda x, s: x * s,
         lower_bound=lambda x: 0,
         upper_bound=lambda x: 1,
-        f=lambda y: y ** 2,
+        f=lambda y: y**2,
     )
     solver.solve()
-    exact = 1 + solver.x + solver.x ** 2
+    exact = 1 + solver.x + solver.x**2
 
     return solver, exact
 
@@ -109,7 +109,7 @@ def example_4():
         x=np.linspace(0, 1, 100),
         y_0=1,
         c=lambda x, y: (x * (1 + np.sqrt(x)) * np.exp(-np.sqrt(x)))
-        - (((x ** 2) + x + 1) * np.exp(-x)),
+        - (((x**2) + x + 1) * np.exp(-x)),
         d=lambda x: 1,
         k=lambda x, s: x * s,
         lower_bound=lambda x: x,

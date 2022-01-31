@@ -15,7 +15,7 @@ def x():
     params=[
         lambda x: 1,
         lambda x: 2.3 * x,
-        lambda x: 0.1 * x ** 2,
+        lambda x: 0.1 * x**2,
         lambda x: np.exp(x),
         lambda x: np.log(x),
         lambda x: 1 / (x + 0.1),
