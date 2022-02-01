@@ -44,17 +44,17 @@ GELMI_EXAMPLES = [
             k=lambda x, s: x * s,
             lower_bound=lambda x: 0,
             upper_bound=lambda x: 1,
-            f=lambda y: y ** 2,
+            f=lambda y: y**2,
             global_error_tolerance=1e-6,
         ),
-        lambda x: 1 + x + x ** 2,
+        lambda x: 1 + x + x**2,
     ),
     (  # 4
         IDESolver(
             x=np.linspace(0, 1, 100),
             y_0=1,
             c=lambda x, y: (x * (1 + np.sqrt(x)) * np.exp(-np.sqrt(x)))
-            - (((x ** 2) + x + 1) * np.exp(-x)),
+            - (((x**2) + x + 1) * np.exp(-x)),
             d=lambda x: 1,
             k=lambda x, s: x * s,
             lower_bound=lambda x: x,
