@@ -25,7 +25,7 @@ repos:
       - id: python-no-log-warn
       - id: python-use-type-annotations
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.14
+    rev: v1.2.0
     hooks:
       - id: remove-crlf
   - repo: https://github.com/psf/black
