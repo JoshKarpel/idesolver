@@ -1,5 +1,5 @@
 import idesolver
 
 
-def test_version_info():
+def test_version():
     assert isinstance(idesolver.__version__, str)

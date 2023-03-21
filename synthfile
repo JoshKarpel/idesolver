@@ -1,0 +1,4 @@
+tests:
+    @watch idesolver/ tests/ docs/
+
+    pytest
