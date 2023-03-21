@@ -21,9 +21,9 @@ jobs:
       PYTHON_VERSION: ${{ matrix.python-version }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4.5.0
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -32,7 +32,7 @@ jobs:
         pip install .[tests]
     - name: Test with pytest
       run: pytest --cov --cov-report=xml tests/
-    - uses: codecov/codecov-action@v1
+    - uses: codecov/codecov-action@v3.1.1
       with:
         env_vars: PLATFORM,PYTHON_VERSION
         fail_ci_if_error: true
