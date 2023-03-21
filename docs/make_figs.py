@@ -1,13 +1,14 @@
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from idesolver import IDESolver
 
-FIGS_DIR = os.path.join(os.path.dirname(__file__), "source", "figs")
+FIGS_DIR = Path(__file__).resolve().parent / "assets"
 
-EXTENSIONS = ["png", "pdf"]
+EXTENSIONS = ["png"]
 
 
 def savefig(name):

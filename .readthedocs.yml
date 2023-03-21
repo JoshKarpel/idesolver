@@ -4,7 +4,7 @@ build:
   image: latest
 
 sphinx:
-  configuration: docs/source/conf.py
+  configuration: docs_old/source/conf.py
 
 formats: all
 
@@ -14,4 +14,4 @@ python:
     - method: pip
       path: .
       extra_requirements:
-        - docs
+        - docs_old

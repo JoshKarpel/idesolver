@@ -41,8 +41,8 @@ jobs:
 #        run: poetry run mypy
       - name: Test code
         run: poetry run pytest -v --cov --cov-report=xml --durations=20
-#      - name: Test docs
-#        run: poetry run mkdocs build --clean --strict --verbose
+      - name: Test docs_old
+        run: poetry run mkdocs build --clean --strict --verbose
       - name: Upload coverage
         uses: codecov/codecov-action@v3.1.1
         with:

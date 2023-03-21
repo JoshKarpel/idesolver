@@ -2,3 +2,8 @@ tests:
     @watch idesolver/ tests/ docs/
 
     pytest
+
+docs:
+    @restart
+
+    mkdocs serve --strict
