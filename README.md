@@ -23,7 +23,6 @@ Stable releases are available on PyPI: `pip install idesolver`.
 Full documentation can be found [here](https://idesolver.readthedocs.io/en/latest/).
 If you use `idesolver` in your research, please consider [citing the associated paper](https://joss.theoj.org/papers/10.21105/joss.00542>).
 
-Details about running the test suite are at the end of the [manual](https://idesolver.readthedocs.io/en/latest/manual.html).
 Problems with IDESolver should be reported via [GitHub issues](https://github.com/JoshKarpel/idesolver/issues).
 We are open to improvements: see the [Code of Conduct](https://github.com/JoshKarpel/idesolver/blob/master/CODE_OF_CONDUCT.md)
 and the [Contribution Guidelines](https://github.com/JoshKarpel/idesolver/blob/master/CONTRIBUTING.md) for details.

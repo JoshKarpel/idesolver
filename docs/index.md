@@ -5,7 +5,7 @@ real- or complex-valued integro-differential equations (IDEs) of the form
 
 $$
 \begin{aligned}
-    \frac{dy}{dx} & = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, F( y(s) ) \, ds, \\
+    \frac{dy}{dx} & = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, f( y(s) ) \, ds, \\
     & x \in [a, b], \quad y(a) = y_0.
 \end{aligned}
 $$

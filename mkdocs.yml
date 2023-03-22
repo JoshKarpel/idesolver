@@ -1,7 +1,7 @@
 site_name: IDESolver
 
 repo_url: https://github.com/JoshKarpel/idesolver
-edit_uri: edit/main/docs_old/
+edit_uri: edit/main/docs/
 
 extra_css:
   - assets/style.css
@@ -55,6 +55,9 @@ plugins:
             members_order: source
           import:
             - https://docs.python.org/3/objects.inv
+            - https://numpy.org/doc/stable/objects.inv
+            - https://docs.scipy.org/doc/scipy/objects.inv
+            - https://matplotlib.org/stable/objects.inv
 
 markdown_extensions:
   - admonition

@@ -3,6 +3,11 @@ tests:
 
     pytest
 
+types:
+    @watch idesolver/ tests/ docs/
+
+    mypy
+
 docs:
     @restart
 

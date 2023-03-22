@@ -1,6 +1,3 @@
-Quickstart
-==========
-
 Suppose we want to solve the integro-differential equation (IDE)
 
 $$
@@ -13,8 +10,9 @@ $$
 The analytic solution to this IDE is $y(x) = \ln(1 + x)$.
 We'll find a numerical solution using IDESolver and compare it to the analytic solution.
 
-The very first thing we need to do is install IDESolver.
-You'll want to install it via `pip` (`pip install idesolver`) into a `virtual environment <https://docs.python.org/3/tutorial/venv.html>`_.
+The first thing we need to do is install IDESolver.
+If you're using `pip`, that will be something like running `python -m pip install idesolver` in your terminal,
+ideally with a virtual environment activated.
 
 Now we can create an instance of [`IDESolver`][idesolver.IDESolver],
 passing it information about the IDE that we want to solve.
@@ -34,12 +32,12 @@ $$
     a &= 0 \\
     b &= 1 \\
     y(a) &= 0 \\ \\
-    c(x, y) =& y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) \\
-    d(x) =& \frac{1}{\left(\ln(2)\right)^2} \\
-    k(x, s) =& \frac{x}{1 + s} \\
+    c(x, y) &= y(x) - \frac{x}{2} + \frac{1}{1 + x} - \ln(1 + x) \\
+    d(x) &= \frac{1}{\left(\ln(2)\right)^2} \\
+    k(x, s) &= \frac{x}{1 + s} \\
     f(s) &= y(s) \\ \\
-    \alpha(x) =& 0 \\
-    \beta(x) =& 1.
+    \alpha(x) &= 0 \\
+    \beta(x) &= 1.
 \end{aligned}
 $$
 
@@ -98,7 +96,7 @@ ax.set_ylabel(r"$y(x)$")
 plt.show()
 ```
 
-.. image:: /_static/figs/quickstart_comparison.*
+![Comparison between the analytic and numerical solutions](assets/quickstart_comparison.png)
 
 
 ```python
@@ -121,4 +119,4 @@ ax.set_ylabel(r"$\left| y_{\mathrm{idesolver}}(x) - y_{\mathrm{analytic}}(x) \ri
 plt.show()
 ```
 
-.. image:: /_static/figs/quickstart_error.*
+![Error between the analytic and numerical solutions](assets/quickstart_error.png)

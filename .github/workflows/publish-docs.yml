@@ -1,4 +1,4 @@
-name: publish-docs_old
+name: publish-docs
 
 on:
   push:
@@ -19,5 +19,5 @@ jobs:
       uses: snok/install-poetry@v1.3.3
     - name: Install Package
       run: poetry install
-    - name: Build and deploy docs_old
+    - name: Build and deploy docs
       run:  poetry run mkdocs gh-deploy --clean --strict --verbose --force

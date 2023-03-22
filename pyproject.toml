@@ -21,12 +21,12 @@ classifiers = [
 ]
 authors = ["JoshKarpel <josh.karpel@gmail.com>"]
 license = "GPL-3.0"
-include = []
+include = ["py.typed"]
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-numpy = ">=1.18"
-scipy = ">=1.4"
+numpy = ">=1.24"
+scipy = ">=1.9"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = ">=3"
@@ -35,6 +35,7 @@ pytest-mock = ">=3"
 pytest-cov = ">=3"
 pytest-xdist = ">=3"
 hypothesis = ">=6"
+mypy = ">=1"
 mkdocs = ">=1.4"
 mkdocs-material = ">=9"
 mkdocstrings = {extras = ["python"], version = ">=0.19.0"}
@@ -54,3 +55,23 @@ all = true
 [tool.pytest.ini_options]
 addopts = ["--strict-markers", "-n", "auto"]
 testpaths = ["tests", "idesolver", "docs"]
+
+[tool.mypy]
+pretty = false
+show_error_codes = true
+
+files = ["."]
+
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+disallow_any_generics = true
+
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+warn_redundant_casts = true
+
+ignore_missing_imports = true

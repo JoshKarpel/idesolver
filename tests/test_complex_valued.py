@@ -4,7 +4,7 @@ import pytest
 from idesolver import IDESolver, UnexpectedlyComplexValuedIDE
 
 
-def test_raise_exception_if_unexpectedly_complex():
+def test_raise_exception_if_unexpectedly_complex() -> None:
     solver = IDESolver(
         x=np.linspace(0, 1, 100),
         y_0=0,  # this not being 0j is what makes the test fail
@@ -20,7 +20,7 @@ def test_raise_exception_if_unexpectedly_complex():
         solver.solve()
 
 
-def test_no_exception_if_expected_complex():
+def test_no_exception_if_expected_complex() -> None:
     solver = IDESolver(
         x=np.linspace(0, 1, 100),
         y_0=0j,
