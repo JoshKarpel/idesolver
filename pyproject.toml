@@ -57,7 +57,7 @@ addopts = ["--strict-markers", "-n", "auto"]
 testpaths = ["tests", "idesolver", "docs"]
 
 [tool.mypy]
-pretty = false
+pretty = true
 show_error_codes = true
 
 files = ["."]

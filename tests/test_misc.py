@@ -8,7 +8,7 @@ from idesolver import IDEConvergenceWarning, IDESolver
 
 
 def test_warning_when_not_enough_iterations() -> None:
-    args = dict(
+    good_solver = IDESolver(
         x=np.linspace(0, 1, 100),
         y_0=0,
         c=lambda x, y: y - (0.5 * x) + (1 / (1 + x)) - np.log(1 + x),
@@ -19,11 +19,20 @@ def test_warning_when_not_enough_iterations() -> None:
         f=lambda y: y,
         global_error_tolerance=1e-6,
     )
-
-    good_solver = IDESolver(**args)
     good_solver.solve()
 
-    bad_solver = IDESolver(**args, max_iterations=int(good_solver.iteration / 2))
+    bad_solver = IDESolver(
+        x=np.linspace(0, 1, 100),
+        y_0=0,
+        c=lambda x, y: y - (0.5 * x) + (1 / (1 + x)) - np.log(1 + x),
+        d=lambda x: 1 / (np.log(2)) ** 2,
+        k=lambda x, s: x / (1 + s),
+        lower_bound=lambda x: 0,
+        upper_bound=lambda x: 1,
+        f=lambda y: y,
+        global_error_tolerance=1e-6,
+        max_iterations=int(good_solver.iteration / 2),
+    )
 
     with pytest.warns(IDEConvergenceWarning):
         bad_solver.solve()

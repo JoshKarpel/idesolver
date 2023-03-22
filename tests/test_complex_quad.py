@@ -9,7 +9,7 @@ from idesolver import complex_quad
 
 
 @pytest.fixture(scope="module")
-def x() -> NDArray[float]:
+def x() -> NDArray[float_]:
     return linspace(0, 1, 1000)
 
 
@@ -31,7 +31,7 @@ def real_integrand(request) -> ArrayToArray:
     return request.param
 
 
-def test_real_part_passes_through(x: NDArray[float], real_integrand: ArrayToArray) -> None:
+def test_real_part_passes_through(x: NDArray[float_], real_integrand: ArrayToArray) -> None:
     cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(real_integrand, x[0], x[-1])
 
     quad_result, quad_error = integ.quad(real_integrand, x[0], x[-1])
@@ -40,7 +40,7 @@ def test_real_part_passes_through(x: NDArray[float], real_integrand: ArrayToArra
     assert cq_real_error == quad_error
 
 
-def test_imag_part_passes_through(x: NDArray[float], real_integrand: ArrayToArray) -> None:
+def test_imag_part_passes_through(x: NDArray[float_], real_integrand: ArrayToArray) -> None:
     imag_integrand = lambda x: 1j * real_integrand(x)
 
     cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(imag_integrand, x[0], x[-1])
@@ -56,7 +56,7 @@ second_integrand = real_integrand
 
 
 def test_real_and_imag_parts_combined(
-    x: NDArray[float], real_integrand: ArrayToArray, second_integrand: ArrayToArray
+    x: NDArray[float_], real_integrand: ArrayToArray, second_integrand: ArrayToArray
 ) -> None:
     imag_integrand = lambda x: 1j * second_integrand(x)
     combined_integrand = lambda x: real_integrand(x) + imag_integrand(x)
