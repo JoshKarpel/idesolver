@@ -1,21 +1,23 @@
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
+from numpy import abs, float_, linspace, log
+from numpy.typing import NDArray
 
 from idesolver import IDESolver
 
-FIGS_DIR = os.path.join(os.path.dirname(__file__), "source", "figs")
+FIGS_DIR = Path(__file__).resolve().parent / "assets"
 
-EXTENSIONS = ["png", "pdf"]
+EXTENSIONS = ["png"]
 
 
-def savefig(name):
+def savefig(name: str) -> None:
     for ext in EXTENSIONS:
         plt.savefig(os.path.join(FIGS_DIR, f"{name}.{ext}"))
 
 
-def make_comparison_plot(name, solver, exact):
+def make_comparison_plot(name: str, solver: IDESolver, exact: NDArray[float_]) -> None:
     fig = plt.figure(dpi=600)
     ax = fig.add_subplot(111)
 
@@ -32,11 +34,11 @@ def make_comparison_plot(name, solver, exact):
     savefig(name)
 
 
-def make_error_plot(name, solver, exact):
+def make_error_plot(name: str, solver: IDESolver, exact: NDArray[float_]) -> None:
     fig = plt.figure(dpi=600)
     ax = fig.add_subplot(111)
 
-    error = np.abs(solver.y - exact)
+    error = abs(solver.y - exact)
 
     ax.plot(solver.x, error, linewidth=3)
 
@@ -53,19 +55,19 @@ def make_error_plot(name, solver, exact):
     savefig(name)
 
 
-def quickstart_example():
+def quickstart_example() -> None:
     solver = IDESolver(
-        x=np.linspace(0, 1, 100),
+        x=linspace(0, 1, 100),
         y_0=0,
-        c=lambda x, y: y - (0.5 * x) + (1 / (1 + x)) - np.log(1 + x),
-        d=lambda x: 1 / (np.log(2)) ** 2,
+        c=lambda x, y: y - (0.5 * x) + (1 / (1 + x)) - log(1 + x),
+        d=lambda x: 1 / (log(2)) ** 2,
         k=lambda x, s: x / (1 + s),
         lower_bound=lambda x: 0,
         upper_bound=lambda x: 1,
         f=lambda y: y,
     )
     solver.solve()
-    exact = np.log(1 + solver.x)
+    exact = log(1 + solver.x)
 
     make_comparison_plot("quickstart_comparison", solver, exact)
     make_error_plot("quickstart_error", solver, exact)

@@ -1,14 +1,16 @@
 import os
+from typing import Tuple
 
 import matplotlib.pyplot as plt
-import numpy as np
+from numpy import abs, cos, exp, float_, linspace, log, pi, sin, sqrt
+from numpy.typing import NDArray
 
 from idesolver import IDESolver
 
 OUT_DIR = __file__.strip(".py")
 
 
-def make_comparison_plot(name, solver, exact):
+def make_comparison_plot(name: str, solver: IDESolver, exact: NDArray[float_]) -> None:
     fig = plt.figure(dpi=600)
     ax = fig.add_subplot(111)
 
@@ -31,11 +33,11 @@ def make_comparison_plot(name, solver, exact):
     )
 
 
-def make_error_plot(name, solver, exact):
+def make_error_plot(name: str, solver: IDESolver, exact: NDArray[float_]) -> None:
     fig = plt.figure(dpi=600)
     ax = fig.add_subplot(111)
 
-    error = np.abs(solver.y - exact)
+    error = abs(solver.y - exact)
 
     ax.plot(solver.x, error)
     ax.set_yscale("log")
@@ -50,46 +52,43 @@ def make_error_plot(name, solver, exact):
     )
 
 
-def example_1():
+def example_1() -> Tuple[IDESolver, NDArray[float_]]:
     solver = IDESolver(
-        x=np.linspace(0, 1, 100),
+        x=linspace(0, 1, 100),
         y_0=0,
-        c=lambda x, y: y - (0.5 * x) + (1 / (1 + x)) - np.log(1 + x),
-        d=lambda x: 1 / (np.log(2)) ** 2,
+        c=lambda x, y: y - (0.5 * x) + (1 / (1 + x)) - log(1 + x),
+        d=lambda x: 1 / (log(2)) ** 2,
         k=lambda x, s: x / (1 + s),
         lower_bound=lambda x: 0,
         upper_bound=lambda x: 1,
         f=lambda y: y,
     )
     solver.solve()
-    exact = np.log(1 + solver.x)
+    exact = log(1 + solver.x)
 
     return solver, exact
 
 
-def example_2():
+def example_2() -> Tuple[IDESolver, NDArray[float_]]:
     solver = IDESolver(
-        x=np.linspace(0, 1, 100),
+        x=linspace(0, 1, 100),
         y_0=1,
-        c=lambda x, y: y
-        - np.cos(2 * np.pi * x)
-        - (2 * np.pi * np.sin(2 * np.pi * x))
-        - (0.5 * np.sin(4 * np.pi * x)),
+        c=lambda x, y: y - cos(2 * pi * x) - (2 * pi * sin(2 * pi * x)) - (0.5 * sin(4 * pi * x)),
         d=lambda x: 1,
-        k=lambda x, s: np.sin(2 * np.pi * ((2 * x) + s)),
+        k=lambda x, s: sin(2 * pi * ((2 * x) + s)),
         lower_bound=lambda x: 0,
         upper_bound=lambda x: 1,
         f=lambda y: y,
     )
     solver.solve()
-    exact = np.cos(2 * np.pi * solver.x)
+    exact = cos(2 * pi * solver.x)
 
     return solver, exact
 
 
-def example_3():
+def example_3() -> Tuple[IDESolver, NDArray[float_]]:
     solver = IDESolver(
-        x=np.linspace(0, 1, 100),
+        x=linspace(0, 1, 100),
         y_0=1,
         c=lambda x, y: 1 - (29 / 60) * x,
         d=lambda x: 1,
@@ -104,20 +103,19 @@ def example_3():
     return solver, exact
 
 
-def example_4():
+def example_4() -> Tuple[IDESolver, NDArray[float_]]:
     solver = IDESolver(
-        x=np.linspace(0, 1, 100),
+        x=linspace(0, 1, 100),
         y_0=1,
-        c=lambda x, y: (x * (1 + np.sqrt(x)) * np.exp(-np.sqrt(x)))
-        - (((x**2) + x + 1) * np.exp(-x)),
+        c=lambda x, y: (x * (1 + sqrt(x)) * exp(-sqrt(x))) - (((x**2) + x + 1) * exp(-x)),
         d=lambda x: 1,
         k=lambda x, s: x * s,
         lower_bound=lambda x: x,
-        upper_bound=lambda x: np.sqrt(x),
+        upper_bound=lambda x: sqrt(x),
         f=lambda y: y,
     )
     solver.solve()
-    exact = np.exp(-solver.x)
+    exact = exp(-solver.x)
 
     return solver, exact
 
@@ -139,5 +137,5 @@ if __name__ == "__main__":
             f"Example {name} took {solver.iteration} iterations to get to global error {solver.global_error}. Error compared to analytic solution is {solver._global_error(solver.y, exact)}"
         )
 
-        make_comparison_plot(name, solver, exact)
-        make_error_plot(name, solver, exact)
+        make_comparison_plot(str(name), solver, exact)
+        make_error_plot(str(name), solver, exact)

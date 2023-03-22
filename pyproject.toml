@@ -1,17 +1,77 @@
 [build-system]
-requires = ["setuptools >= 40.6.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "idesolver"
+version = "2.0.0"
+description = "A general purpose iterative numeric integro-differential equation (IDE) solver"
+readme = "README.md"
+homepage = "https://github.com/JoshKarpel/idesolver"
+repository = "https://github.com/JoshKarpel/idesolver"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+authors = ["JoshKarpel <josh.karpel@gmail.com>"]
+license = "GPL-3.0"
+include = ["py.typed"]
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+numpy = ">=1.24"
+scipy = ">=1.9"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = ">=3"
+pytest = ">=7"
+pytest-mock = ">=3"
+pytest-cov = ">=3"
+pytest-xdist = ">=3"
+hypothesis = ">=6"
+mypy = ">=1"
+mkdocs = ">=1.4"
+mkdocs-material = ">=9"
+mkdocstrings = {extras = ["python"], version = ">=0.19.0"}
+matplotlib = ">=3.7"
 
 [tool.black]
 line-length = 100
-target-version = ["py36", "py37", "py38"]
 include = "\\.pyi?$"
 
 [tool.isort]
-known_third_party = ["hypothesis", "matplotlib", "numpy", "pytest", "scipy", "setuptools", "sphinx_rtd_theme"]
 profile = "black"
 line_length = 100
 
+[tool.pycln]
+all = true
+
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-console_output_style = "count"
+addopts = ["--strict-markers", "-n", "auto"]
+testpaths = ["tests", "idesolver", "docs"]
+
+[tool.mypy]
+pretty = true
+show_error_codes = true
+
+files = ["."]
+
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+disallow_any_generics = true
+
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+warn_redundant_casts = true
+
+ignore_missing_imports = true

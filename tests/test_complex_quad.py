@@ -1,13 +1,19 @@
-import numpy as np
+from typing import Callable
+
 import pytest
 import scipy.integrate as integ
+from numpy import exp, float_, linspace, log
+from numpy.typing import NDArray
 
 from idesolver import complex_quad
 
 
 @pytest.fixture(scope="module")
-def x():
-    return np.linspace(0, 1, 1000)
+def x() -> NDArray[float_]:
+    return linspace(0, 1, 1000)
+
+
+ArrayToArray = Callable[[NDArray[float_]], NDArray[float_]]
 
 
 @pytest.fixture(
@@ -16,16 +22,16 @@ def x():
         lambda x: 1,
         lambda x: 2.3 * x,
         lambda x: 0.1 * x**2,
-        lambda x: np.exp(x),
-        lambda x: np.log(x),
+        lambda x: exp(x),
+        lambda x: log(x),
         lambda x: 1 / (x + 0.1),
     ],
 )
-def real_integrand(request):
+def real_integrand(request) -> ArrayToArray:
     return request.param
 
 
-def test_real_part_passes_through(x, real_integrand):
+def test_real_part_passes_through(x: NDArray[float_], real_integrand: ArrayToArray) -> None:
     cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(real_integrand, x[0], x[-1])
 
     quad_result, quad_error = integ.quad(real_integrand, x[0], x[-1])
@@ -34,7 +40,7 @@ def test_real_part_passes_through(x, real_integrand):
     assert cq_real_error == quad_error
 
 
-def test_imag_part_passes_through(x, real_integrand):
+def test_imag_part_passes_through(x: NDArray[float_], real_integrand: ArrayToArray) -> None:
     imag_integrand = lambda x: 1j * real_integrand(x)
 
     cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(imag_integrand, x[0], x[-1])
@@ -49,7 +55,9 @@ def test_imag_part_passes_through(x, real_integrand):
 second_integrand = real_integrand
 
 
-def test_real_and_imag_parts_combined(x, real_integrand, second_integrand):
+def test_real_and_imag_parts_combined(
+    x: NDArray[float_], real_integrand: ArrayToArray, second_integrand: ArrayToArray
+) -> None:
     imag_integrand = lambda x: 1j * second_integrand(x)
     combined_integrand = lambda x: real_integrand(x) + imag_integrand(x)
 

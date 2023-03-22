@@ -2,11 +2,25 @@ import logging
 import warnings
 from typing import Callable, Optional, Union
 
-import numpy as np
 import scipy.integrate as integ
 import scipy.interpolate as inter
+from numpy import (
+    ComplexWarning,
+    array,
+    complex128,
+    complex_,
+    float64,
+    float_,
+    imag,
+    ndarray,
+    real,
+    sqrt,
+    vdot,
+    zeros_like,
+)
+from numpy.typing import NDArray
 
-from . import exceptions
+from idesolver import exceptions
 
 logger = logging.getLogger("idesolver")
 logger.setLevel(logging.DEBUG)
@@ -16,14 +30,15 @@ def complex_quad(
     integrand: Callable, lower_bound: float, upper_bound: float, **kwargs
 ) -> (complex, float, float, tuple, tuple):
     """
-    A thin wrapper over :func:`scipy.integrate.quad` that handles splitting the real and complex parts of the integral and recombining them.
-    Keyword arguments are passed to both of the internal ``quad`` calls.
+    A thin wrapper over [`scipy.integrate.quad`][scipy.integrate.quad]
+    that handles splitting the real and complex parts of the integral and recombining them.
+    Keyword arguments are passed to both of the internal [`scipy.integrate.quad`][scipy.integrate.quad] calls.
     """
     real_result, real_error, *real_extra = integ.quad(
-        lambda x: np.real(integrand(x)), lower_bound, upper_bound, **kwargs
+        lambda x: real(integrand(x)), lower_bound, upper_bound, **kwargs
     )
     imag_result, imag_error, *imag_extra = integ.quad(
-        lambda x: np.imag(integrand(x)), lower_bound, upper_bound, **kwargs
+        lambda x: imag(integrand(x)), lower_bound, upper_bound, **kwargs
     )
 
     return (
@@ -35,75 +50,65 @@ def complex_quad(
     )
 
 
-def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
+FloatsOrComplexes = Union[NDArray[float_], NDArray[complex_]]
+
+
+def global_error(y1: FloatsOrComplexes, y2: FloatsOrComplexes) -> float:
     """
     The default global error function.
 
     The estimate is the square root of the sum of squared differences between `y1` and `y2`.
 
-    Parameters
-    ----------
-    y1 : :class:`numpy.ndarray`
-        A guess of the solution.
-    y2 : :class:`numpy.ndarray`
-        Another guess of the solution.
+    Parameters:
+        y1: A guess of the solution.
+        y2: Another guess of the solution.
 
-    Returns
-    -------
-    error : :class:`float`
+    Returns:
         The global error estimate between `y1` and `y2`.
     """
     diff = y1 - y2
-    return np.sqrt(np.real(np.vdot(diff, diff)))
+    return sqrt(real(vdot(diff, diff)))
 
 
 def coerce_to_array(
-    to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray, list]
-) -> np.ndarray:
+    to_coerce: Union[float, float64, complex, complex128, ndarray, list]
+) -> ndarray:
     """Coerce `to_coerce` into a numpy array"""
-    return np.array(to_coerce, ndmin=1, copy=False)
+    return array(to_coerce, ndmin=1, copy=False)
 
 
 def dtype(n):
-    return n.dtype if isinstance(n, np.ndarray) else type(n)
+    return n.dtype if isinstance(n, ndarray) else type(n)
 
 
 # data types to recognize as complex in y_0
-_COMPLEX_NUMERIC_TYPES = [complex, np.complex128]
+_COMPLEX_NUMERIC_TYPES = [complex, complex128]
 
 
 class IDESolver:
-    """
+    r"""
     A class that handles solving an integro-differential equation of the form
 
-    .. math::
+    $$
+    \begin{aligned}
+        \frac{dy}{dx} & = c(y, x) + d(x) \int_{\alpha(x)}^{\beta(x)} k(x, s) \, f( y(s) ) \, ds, \\
+        & x \in [a, b], \quad y(a) = y_0.
+    \end{aligned}
+    $$
 
-        \\frac{dy}{dx} & = c(y, x) + d(x) \\int_{\\alpha(x)}^{\\beta(x)} k(x, s) \\, F( y(s) ) \\, ds, \\\\
-        & x \\in [a, b], \\quad y(a) = y_0.
-
-    Attributes
-    ----------
-    x : :class:`numpy.ndarray`
-        The positions where the solution is calculated (i.e., where :math:`y` is evaluated).
-    y : :class:`numpy.ndarray`
-        The solution :math:`y(x)`.
-        ``None`` until :meth:`IDESolver.solve` is finished.
-    global_error : :class:`float`
-        The final global error estimate.
-        ``None`` until :meth:`IDESolver.solve` is finished.
-    iteration : :class:`int`
-        The current iteration.
-        ``None`` until :meth:`IDESolver.solve` starts.
-    y_intermediate :
-        The intermediate solutions.
-        Only exists if ``store_intermediate_y`` is ``True``.
+    Attributes:
+        x: The positions where the solution is calculated (i.e., where $y$ is evaluated).
+        y: The solution $y(x)$. `None` until [`IDESolver.solve`][idesolver.IDESolver.solve] is finished.
+        global_error: The final global error estimate. `None` until [`IDESolver.solve`][idesolver.IDESolver.solve] is finished.
+        iteration: The current iteration. `None` until [`IDESolver.solve`][idesolver.IDESolver.solve] starts.
+        y_intermediate: The intermediate solutions. Only exists if `store_intermediate_y` is `True`.
 
     """
 
     def __init__(
         self,
-        x: np.ndarray,
-        y_0: Union[float, np.float64, complex, np.complex128, np.ndarray, list],
+        x: ndarray,
+        y_0: Union[float, float64, complex, complex128, ndarray, list],
         c: Optional[Callable] = None,
         d: Optional[Callable] = None,
         k: Optional[Callable] = None,
@@ -123,55 +128,54 @@ class IDESolver:
         global_error_function: Callable = global_error,
     ):
         """
-        Parameters
-        ----------
-        x : :class:`numpy.ndarray`
-            The array of :math:`x` values to find the solution :math:`y(x)` at.
-            Generally something like ``numpy.linspace(a, b, num_pts)``.
-        y_0 : :class:`float` or :class:`complex` or  :class:`numpy.ndarray`
-            The initial condition, :math:`y_0 = y(a)` (can be multidimensional).
-        c :
-            The function :math:`c(y, x)`.
-            Defaults to :math:`c(y, x) = 0`.
-        d :
-            The function :math:`d(x)`.
-            Defaults to :math:`d(x) = 1`.
-        k :
-            The kernel function :math:`k(x, s)`.
-            Defaults to :math:`k(x, s) = 1`.
-        f :
-            The function :math:`F(y)`.
-            Defaults to :math:`f(y) = 0`.
-        lower_bound :
-            The lower bound function :math:`\\alpha(x)`.
-            Defaults to the first element of ``x``.
-        upper_bound :
-            The upper bound function :math:`\\beta(x)`.
-            Defaults to the last element of ``x``.
-        global_error_tolerance : :class:`float`
-            The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations. If ``None``, the algorithm continues until hitting `max_iterations`.
-        max_iterations : :class:`int`
-            The maximum number of iterations to use. If ``None``, iteration will not stop unless the `global_error_tolerance` is satisfied. Defaults to ``None``.
-        ode_method : :class:`str`
-            The ODE solution method to use. As the `method` option of :func:`scipy.integrate.solve_ivp`. Defaults to ``'RK45'``, which is good for non-stiff systems.
-        ode_atol : :class:`float`
-            The absolute tolerance for the ODE solver.
-            As the `atol` argument of :func:`scipy.integrate.solve_ivp`.
-        ode_rtol : :class:`float`
-            The relative tolerance for the ODE solver.
-            As the `rtol` argument of :func:`scipy.integrate.solve_ivp`.
-        int_atol : :class:`float`
-            The absolute tolerance for the integration routine. As the `epsabs` argument of :func:`scipy.integrate.quad`.
-        int_rtol : :class:`float`
-            The relative tolerance for the integration routine. As the `epsrel` argument of :func:`scipy.integrate.quad`.
-        interpolation_kind : :class:`str`
-            The type of interpolation to use. As the `kind` argument of :class:`scipy.interpolate.interp1d`. Defaults to ``'cubic'``.
-        smoothing_factor : :class:`float`
-            The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to ``0.5``.
-        store_intermediate_y : :class:`bool`
-            If ``True``, the intermediate guesses for :math:`y(x)` at each iteration will be stored in the attribute `y_intermediate`.
-        global_error_function :
-            The function to use to calculate the global error. Defaults to :func:`global_error`.
+        Parameters:
+            x:
+                The array of $x$ values to find the solution $y(x)$ at.
+                Generally something like `numpy.linspace(a, b, num_pts)`.
+            y_0:
+                The initial condition, $y_0 = y(a)$ (can be multidimensional).
+            c:
+                The function $c(y, x)$.
+                Defaults to $c(y, x) = 0$.
+            d:
+                The function $d(x)$.
+                Defaults to $d(x) = 1$.
+            k:
+                The kernel function $k(x, s)$.
+                Defaults to $k(x, s) = 1$.
+            f:
+                The function $F(y)$.
+                Defaults to $f(y) = 0$.
+            lower_bound:
+                The lower bound function $\\alpha(x)$.
+                Defaults to the first element of `x`.
+            upper_bound:
+                The upper bound function $\\beta(x)$.
+                Defaults to the last element of `x`.
+            global_error_tolerance:
+                The algorithm will continue until the global errors goes below this or uses more than `max_iterations` iterations. If `None`, the algorithm continues until hitting `max_iterations`.
+            max_iterations:
+                The maximum number of iterations to use. If `None`, iteration will not stop unless the `global_error_tolerance` is satisfied. Defaults to `None`.
+            ode_method:
+                The ODE solution method to use. As the `method` option of :func:`scipy.integrate.solve_ivp`. Defaults to `'RK45'`, which is good for non-stiff systems.
+            ode_atol:
+                The absolute tolerance for the ODE solver.
+                As the `atol` argument of :func:`scipy.integrate.solve_ivp`.
+            ode_rtol:
+                The relative tolerance for the ODE solver.
+                As the `rtol` argument of :func:`scipy.integrate.solve_ivp`.
+            int_atol:
+                The absolute tolerance for the integration routine. As the `epsabs` argument of :func:`scipy.integrate.quad`.
+            int_rtol:
+                The relative tolerance for the integration routine. As the `epsrel` argument of :func:`scipy.integrate.quad`.
+            interpolation_kind:
+                The type of interpolation to use. As the `kind` argument of :class:`scipy.interpolate.interp1d`. Defaults to `'cubic'`.
+            smoothing_factor:
+                The smoothing factor used to combine the current guess with the new guess at each iteration. Defaults to `0.5`.
+            store_intermediate_y:
+                If `True`, the intermediate guesses for $y(x)$ at each iteration will be stored in the attribute `y_intermediate`.
+            global_error_function:
+                The function to use to calculate the global error. Defaults to :func:`global_error`.
         """
         self.y_0 = coerce_to_array(y_0)
 
@@ -180,7 +184,7 @@ class IDESolver:
         else:
             self.integrator = integ.quad
 
-        self.x = np.array(x)
+        self.x = array(x)
 
         if c is None:
             c = lambda x, y: self._zeros()
@@ -237,10 +241,10 @@ class IDESolver:
         self.y = None
         self.global_error = None
 
-    def _zeros(self) -> np.ndarray:
-        return np.zeros_like(self.y_0)
+    def _zeros(self) -> ndarray:
+        return zeros_like(self.y_0)
 
-    def solve(self, callback: Optional[Callable] = None) -> np.ndarray:
+    def solve(self, callback: Optional[Callable] = None) -> ndarray:
         """
         Compute the solution to the IDE.
 
@@ -249,22 +253,19 @@ class IDESolver:
 
         Will emit a warning message if the maximum number of iterations is used without reaching the global error tolerance.
 
-        Parameters
-        ----------
-        callback :
-            A function to call after each iteration. The function is passed the :class:`IDESolver` instance, the current :math:`y` guess, and the current global error.
+        Parameters:
+            callback: A function to call after each iteration.
+                The function is passed the [`IDESolver`][idesolver.IDESolver] instance, the current $y$ guess, and the current global error.
 
-        Returns
-        -------
-        :class:`numpy.ndarray`
-            The solution to the IDE (i.e., :math:`y(x)`).
+        Returns:
+            The solution to the IDE (i.e., $y(x)$).
         """
         # check if the user messed up by not passing y_0 as a complex number when they should have
         with warnings.catch_warnings():
             warnings.filterwarnings(
                 action="error",
                 message="Casting complex values",
-                category=np.ComplexWarning,
+                category=ComplexWarning,
             )
 
             try:
@@ -284,7 +285,6 @@ class IDESolver:
                     callback(self, y_guess, error_current)
 
                 while error_current > self.global_error_tolerance:
-
                     new_current = self._next_y(y_current, y_guess)
                     new_guess = self._solve_rhs_with_known_y(new_current)
                     new_error = self._global_error(new_current, new_guess)
@@ -320,7 +320,7 @@ class IDESolver:
                             )
                         )
                         break
-            except (np.ComplexWarning, TypeError) as e:
+            except (ComplexWarning, TypeError) as e:
                 raise exceptions.UnexpectedlyComplexValuedIDE(
                     "Detected complex-valued IDE. Make sure to pass y_0 as a complex number."
                 ) from e
@@ -336,34 +336,29 @@ class IDESolver:
 
         return self.y
 
-    def _initial_y(self) -> np.ndarray:
+    def _initial_y(self) -> ndarray:
         """Calculate the initial guess for `y`, by considering only `c` on the right-hand side of the IDE."""
         return self._solve_ode(self.c)
 
-    def _next_y(self, curr: np.ndarray, guess: np.ndarray) -> np.ndarray:
+    def _next_y(self, curr: ndarray, guess: ndarray) -> ndarray:
         """Calculate the next guess at the solution by merging two guesses."""
         return (self.smoothing_factor * curr) + ((1 - self.smoothing_factor) * guess)
 
-    def _global_error(self, y1: np.ndarray, y2: np.ndarray) -> float:
+    def _global_error(self, y1: ndarray, y2: ndarray) -> float:
         """
         Return the global error estimate between `y1` and `y2`.
 
-        Parameters
-        ----------
-        y1
-            A guess of the solution.
-        y2
-            Another guess of the solution.
+        Parameters:
+            y1: A guess of the solution.
+            y2: Another guess of the solution.
 
-        Returns
-        -------
-        error : :class:`float`
-            The global error estimate between `y1` and `y2`.
+        Returns:
+            error: The global error estimate between `y1` and `y2`.
         """
         return self.global_error_function(y1, y2)
 
-    def _solve_rhs_with_known_y(self, y: np.ndarray) -> np.ndarray:
-        """Solves the right-hand-side of the IDE as if :math:`y` was `y`."""
+    def _solve_rhs_with_known_y(self, y: ndarray) -> ndarray:
+        """Solves the right-hand-side of the IDE as if $y(x)$ was the fixed array `y`."""
         interpolated_y = self._interpolate_y(y)
 
         def integral(x):
@@ -387,7 +382,7 @@ class IDESolver:
 
         return self._solve_ode(rhs)
 
-    def _interpolate_y(self, y: np.ndarray) -> inter.interp1d:
+    def _interpolate_y(self, y: ndarray) -> inter.interp1d:
         """
         Interpolate `y` along `x`, using `interpolation_kind`.
 
@@ -409,7 +404,7 @@ class IDESolver:
             assume_sorted=True,
         )
 
-    def _solve_ode(self, rhs: Callable) -> np.ndarray:
+    def _solve_ode(self, rhs: Callable) -> ndarray:
         """Solves an ODE with the given right-hand side."""
         sol = integ.solve_ivp(
             fun=rhs,

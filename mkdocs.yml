@@ -1,0 +1,96 @@
+site_name: IDESolver
+
+repo_url: https://github.com/JoshKarpel/idesolver
+edit_uri: edit/main/docs/
+
+extra_css:
+  - assets/style.css
+
+extra_javascript:
+  - assets/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+watch:
+  - idesolver/
+
+theme:
+  name: material
+  favicon: assets/favicon.png
+  icon:
+    logo: fontawesome/solid/calculator
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      media: "(prefers-color-scheme: light)"
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      media: "(prefers-color-scheme: dark)"
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.indexes
+    - toc.follow
+    - content.code.annotate
+    - content.code.copy
+
+plugins:
+  - tags
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_root_heading: true
+            heading_level: 3
+            docstring_section_style: spacy
+            merge_init_into_class: true
+            show_if_no_docstring: false
+            show_source: false
+            members_order: source
+          import:
+            - https://docs.python.org/3/objects.inv
+            - https://numpy.org/doc/stable/objects.inv
+            - https://docs.scipy.org/doc/scipy/objects.inv
+            - https://matplotlib.org/stable/objects.inv
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ['docs']
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - def_list
+  - md_in_html
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - tables
+  - pymdownx.arithmatex:
+      generic: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/JoshKarpel/idesolver
+      name: IDESolver on GitHub
+
+nav:
+  - Introduction: index.md
+  - quickstart.md
+  - manual.md
+  - parallelization.md
+  - api.md
+  - contributing.md
+  - changelog.md
