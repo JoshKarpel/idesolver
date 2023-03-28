@@ -284,7 +284,6 @@ class IDESolver:
                     callback(self, y_guess, error_current)
 
                 while error_current > self.global_error_tolerance:
-
                     new_current = self._next_y(y_current, y_guess)
                     new_guess = self._solve_rhs_with_known_y(new_current)
                     new_error = self._global_error(new_current, new_guess)
