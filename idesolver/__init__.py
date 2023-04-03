@@ -6,10 +6,11 @@ from .exceptions import (
     ODESolutionFailed,
     UnexpectedlyComplexValuedIDE,
 )
-from .idesolver import IDESolver, complex_quad, global_error
+from .idesolver import IDE, complex_quad, global_error, solve_ide
 
 __all__ = [
-    "IDESolver",
+    "IDE",
+    "solve_ide",
     "IDESolverException",
     "IDEConvergenceWarning",
     "InvalidParameter",

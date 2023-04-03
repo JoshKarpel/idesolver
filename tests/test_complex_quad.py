@@ -1,9 +1,9 @@
 from typing import Callable
 
 import pytest
-import scipy.integrate as integ
 from numpy import exp, float_, linspace, log
 from numpy.typing import NDArray
+from scipy.integrate import quad
 
 from idesolver import complex_quad
 
@@ -34,7 +34,7 @@ def real_integrand(request) -> ArrayToArray:
 def test_real_part_passes_through(x: NDArray[float_], real_integrand: ArrayToArray) -> None:
     cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(real_integrand, x[0], x[-1])
 
-    quad_result, quad_error = integ.quad(real_integrand, x[0], x[-1])
+    quad_result, quad_error = quad(real_integrand, x[0], x[-1])
 
     assert cq_result == quad_result
     assert cq_real_error == quad_error
@@ -45,7 +45,7 @@ def test_imag_part_passes_through(x: NDArray[float_], real_integrand: ArrayToArr
 
     cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(imag_integrand, x[0], x[-1])
 
-    quad_result, quad_error = integ.quad(real_integrand, x[0], x[-1])
+    quad_result, quad_error = quad(real_integrand, x[0], x[-1])
 
     assert cq_result == 1j * quad_result
     assert cq_imag_error == quad_error
@@ -63,8 +63,8 @@ def test_real_and_imag_parts_combined(
 
     cq_result, cq_real_error, cq_imag_error, *_ = complex_quad(combined_integrand, x[0], x[-1])
 
-    quad_real_result, quad_real_error = integ.quad(real_integrand, x[0], x[-1])
-    quad_imag_result, quad_imag_error = integ.quad(second_integrand, x[0], x[-1])
+    quad_real_result, quad_real_error = quad(real_integrand, x[0], x[-1])
+    quad_imag_result, quad_imag_error = quad(second_integrand, x[0], x[-1])
 
     assert cq_result == quad_real_result + (1j * quad_imag_result)
     assert cq_real_error == quad_real_error

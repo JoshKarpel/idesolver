@@ -3,7 +3,7 @@
 Yes, with one caveat.
 You'll need to define the callables somewhere that Python can find them in the global namespace (i.e., top-level functions in a module, methods in a top-level class, etc.).
 
-## Can I parallelize IDESolver over multiple cores?
+## Can I parallelize `IDESolver`?
 
 Not directly: the iterative algorithm is serial by nature.
 

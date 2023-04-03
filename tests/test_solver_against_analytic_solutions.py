@@ -4,11 +4,11 @@ import pytest
 from numpy import allclose, cos, exp, float_, linspace, log, pi, sin, sinh, sqrt
 from numpy.typing import NDArray
 
-from idesolver import IDESolver
+from idesolver import IDE, solve_ide
 
 GELMI_EXAMPLES = [
     (  # 1
-        IDESolver(
+        IDE(
             x=linspace(0, 1, 100),
             y_0=0,
             c=lambda x, y: y - (0.5 * x) + (1 / (1 + x)) - log(1 + x),
@@ -17,12 +17,11 @@ GELMI_EXAMPLES = [
             lower_bound=lambda x: 0,
             upper_bound=lambda x: 1,
             f=lambda y: y,
-            global_error_tolerance=1e-6,
         ),
         lambda x: log(1 + x),
     ),
     (  # 2
-        IDESolver(
+        IDE(
             x=linspace(0, 1, 100),
             y_0=1,
             c=lambda x, y: y
@@ -34,12 +33,11 @@ GELMI_EXAMPLES = [
             lower_bound=lambda x: 0,
             upper_bound=lambda x: 1,
             f=lambda y: y,
-            global_error_tolerance=1e-6,
         ),
         lambda x: cos(2 * pi * x),
     ),
     (  # 3
-        IDESolver(
+        IDE(
             x=linspace(0, 1, 100),
             y_0=1,
             c=lambda x, y: 1 - (29 / 60) * x,
@@ -48,12 +46,11 @@ GELMI_EXAMPLES = [
             lower_bound=lambda x: 0,
             upper_bound=lambda x: 1,
             f=lambda y: y**2,
-            global_error_tolerance=1e-6,
         ),
         lambda x: 1 + x + x**2,
     ),
     (  # 4
-        IDESolver(
+        IDE(
             x=linspace(0, 1, 100),
             y_0=1,
             c=lambda x, y: (x * (1 + sqrt(x)) * exp(-sqrt(x))) - (((x**2) + x + 1) * exp(-x)),
@@ -62,7 +59,6 @@ GELMI_EXAMPLES = [
             lower_bound=lambda x: x,
             upper_bound=lambda x: sqrt(x),
             f=lambda y: y,
-            global_error_tolerance=1e-6,
         ),
         lambda x: exp(-x),
     ),
@@ -70,7 +66,7 @@ GELMI_EXAMPLES = [
 
 REAL_IDES = [
     (  # RHS = 0
-        IDESolver(
+        IDE(
             x=linspace(0, 1, 100),
             y_0=1,
             c=lambda x, y: 0,
@@ -79,19 +75,18 @@ REAL_IDES = [
             lower_bound=lambda x: 0,
             upper_bound=lambda x: 1,
             f=lambda y: 0,
-            global_error_tolerance=1e-6,
         ),
         lambda x: 1,
     ),
     (  # RHS = 0 is the default, so if we pass nothing, we should get that
-        IDESolver(x=linspace(0, 1, 100), y_0=1, global_error_tolerance=1e-6),
+        IDE(x=linspace(0, 1, 100), y_0=1),
         lambda x: 1,
     ),
 ]
 
 COMPLEX_IDES = [
     (
-        IDESolver(
+        IDE(
             x=linspace(0, 1, 100),
             y_0=0j,
             c=lambda x, y: (5 * y) + 1,
@@ -100,7 +95,6 @@ COMPLEX_IDES = [
             lower_bound=lambda x: 0,
             upper_bound=lambda x: x,
             f=lambda y: y,
-            global_error_tolerance=1e-6,
         ),
         lambda x: 2 * exp(5 * x / 2) * sinh(0.5 * sqrt(25 - 12j) * x) / sqrt(25 - 12j),
     )
@@ -108,7 +102,7 @@ COMPLEX_IDES = [
 
 MULTIDIM = [
     (
-        IDESolver(
+        IDE(
             x=linspace(0, 7, 100),
             y_0=[0, 1],
             c=lambda x, y: [0.5 * (y[1] + 1), -0.5 * y[0]],
@@ -122,14 +116,14 @@ MULTIDIM = [
 ]
 
 
-@pytest.mark.parametrize("solver, exact", GELMI_EXAMPLES + REAL_IDES + COMPLEX_IDES + MULTIDIM)
+@pytest.mark.parametrize("ide, exact", GELMI_EXAMPLES + REAL_IDES + COMPLEX_IDES + MULTIDIM)
 def test_real_ide_against_analytic_solution(
-    solver: IDESolver, exact: Callable[[NDArray[float_]], NDArray[float_]]
+    ide: IDE, exact: Callable[[NDArray[float_]], NDArray[float_]]
 ) -> None:
-    solver.solve()
+    result = solve_ide(ide)
 
-    y_exact = exact(solver.x)
+    y_exact = exact(ide.x)
 
-    assert solver.global_error < solver.global_error_tolerance
+    assert result.global_error < 1e-6
 
-    assert allclose(solver.y, y_exact, atol=1e-6)
+    assert allclose(result.y, y_exact, atol=1e-6)

@@ -1,6 +1,6 @@
 # API Reference
 
-::: idesolver.IDESolver
+::: idesolver.solve_ide
 
 ::: idesolver.global_error
 
