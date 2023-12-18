@@ -29,7 +29,7 @@ repos:
     hooks:
       - id: remove-crlf
   - repo: https://github.com/psf/black
-    rev: 23.11.0
+    rev: 23.12.0
     hooks:
       - id: black
   - repo: https://github.com/asottile/blacken-docs
@@ -45,6 +45,6 @@ repos:
     hooks:
       - id: seed-isort-config
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.0
+    rev: 5.13.2
     hooks:
       - id: isort
