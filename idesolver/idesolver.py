@@ -141,7 +141,7 @@ class IDESolver:
             Defaults to :math:`k(x, s) = 1`.
         f :
             The function :math:`F(y)`.
-            Defaults to :math:`f(y) = 0`.
+            Defaults to :math:`F(y) = 0`.
         lower_bound :
             The lower bound function :math:`\\alpha(x)`.
             Defaults to the first element of ``x``.
@@ -319,7 +319,7 @@ class IDESolver:
                             )
                         )
                         break
-            except (np.ComplexWarning, TypeError) as e:
+            except np.ComplexWarning as e:
                 raise exceptions.UnexpectedlyComplexValuedIDE(
                     "Detected complex-valued IDE. Make sure to pass y_0 as a complex number."
                 ) from e
@@ -367,7 +367,13 @@ class IDESolver:
 
         def integral(x):
             def integrand(s):
-                return self.k(x, s) * self.f(interpolated_y(s))
+                k = self.k(x, s)
+                f = self.f(interpolated_y(s))
+
+                if k.ndim == 1:
+                    return k * f
+                else:
+                    return k @ f
 
             result = []
             for i in range(self.y_0.size):
@@ -382,7 +388,12 @@ class IDESolver:
             return coerce_to_array(result)
 
         def rhs(x, y):
-            return self.c(x, interpolated_y(x)) + (self.d(x) * integral(x))
+            c = self.c(x, interpolated_y(x))
+            d = self.d(x)
+            if d.ndim == 1:
+                return c + (d * integral(x))
+            else:
+                return c + (d @ integral(x))
 
         return self._solve_ode(rhs)
 

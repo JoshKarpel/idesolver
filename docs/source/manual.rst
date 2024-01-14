@@ -50,6 +50,85 @@ To be conservative and to make sure we don't over-correct, we'll combine :math:`
 
 The process then repeats: solve the IDE-turned-ODE with :math:`y^{(1)}` on the right-hand-side, see how different it is, maybe make a new guess, etc.
 
+Multidimensional IDEs
+---------------------
+
+IDESolver can handle multidimensional IDEs, though I do not know how well the convergence properties hold.
+
+There are several ways to specify multidimensional IDEs,
+with IDESolver flexibly interpreting the arguments to allow for IDEs to be expressed in as simple a notation as possible
+at each level of complexity.
+For example, the three definitions below for a two-dimensional IDE
+(where :math:`\gamma_0(x)` and :math:`\gamma_1(x)` are the functions to be solved for)
+are all treated as equivalent by IDESolver.
+
+Scalar :math:`d` and :math:`k`:
+
+.. code-block::
+
+    IDESolver(
+        x=np.linspace(0, 7, 100),
+        y_0=[0, 1],
+        c=lambda x, y: [0.5 * (y[1] + 1), -0.5 * y[0]],
+        d=lambda x: -0.5,
+        f=lambda y: y,
+        lower_bound=lambda x: 0,
+        upper_bound=lambda x: x,
+    )
+
+which could be written out as
+
+.. math::
+
+    \frac{d}{dx}\begin{bmatrix} \gamma_0 \\ \gamma_1 \end{bmatrix} & = \begin{bmatrix} \frac{1}{2} (\gamma_1 + 1) \\ -\frac{1}{2} \gamma_0 \end{bmatrix} - \frac{1}{2} \int_{0}^{x} \, \begin{bmatrix} \gamma_0(s) \\ \gamma_1(s) \end{bmatrix} \, ds
+
+Vector :math:`d` and :math:`k` (treated as a scalar multiplier for each dimension):
+
+
+.. code-block::
+
+    IDESolver(
+        x=np.linspace(0, 7, 100),
+        y_0=[0, 1],
+        c=lambda x, y: [0.5 * (y[1] + 1), -0.5 * y[0]],
+        d=lambda x: [-0.5, -0.5],
+        k=lambda x, s: [1, 1],
+        f=lambda y: y,
+        lower_bound=lambda x: 0,
+        upper_bound=lambda x: x,
+    )
+
+which could be written out as
+
+.. math::
+
+    \frac{d}{dx}\begin{bmatrix} \gamma_0 \\ \gamma_1 \end{bmatrix} & = \begin{bmatrix} \frac{1}{2} (\gamma_1 + 1) \\ -\frac{1}{2} \gamma_0 \end{bmatrix} - \begin{bmatrix} \frac{1}{2} \\ \frac{1}{2} \end{bmatrix} \int_{0}^{x} \begin{bmatrix} 1 \\ 1 \end{bmatrix} \, \begin{bmatrix} \gamma_0(s) \\ \gamma_1(s) \end{bmatrix} \, ds
+
+
+Matrix :math:`d` and :math:`k` (treated using matrix multiplication):
+
+
+.. code-block::
+
+    IDESolver(
+       x=np.linspace(0, 7, 100),
+        y_0=[0, 1],
+        c=lambda x, y: [0.5 * (y[1] + 1), -0.5 * y[0]],
+        d=lambda x: [[-0.5, 0], [0, -0.5]],
+        k=lambda x, s: [[1, 0], [0, 1]],
+        f=lambda y: y,
+        lower_bound=lambda x: 0,
+        upper_bound=lambda x: x,
+    )
+
+which could be written out as
+
+.. math::
+
+    \frac{d}{dx}\begin{bmatrix} \gamma_0 \\ \gamma_1 \end{bmatrix} & = \begin{bmatrix} \frac{1}{2} (\gamma_1 + 1) \\ -\frac{1}{2} \gamma_0 \end{bmatrix} - \begin{bmatrix} \frac{1}{2} & 0 \\ 0 & \frac{1}{2} \end{bmatrix} \int_{0}^{x} \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \, \begin{bmatrix} \gamma_0(s) \\ \gamma_1(s) \end{bmatrix} \, ds
+
+
+
 Stopping Conditions
 -------------------
 
