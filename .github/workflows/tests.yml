@@ -32,7 +32,7 @@ jobs:
         pip install .[tests]
     - name: Test with pytest
       run: pytest --cov --cov-report=xml tests/
-    - uses: codecov/codecov-action@v4.3.1
+    - uses: codecov/codecov-action@v4.4.0
       with:
         env_vars: PLATFORM,PYTHON_VERSION
         fail_ci_if_error: false
