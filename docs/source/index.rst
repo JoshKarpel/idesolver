@@ -16,12 +16,15 @@ The algorithm is based on a scheme devised by `Gelmi and Jorquera <https://doi.o
 
 If you use IDESolver in your work, please consider `citing it <https://doi.org/10.21105/joss.00542>`_.
 
+IDESolver is open-source software developed on `GitHub <https://github.com/JoshKarpel/idesolver>`_.
+If you encounter problems or would like to extend it for new use cases, please consider opening an issue or a pull request.
+
 :doc:`quickstart`
    A brief tutorial in using IDESolver.
 
 :doc:`manual`
-   Details about the implementation of IDESolver.
-   Includes information about running the test suite.
+   Details about the implementation of IDESolver, extensions like solving multidimensional IDEs, and subtleties like stopping conditions.
+   Also includes information about running the test suite.
 
 :doc:`api`
    Detailed documentation for IDESolver's API.
