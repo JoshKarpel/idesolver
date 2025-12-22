@@ -58,7 +58,7 @@ def global_error(y1: np.ndarray, y2: np.ndarray) -> float:
 
 
 def coerce_to_array(
-    to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray, list]
+    to_coerce: Union[float, np.float64, complex, np.complex128, np.ndarray, list],
 ) -> np.ndarray:
     """Coerce `to_coerce` into a numpy array"""
     return np.array(to_coerce, ndmin=1, copy=False)

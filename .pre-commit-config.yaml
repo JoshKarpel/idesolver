@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -28,16 +28,16 @@ repos:
     rev: v1.5.5
     hooks:
       - id: remove-crlf
-  - repo: https://github.com/psf/black
-    rev: 24.4.2
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 25.12.0
     hooks:
       - id: black
   - repo: https://github.com/asottile/blacken-docs
-    rev: 1.16.0
+    rev: 1.20.0
     hooks:
       - id: blacken-docs
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.5.0
+    rev: v3.2.0
     hooks:
       - id: setup-cfg-fmt
   - repo: https://github.com/asottile/seed-isort-config
@@ -45,6 +45,6 @@ repos:
     hooks:
       - id: seed-isort-config
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
+    rev: 7.0.0
     hooks:
       - id: isort
